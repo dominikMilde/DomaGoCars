@@ -69,7 +69,7 @@ int main()
 
         sim.update();
         player.setPosition(sim.getX(), sim.getY());
-        //player.setRotation(sim.getAngle()*-1.0);
+        player.setRotation(sim.getAngle() * -1.0);
         //std::cout << sim.getV() << std::endl;
 
         window.clear();
