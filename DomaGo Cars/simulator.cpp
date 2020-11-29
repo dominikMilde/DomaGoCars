@@ -1,45 +1,65 @@
 #include <math.h>
 
 #define PI 3.14159265
+#define GAS_ACC 0.001
+#define BRAKE_ACC -0.01
+#define DRAG_K 0.999
+#define T 1.0
 
 class simulator {
 private:
-    float x;
-    float y;
-    float v;
-    float angle;
+    double x;
+    double y;
+    double v;
+    double angle;
+    double acc;
 
 public:
-    simulator(float x1, float y1, float v1, float angle1) {
+    simulator(double x1, double y1) {
         x = x1;
         y = y1;
-        v = v1;
-        angle = angle1;
+        v = 0.0;
+        angle = 0.0;
+        acc = 0.0;
     }
 
-    void update(float acc, float T, float k, float newAngle) {
-        v = (v + acc * T) * k;
+    void update() {
+        v = (v + acc * T) * DRAG_K;
         if (v < 0) v = 0;
-        angle = 90 - newAngle;
         if (angle <= 0) { angle += 360; }
         x = x + cos(angle * PI / 180) * v * T;
         y = y - sin(angle * PI / 180) * v * T;
     }
 
-    float getAngle() { return angle; }
-    float getV() { return v; }
-    float getX() { return x; }
-    float getY() { return y; }
-    void setV(float v) {
+    double getAngle() { return angle; }
+    double getV() { return v; }
+    double getX() { return x; }
+    double getY() { return y; }
+    void setV(double v) {
         this->v = v;
     }
-    void setX(float x) {
+    void setX(double x) {
         this->x = x;
     }
-    void setY(float y) {
+    void setY(double y) {
         this->y = y;
     }
-    void setAngle(float angle) {
-        this->angle= angle;
+    void setAngle(double angle) {
+        this->angle = angle;
+    }
+    void rotateLeft() {
+        this->angle += (getV() / 4);
+    }
+    void rotateRight() {
+        this->angle -= (getV() / 4);
+    }
+    void gas() {
+        acc = GAS_ACC;
+    }
+    void brake() {
+        acc = BRAKE_ACC;
+    }
+    void idle() {
+        acc = 0.0;
     }
 };

@@ -15,25 +15,18 @@ int main()
     background.setTexture(&backgroundTexture);
 
     sf::CircleShape player(30.0f);
-    player.setScale(1, 1.7);
+    player.setScale(1.5, 1.2);
     player.setPosition(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 1.2);
-    player.rotate(90);
+    //player.rotate(90);
     player.setOrigin(30.0f, 51.0f);
     sf::Texture playerTexture;
     playerTexture.loadFromFile("avatar.jpg");
     player.setTexture(&playerTexture);
 
-    float v = 0.0;
-    //float aAcc = 0.002; //zeljeno ubrzanje/usporavanje za jedan pritisak tipke
-    float aDec = 0.01;
-    float k = 0.999; //trenje
-
     auto image = backgroundTexture.copyToImage(); //jer texture nema getPixel, dimenzije se smanjuju za 5/3
 
     sf::Vector2f vector = player.getPosition();
-    simulator sim(vector.x, vector.y, 0.f, player.getRotation());
-
-
+    simulator sim(vector.x, vector.y);
 
     while (window.isOpen())
     {
@@ -53,35 +46,30 @@ int main()
             }
         }
 
-        float angle = 0.f;
-        float aAcc = 0.f;
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         {
-            player.rotate(-sim.getV() / 4);
+            sim.rotateLeft();
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         {
-            player.rotate(sim.getV()/ 4 );
+            sim.rotateRight();
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         {
-            aAcc = 0.004;
-            angle = player.getRotation();
+            sim.gas();
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
         {
-            aAcc = -0.01;
-            angle = player.getRotation();
+            sim.brake();
         }
         else
         {
-            aAcc = 0.f;
-            angle = player.getRotation();
+            sim.idle();
         }
 
-        sim.update(aAcc, 1.f, k, angle);
+        sim.update();
         player.setPosition(sim.getX(), sim.getY());
+        //player.setRotation(sim.getAngle()*-1.0);
         //std::cout << sim.getV() << std::endl;
 
         window.clear();
@@ -98,16 +86,17 @@ int main()
         y /= koef;
 
         auto color1 = image.getPixel(x, y);
-        auto color2 = image.getPixel(x, y + 25);
-        auto color3 = image.getPixel(x + 15, y + 25);
-        
-        if (color1 == sf::Color::Black || color2 == sf::Color::Black || color3 == sf::Color::Black)
+        //auto color2 = image.getPixel(x, y + image.getSize().y);
+        //auto color3 = image.getPixel(x + image.getSize().x, y + image.getSize().y);
+
+        if (color1 == sf::Color::Black)
+     //|| color2 == sf::Color::Black || color3 == sf::Color::Black)
         {
             //player.setPosition(sf::VideoMode::getDesktopMode().width / 2, sf::VideoMode::getDesktopMode().height / 1.2);
             sim.setX(sf::VideoMode::getDesktopMode().width / 2);
             sim.setY(sf::VideoMode::getDesktopMode().height / 1.2);
-            sim.setAngle(90);
-            player.setRotation(90);
+            sim.setAngle(0);
+            player.setRotation(0);
             sim.setV(0);
         }
     }
