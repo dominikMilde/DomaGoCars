@@ -147,7 +147,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="simulator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="NeuralNetwork.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
