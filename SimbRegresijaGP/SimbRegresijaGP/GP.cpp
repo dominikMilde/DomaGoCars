@@ -21,7 +21,8 @@ void crossover(Node* mainTree, Node* otherTree) {
 		int mainChild = rand() % mainChildren;
 		int otherChild = rand() % otherChildren;
 		del(mainTree->children.at(mainChild));
-		mainTree->children.at(mainChild) = (otherTree->children.at(otherChild))->copy();
+		mainTree->children.insert(mainTree->children.begin() + mainChild, otherTree->children.at(otherChild)->copy());
+		//mainTree->children.at(mainChild) = (otherTree->children.at(otherChild))->copy();
 	}
 }
 
@@ -32,9 +33,9 @@ void mutation(Node** tree, int depth) {
 	if (shouldMutate) {
 		Node* newNode = randomNode(depth + 1);
 		for (int i = 0; i < newNode->numOfChildren; i++) {
-			newNode->children.at(i) = randomTree(depth + 1);
+			newNode->children.push_back(randomTree(depth + 1));
 		}
-		free(*tree);
+		//free(*tree);
 		*tree = newNode;
 	}
 
@@ -93,7 +94,7 @@ void print(Node* tree, int depth) {
 Node* randomTree(int depth) {
 	Node* tree = randomNode(depth);
 	for (int i = 0; i < tree->numOfChildren; i++) {
-		tree->children.at(i) = randomNode(depth + 1);
+		tree->children.push_back(randomTree(depth + 1));
 	}
 	return tree;
 }
@@ -135,7 +136,7 @@ void del(Node* tree) {
 	for (int i = 0; i < tree->numOfChildren; i++) {
 		del(tree->children.at(i));
 	}
-	free(tree);
+	//free(tree);
 }
 
 bool treeSort(Node* tree1, Node* tree2) {

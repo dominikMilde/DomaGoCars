@@ -44,7 +44,6 @@ class Add : public Node
 {
 public:
 	Add();
-	vector<Node*> children;
 	virtual double calculate(double input);
 	Add* copy();
 	virtual string getName();
@@ -54,7 +53,6 @@ class Sub : public Node
 {
 public:
 	Sub();
-	vector<Node*> children;
 	virtual double calculate(double input);
 	Sub* copy();
 	virtual string getName();
@@ -64,7 +62,6 @@ class Mul : public Node
 {
 public:
 	Mul();
-	vector<Node*> children;
 	virtual double calculate(double input);
 	Mul* copy();
 	virtual string getName();
@@ -75,7 +72,6 @@ class Div : public Node
 {
 public:
 	Div();
-	vector<Node*> children;
 	virtual double calculate(double input);
 	Div* copy();
 	virtual string getName();

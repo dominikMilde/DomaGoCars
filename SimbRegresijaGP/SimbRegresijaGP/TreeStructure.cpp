@@ -13,6 +13,7 @@ Input::Input() {
 }
 
 double Input::calculate(double input) {
+	name = to_string(input);
 	return input;
 }
 
@@ -29,13 +30,13 @@ string Input::getName() {
 Constant::Constant() {
 	numOfChildren = 0;
 	value = (double)rand() / RAND_MAX;
-	name = "";
+	name = to_string(value);
 }
 
 Constant::Constant(double inputValue) {
 	numOfChildren = 0;
 	value = inputValue;
-	name = "";
+	name = to_string(inputValue);
 }
 
 double Constant::calculate(double input) {
@@ -63,7 +64,7 @@ double Add::calculate(double input) {
 Add* Add::copy() {
 	Add* res = new Add();
 	for (int i = 0; i < numOfChildren; i++) {
-		res->children.at(i) = children.at(i)->copy();
+		res->children.push_back(children.at(i)->copy());
 	}
 	return res;
 }
@@ -84,7 +85,7 @@ double Sub::calculate(double input) {
 Sub* Sub::copy() {
 	Sub* res = new Sub();
 	for (int i = 0; i < numOfChildren; i++) {
-		res->children.at(i) = children.at(i)->copy();
+		res->children.push_back(children.at(i)->copy());
 	}
 	return res;
 }
@@ -105,7 +106,7 @@ double Mul::calculate(double input) {
 Mul* Mul::copy() {
 	Mul* res = new Mul();
 	for (int i = 0; i < numOfChildren; i++) {
-		res->children.at(i) = children.at(i)->copy();
+		res->children.push_back(children.at(i)->copy());
 	}
 	return res;
 }
@@ -126,7 +127,7 @@ double Div::calculate(double input) {
 Div* Div::copy() {
 	Div* res = new Div();
 	for (int i = 0; i < numOfChildren; i++) {
-		res->children.at(i) = children.at(i)->copy();
+		res->children.push_back(children.at(i)->copy());
 	}
 	return res;
 }
