@@ -94,6 +94,8 @@ public:
 			neurons.push_back(n);
 			cout << n.getInitialValue() << endl;
 		}
+
+		cout << endl;
 		
 		//ovdje se dodaju preostali neuroni, znaci treba ih dodati jos za skriveni i izlazni sloj pa se zbroje vrijednost topology[1] i [2] i toliko ih se doda
 		//vrijednost im je random stavljena na 1.0, ali kasnije se izracuna prava vrijednost, ova je skroz nebitna
@@ -109,6 +111,9 @@ public:
 	vector<float> getWeightsInputHidden() { return weightsInputHidden; }
 	vector<float> getWeightsHiddenOutput() { return weightsHiddenOutput; }
 	vector<Neuron> getNeurons() { return neurons; }
+
+	void setWeightsInputHidden(vector<float> v) {this->weightsInputHidden = v;}
+	void setWeightsHiddenOutput(vector<float> v) {this->weightsHiddenOutput = v;}
 
 	//ovo je funkcija koja na osnovu output vrijednosti proslog sloja i vrijednosti weighta koji je izmedu neurona u proslom i u sadasnjem sloju
 	void calculateOutputValues() {
@@ -162,15 +167,73 @@ public:
 	}
 };
 
+float calculateFitness(NeuralNetwork nn, int desired_output) { //fitness je apsolutna vrijednost razlike outputa
+	vector<Neuron> v = nn.getNeurons();
+	Neuron n = v.back();
+	float output = n.getOutputValue();
+	float MSE = abs(output - desired_output);
+	return MSE;
+}
 
+void crossing(NeuralNetwork nn1, NeuralNetwork nn2, NeuralNetwork &worst) { //zamijenimo najgorem vektore tezina
+	srand((unsigned)time(NULL));
+
+	vector<float> w1_hidden = nn1.getWeightsInputHidden(); //prvo za input pa output weights
+	vector<float> w2_hidden = nn2.getWeightsInputHidden();
+
+	int x = rand() % w1_hidden.size(); //ne znam jel ovo valja, random index
+
+	auto first = w1_hidden.begin();
+	auto last = w1_hidden.begin() + x;
+
+	vector<float> result1(first, last);
+
+	auto first = w2_hidden.begin() + x;
+	auto last = w2_hidden.end();
+
+	vector<float> result2(first, last);
+	result1.insert(result1.end(), result2.begin(), result2.end());
+	worst.setWeightsInputHidden(result1);
+
+	vector<float> w1_o = nn1.getWeightsHiddenOutput();
+	vector<float> w2_o = nn2.getWeightsHiddenOutput();
+
+	auto first = w1_o.begin();
+	auto last = w1_o.begin() + x;
+
+	vector<float> result3(first, last);
+
+	auto first = w2_o.begin() + x;
+	auto last = w2_o.end();
+
+	vector<float> result4(first, last);
+	result1.insert(result3.end(), result4.begin(), result4.end());
+	worst.setWeightsHiddenOutput(result3);
+}
+
+void mutate(NeuralNetwork &nn) {
+	srand((unsigned)time(NULL));
+	vector<float> v1 = nn.getWeightsInputHidden();
+	int x = rand() % v1.size();
+
+	v1[x] = abs(v1[x]); //samo aps vrijednost
+
+	nn.setWeightsInputHidden(v1);
+
+	vector<float> v2 = nn.getWeightsHiddenOutput();
+
+	v2[x] = abs(v2[x]); //samo aps vrijednost
+
+	nn.setWeightsHiddenOutput(v2);
+}
 
 int main() {
 	//topologija
-	vector<unsigned> a = { 2,4,1};
+	vector<unsigned> a = { 2,3,1};
 
 	//ulazni neuroni sa vrijednosti 2.0 i 3.0
-	Neuron n1 = Neuron(3.0, true);
-	Neuron n2 = Neuron(2.0, true);
+	Neuron n1 = Neuron(1.0, true);
+	Neuron n2 = Neuron(-1.0, true);
 	vector<Neuron> neurons = { n1, n2 };
 
 	//incijalizacija neuronske mreze
