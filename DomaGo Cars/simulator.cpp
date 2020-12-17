@@ -7,6 +7,7 @@
 #define BRAKE_ACC -0.01
 #define DRAG_K 0.999
 #define T 1.0
+#define SQRT2 1.414213562
 
 class simulator {
 private:
@@ -25,7 +26,7 @@ private:
     int botRightDistance;
 
 public:
-    simulator(double x1, double y1, sf::Image image) {
+    simulator(double x1, double y1, const sf::Image& image) {
         x = x1;
         y = y1;
         v = 0.0;
@@ -41,7 +42,7 @@ public:
         botRightDistance = getBotRightBoundDistance(x1, y1, image);
     }
 
-    void update(sf::Image image) {
+    void update(const sf::Image& image) {
         v = (v + acc * T) * DRAG_K;
         if (v < 0) v = 0;
         if (angle <= 0) { angle += 360; }
@@ -100,10 +101,7 @@ public:
         acc = 0.0;
     }
 
-    int getTopBoundDistance(int x, int y, sf::Image image) {
-        float koef = 1.666666666666666666666; //jer copyToImage smanjuje broj piksela
-        x /= koef;
-        y /= koef;
+    int getTopBoundDistance(int x, int y, const sf::Image& image) {
         sf::Color color = image.getPixel(x, y);
         int i = 1;
         while (color != sf::Color::Black)
@@ -115,10 +113,7 @@ public:
         return (i - 1) * 1.666666666666666666666;
     }
 
-    int getBotBoundDistance(int x, int y, sf::Image image) {
-        float koef = 1.666666666666666666666; //jer copyToImage smanjuje broj piksela
-        x /= koef;
-        y /= koef;
+    int getBotBoundDistance(int x, int y, const sf::Image& image) {
         sf::Color color = image.getPixel(x, y);
         int i = 1;
         while (color != sf::Color::Black)
@@ -127,14 +122,11 @@ public:
             i += 1;
         }
 
-        return (i - 1) * 1.666666666666666666666;
+        return (i - 1);
     }
 
 
-    int getLeftBoundDistance(int x, int y, sf::Image image) {
-        float koef = 1.666666666666666666666; //jer copyToImage smanjuje broj piksela
-        x /= koef;
-        y /= koef;
+    int getLeftBoundDistance(int x, int y, const sf::Image& image) {
         sf::Color color = image.getPixel(x, y);
         int i = 1;
         while (color != sf::Color::Black)
@@ -143,13 +135,10 @@ public:
             i += 1;
         }
 
-        return (i - 1) * 1.666666666666666666666;
+        return (i - 1);
     }
 
-    int getRightBoundDistance(int x, int y, sf::Image image) {
-        float koef = 1.666666666666666666666; //jer copyToImage smanjuje broj piksela
-        x /= koef;
-        y /= koef;
+    int getRightBoundDistance(int x, int y, const sf::Image& image) {
         sf::Color color = image.getPixel(x, y);
         int i = 1;
         while (color != sf::Color::Black)
@@ -158,13 +147,10 @@ public:
             i += 1;
         }
 
-        return (i - 1) * 1.666666666666666666666;
+        return (i - 1);
     }
 
-    int getTopLeftBoundDistance(int x, int y, sf::Image image) {
-        float koef = 1.666666666666666666666; //jer copyToImage smanjuje broj piksela
-        x /= koef;
-        y /= koef;
+    int getTopLeftBoundDistance(int x, int y, const sf::Image& image) {
         sf::Color color = image.getPixel(x, y);
         int i = 1;
         while (color != sf::Color::Black)
@@ -175,13 +161,10 @@ public:
 
         i -= 1;
 
-        return sqrt(2 * pow(i, 2));
+        return SQRT2 * i;
     }
 
-    int getTopRightBoundDistance(int x, int y, sf::Image image) {
-        float koef = 1.666666666666666666666; //jer copyToImage smanjuje broj piksela
-        x /= koef;
-        y /= koef;
+    int getTopRightBoundDistance(int x, int y, const sf::Image& image) {
         sf::Color color = image.getPixel(x, y);
         int i = 1;
         while (color != sf::Color::Black)
@@ -192,13 +175,10 @@ public:
 
         i -= 1;
 
-        return sqrt(2 * pow(i, 2));
+        return SQRT2 * i;
     }
 
-    int getBotLeftBoundDistance(int x, int y, sf::Image image) {
-        float koef = 1.666666666666666666666; //jer copyToImage smanjuje broj piksela
-        x /= koef;
-        y /= koef;
+    int getBotLeftBoundDistance(int x, int y, const sf::Image& image) {
         sf::Color color = image.getPixel(x, y);
         int i = 1;
         while (color != sf::Color::Black)
@@ -209,13 +189,10 @@ public:
 
         i -= 1;
 
-        return sqrt(2 * pow(i, 2));
+        return SQRT2 * i;
     }
 
-    int getBotRightBoundDistance(int x, int y, sf::Image image) {
-        float koef = 1.666666666666666666666; //jer copyToImage smanjuje broj piksela
-        x /= koef;
-        y /= koef;
+    int getBotRightBoundDistance(int x, int y, const sf::Image& image) {
         sf::Color color = image.getPixel(x, y);
         int i = 1;
         while (color != sf::Color::Black)
@@ -226,6 +203,6 @@ public:
 
         i -= 1;
 
-        return sqrt(2 * pow(i, 2));
+        return SQRT2 * i;
     }
 };
