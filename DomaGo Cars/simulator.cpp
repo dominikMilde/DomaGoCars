@@ -11,6 +11,8 @@
 #define DRAG_K 0.999
 #define T 1.0
 
+using namespace std;
+
 class simulator {
 private:
     const sf::Image& image;
@@ -28,14 +30,14 @@ private:
     double angle;
     double acc;
     int t;
-    int topDistance;
-    int leftDistance;
-    int rightDistance;
-    int topLeftDistance;
+    float topDistance;
+    float leftDistance;
+    float rightDistance;
+    float topLeftDistance;
     int topRightDistance;
 
     // funkcija koja racuna tocku presjeka vektora senzora i ruba prozora GUI-ja, rezultat vraca pohranjen u referenci koja mu je predana kao argument
-    void vectorRectangleIntersection(Point pos, double angle, Point& ret)
+    void vectorRectangleIntersection(Point pos, float angle, Point& ret)
     {
         double tanA = tan(angle * PI / 180);
        
@@ -100,8 +102,8 @@ private:
     {
         if (finishX > startX || finishY > startY)
         {
-            int midX = startX + (finishX - startX) / 2;
-            int midY = startY + (finishY - startY) / 2;
+            int midX = round(startX + (finishX - startX) / 2.);
+            int midY = round(startY + (finishY - startY) / 2.);
 
             sf::Color color = image.getPixel(midX, midY);
 
@@ -111,14 +113,14 @@ private:
             return binarySearch(midX, midY, finishX, finishY);
         }
 
-        return { startX, startY };
+        return { (float)startX, (float)startY };
     }
 
-    double getDistanceToBound(Point pos, double angle) {
+    float getDistanceToBound(Point pos, float angle) {
         Point edgeGui;
         vectorRectangleIntersection(pos, angle, edgeGui);
 
-        Point edgeMap = binarySearch(pos.x, pos.y, edgeGui.x, edgeGui.y);
+        Point edgeMap = binarySearch((int)pos.x, pos.y, edgeGui.x, edgeGui.y);
 
         return sqrt(pow(edgeMap.x- pos.x, 2) + pow(edgeMap.y - pos.y, 2));
     }
@@ -129,7 +131,7 @@ public:
         pos.x = x1;
         pos.y = y1;
         // end su koordinate donjeg desnog vrha prozora, pretpostavimo da prozor pocinje od (0,0)
-        end = { 1152, 648 };
+        end = { 1152.f, 648.f };
         v = 0.0;
         angle = 0.0;
         acc = 0.0;
@@ -154,28 +156,28 @@ public:
         topRightDistance = getTopRightBoundDistance(pos, angle);
     }
 
-    double getAngle() { return angle; }
-    double getV() { return v; }
-    double getX() { return pos.x; }
-    double getY() { return poy; }
+    float getAngle() { return angle; }
+    float getV() { return v; }
+    float getX() { return pos.x; }
+    float getY() { return pos.y; }
     int getT() { return t; }
-    int getTopDistance() { return topDistance; }
-    int getLeftDistance() { return leftDistance; }
-    int getRightDistance() { return rightDistance; }
-    int getTopLeftDistance() { return topLeftDistance; }
-    int getTopRightDistance() { return topRightDistance; }
+    float getTopDistance() { return topDistance; }
+    float getLeftDistance() { return leftDistance; }
+    float getRightDistance() { return rightDistance; }
+    float getTopLeftDistance() { return topLeftDistance; }
+    float getTopRightDistance() { return topRightDistance; }
 
 
-    void setV(double v) {
+    void setV(float v) {
         this->v = v;
     }
-    void setX(double x) {
-        this->x = x;
+    void setX(float x) {
+        this->pos.x = x;
     }
-    void setY(double y) {
-        this->y = y;
+    void setY(float y) {
+        this->pos.y = y;
     }
-    void setAngle(double angle) {
+    void setAngle(float angle) {
         this->angle = angle;
     }
     void setT(int t) {
@@ -197,23 +199,23 @@ public:
         acc = 0.0;
     }
 
-    int getTopBoundDistance(Point pos, double angle) {
+    float getTopBoundDistance(Point pos, float angle) {
         return getDistanceToBound(pos, angle);
     }
 
-    int getLeftBoundDistance(Point pos, double angle) {
-        return getDistanceToBound(pos, ((angle + 90) % 360));
+    float getLeftBoundDistance(Point pos, float angle) {
+        return getDistanceToBound(pos, fmod(angle + 90, 360));
     }
 
-    int getRightBoundDistance(Point pos, double angle) {
-        return getDistanceToBound(pos, angle);
+    float getRightBoundDistance(Point pos, float angle) {
+        return getDistanceToBound(pos, fmod(angle - 90, 360));
     }
 
-    int getTopLeftBoundDistance(Point pos, double angle) {
-        return getDistanceToBound(pos, angle);
+    float getTopLeftBoundDistance(Point pos, float angle) {
+        return getDistanceToBound(pos, fmod(angle + 45, 360));
     }
 
-    int getTopRightBoundDistance(Point pos, double angle) {
-        return getDistanceToBound(pos, angle);
+    float getTopRightBoundDistance(Point pos, float angle) {
+        return getDistanceToBound(pos, fmod(angle - 45, 360));
     }
 };

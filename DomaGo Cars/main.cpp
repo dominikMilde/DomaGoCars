@@ -81,6 +81,7 @@ int main()
     player.setOrigin(12.0f, 15.0f);
     player.setScale(1.5, 1.2);
     player.setPosition(imageWidth / 2, imageHeight / 1.2);
+    player.setRotation(0);
     sf::Texture playerTexture;
     playerTexture.loadFromFile("avatar.jpg");
     player.setTexture(&playerTexture);
