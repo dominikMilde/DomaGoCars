@@ -1,6 +1,6 @@
-#include <math.h>
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #define PI 3.14159265
 #define SQRT2 1.414213562
@@ -11,18 +11,26 @@
 #define DRAG_K 0.999
 #define T 1.0
 
+#define WIDTH 1152
+#define HEIGHT 648
+
+#define BLOK 20
+
 using namespace std;
+struct Point
+{
+    float x;
+    float y;
+    Point() : x(0), y(0) {}
+    Point(float x, float y) : x(x), y(y) {}
+};
+
+const Point center = Point(WIDTH / 2.0f, HEIGHT / 2.0f);
 
 class simulator {
 private:
-    const sf::Image& image;
-    struct Point
-    {
-        float x;
-        float y;
-        Point() : x(0), y(0) {}
-        Point(float x, float y) : x(x), y(y) {}
-    };
+    bool mat[WIDTH][HEIGHT];
+
     Point pos;
     // end su koordinate donjeg desnog vrha prozora, pretpostavimo da prozor pocinje od (0,0)
     Point end;
@@ -35,98 +43,44 @@ private:
     float rightDistance;
     float topLeftDistance;
     int topRightDistance;
+    float angleDistance;
 
-    // funkcija koja racuna tocku presjeka vektora senzora i ruba prozora GUI-ja, rezultat vraca pohranjen u referenci koja mu je predana kao argument
-    void vectorRectangleIntersection(Point pos, float angle, Point& ret)
-    {
-        double tanA = tan(angle * PI / 180);
-       
-        if (abs(tanA) < EPSILON)
-        {
-            if (abs(angle) < EPSILON)
-            {
-                ret.x = end.x;
-                ret.y = pos.y;
-            }
-            else if (abs(angle) - 180 < EPSILON)
-            {
-                ret.y = pos.y;
-            }
+    float getDistanceToBound(Point pos, float angle) const {
+        float dirX = cos(angle / 180 * PI);
+        float dirY = -sin(angle / 180 * PI); // Y se smanjuje prema gore
+
+        int dist = BLOK;
+        while (true) {
+            int x = round(pos.x + dist * dirX);
+            int y = round(pos.y + dist * dirY);
+            if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || mat[x][y]) break;
+            dist += BLOK;
+        }
+        dist -= BLOK;
+        while (true) {
+            int x = round(pos.x + dist * dirX);
+            int y = round(pos.y + dist * dirY);
+            if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || mat[x][y]) { break; }
+            dist += 1;
         }
 
-        else
-        {
-            if (tanA < 0)
-                tanA = -tanA;
-            if (angle < 90 || angle > 270)
-            {
-                float yRight = pos.y - (tanA * (end.x - pos.x));
-                if (yRight < 0)
-                {
-                    ret.y = end.x + (yRight / tanA);
-                }
-                else if (yRight > end.y)
-                {
-                    float opposite = yRight - end.y;
-                    ret.x = end.x - (opposite / tanA);
-                    ret.y = end.y;
-                }
-                else
-                {
-                    ret.x = end.x;
-                    ret.y = yRight;
-                }
-            }
-            else
-            {
-                float yLeft = pos.y + (tanA * pos.x);
-                if (yLeft < 0)
-                {
-                    ret.x = -yLeft / tanA;
-                }
-                else if (yLeft > end.y)
-                {
-                    float opposite = yLeft - end.y;
-                    ret.x = opposite / tanA;
-                    ret.y = end.y;
-                }
-                else
-                {
-                    ret.y = yLeft;
-                }
-            }
-        }
+        //cout << angle << " " << dirX << " " << dirY << " " << dist << endl;
+
+        return dist;
     }
 
-    Point binarySearch(int startX, int startY, int finishX, int finishY)
-    {
-        if (finishX > startX || finishY > startY)
-        {
-            int midX = round(startX + (finishX - startX) / 2.);
-            int midY = round(startY + (finishY - startY) / 2.);
-
-            sf::Color color = image.getPixel(midX, midY);
-
-            if (color == sf::Color::Black)
-                return binarySearch(startX, startY, midX, midY);
-
-            return binarySearch(midX, midY, finishX, finishY);
-        }
-
-        return { (float)startX, (float)startY };
-    }
-
-    float getDistanceToBound(Point pos, float angle) {
-        Point edgeGui;
-        vectorRectangleIntersection(pos, angle, edgeGui);
-
-        Point edgeMap = binarySearch((int)pos.x, pos.y, edgeGui.x, edgeGui.y);
-
-        return sqrt(pow(edgeMap.x- pos.x, 2) + pow(edgeMap.y - pos.y, 2));
+    static float calcAngle(Point a, Point b, Point c) {
+        float ab = hypot(a.x - b.x, a.y - b.y);
+        float ac = hypot(a.x - c.x, a.y - c.y);
+        float bc = hypot(b.x - c.x, b.y - c.y);
+        return acos((ab * ab + ac * ac - bc * bc) / (2 * ab * ac)) * 180 / PI;
     }
 
 public:
-    simulator(float x1, float y1, const sf::Image& image1) : image(image) {
+    simulator(float x1, float y1, const sf::Image& image) {
+        for (int i = 0; i < WIDTH; ++i) for (int j = 0; j < HEIGHT; ++j) {
+            mat[i][j] = (image.getPixel(i, j) == sf::Color::Black);
+        }
         t = 0;
         pos.x = x1;
         pos.y = y1;
@@ -135,18 +89,20 @@ public:
         v = 0.0;
         angle = 0.0;
         acc = 0.0;
-        topDistance = 0.0;
-        leftDistance = 0.0;
-        rightDistance = 0.0;
-        topLeftDistance = 0.0;
-        topRightDistance = 0.0;
+        topDistance = 0.0f;
+        leftDistance = 0.0f;
+        rightDistance = 0.0f;
+        topLeftDistance = 0.0f;
+        topRightDistance = 0.0f;
+        angleDistance = 0.0f;
     }
 
-    void update(const sf::Image& image) {
+    void update() {
         t += 1;
         v = (v + acc * T) * DRAG_K;
         if (v < 0) v = 0;
         if (angle <= 0) { angle += 360; }
+        Point oldPos = pos;
         pos.x = pos.x + cos(angle * PI / 180) * v * T;
         pos.y = pos.y - sin(angle * PI / 180) * v * T;
         topDistance = getTopBoundDistance(pos, angle);
@@ -154,18 +110,23 @@ public:
         rightDistance = getRightBoundDistance(pos, angle);
         topLeftDistance = getTopLeftBoundDistance(pos, angle);
         topRightDistance = getTopRightBoundDistance(pos, angle);
+        float newAngle = calcAngle(center, oldPos, pos);
+        if (isfinite(newAngle))
+            angleDistance += newAngle;
     }
 
-    float getAngle() { return angle; }
-    float getV() { return v; }
-    float getX() { return pos.x; }
-    float getY() { return pos.y; }
-    int getT() { return t; }
-    float getTopDistance() { return topDistance; }
-    float getLeftDistance() { return leftDistance; }
-    float getRightDistance() { return rightDistance; }
-    float getTopLeftDistance() { return topLeftDistance; }
-    float getTopRightDistance() { return topRightDistance; }
+    float getAngle() const { return angle; }
+    float getV() const { return v; }
+    float getX() const { return pos.x; }
+    float getY() const { return pos.y; }
+    int getT() const { return t; }
+    float getTopDistance() const { return topDistance; }
+    float getLeftDistance() const { return leftDistance; }
+    float getRightDistance() const { return rightDistance; }
+    float getTopLeftDistance() const { return topLeftDistance; }
+    float getTopRightDistance() const { return topRightDistance; }
+    float getAngleDistance() const { return angleDistance; }
+    void setAngleDistance(float x) { angleDistance = x; }
 
 
     void setV(float v) {
@@ -199,23 +160,23 @@ public:
         acc = 0.0;
     }
 
-    float getTopBoundDistance(Point pos, float angle) {
+    float getTopBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, angle);
     }
 
-    float getLeftBoundDistance(Point pos, float angle) {
+    float getLeftBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, fmod(angle + 90, 360));
     }
 
-    float getRightBoundDistance(Point pos, float angle) {
+    float getRightBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, fmod(angle - 90, 360));
     }
 
-    float getTopLeftBoundDistance(Point pos, float angle) {
+    float getTopLeftBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, fmod(angle + 45, 360));
     }
 
-    float getTopRightBoundDistance(Point pos, float angle) {
+    float getTopRightBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, fmod(angle - 45, 360));
     }
 };

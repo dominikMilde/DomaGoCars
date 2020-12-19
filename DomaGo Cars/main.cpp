@@ -2,10 +2,12 @@
 #include <iostream>
 #include "simulator.cpp"
 
+using namespace std;
+
 //auto se vozi sa w,s,a,d i ako dode do crne pozadine vraca se na pocetak
 
 // 1=right 2=left 3=right&break 4=left&break 5=gas 6=idle 7=left&gas 8=right&gas
-int run(simulator sim) {
+int run(const simulator& sim) {
 
     if (sim.getTopDistance() < 200) {
         if (sim.getTopLeftDistance() - sim.getTopRightDistance() > 0) {
@@ -114,6 +116,7 @@ int main()
         }
 
         int akcija = run(sim);
+        //cout << akcija << endl;
         if (akcija == 1)
         {
             sim.rotateRight();
@@ -151,7 +154,7 @@ int main()
             sim.idle();
         }
 
-        sim.update(image);
+        sim.update();
         player.setPosition(sim.getX(), sim.getY());
         player.setRotation(sim.getAngle() * -1.0);
 
@@ -163,19 +166,21 @@ int main()
         float x = player.getPosition().x;
         float y = player.getPosition().y;
 
+        //cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance() << endl;
 
         auto color1 = image.getPixel(x, y);
 
         if (color1 == sf::Color::Black)
         {
             std::cout << "T: " << sim.getT() << std::endl;
-            std::cout << "Distance(in degrees): " << sim.getAngle() - 360 << std::endl;
+            std::cout << "Distance(in degrees): " << sim.getAngleDistance() << std::endl;
             sim.setT(0);
             sim.setX(imageWidth / 2);
             sim.setY(imageHeight / 1.2);
             sim.setAngle(0);
             player.setRotation(0);
             sim.setV(0);
+            sim.setAngleDistance(0.0f);
         }
     }
     return 0;
