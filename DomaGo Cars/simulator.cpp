@@ -3,34 +3,133 @@
 #include <SFML/Graphics.hpp>
 
 #define PI 3.14159265
+#define SQRT2 1.414213562
+#define EPSILON 1E-10
+
 #define GAS_ACC 0.001
 #define BRAKE_ACC -0.05
 #define DRAG_K 0.999
 #define T 1.0
-#define SQRT2 1.414213562
 
 class simulator {
 private:
-    double x;
-    double y;
+    const sf::Image& image;
+    struct Point
+    {
+        float x;
+        float y;
+        Point() : x(0), y(0) {}
+        Point(float x, float y) : x(x), y(y) {}
+    };
+    Point pos;
+    // end su koordinate donjeg desnog vrha prozora, pretpostavimo da prozor pocinje od (0,0)
+    Point end;
     double v;
     double angle;
     double acc;
     int t;
     int topDistance;
-    int botDistance;
     int leftDistance;
     int rightDistance;
     int topLeftDistance;
     int topRightDistance;
-    int botLeftDistance;
-    int botRightDistance;
+
+    // funkcija koja racuna tocku presjeka vektora senzora i ruba prozora GUI-ja, rezultat vraca pohranjen u referenci koja mu je predana kao argument
+    void vectorRectangleIntersection(Point pos, double angle, Point& ret)
+    {
+        double tanA = tan(angle * PI / 180);
+       
+        if (abs(tanA) < EPSILON)
+        {
+            if (abs(angle) < EPSILON)
+            {
+                ret.x = end.x;
+                ret.y = pos.y;
+            }
+            else if (abs(angle) - 180 < EPSILON)
+            {
+                ret.y = pos.y;
+            }
+        }
+
+        else
+        {
+            if (tanA < 0)
+                tanA = -tanA;
+            if (angle < 90 || angle > 270)
+            {
+                float yRight = pos.y - (tanA * (end.x - pos.x));
+                if (yRight < 0)
+                {
+                    ret.y = end.x + (yRight / tanA);
+                }
+                else if (yRight > end.y)
+                {
+                    float opposite = yRight - end.y;
+                    ret.x = end.x - (opposite / tanA);
+                    ret.y = end.y;
+                }
+                else
+                {
+                    ret.x = end.x;
+                    ret.y = yRight;
+                }
+            }
+            else
+            {
+                float yLeft = pos.y + (tanA * pos.x);
+                if (yLeft < 0)
+                {
+                    ret.x = -yLeft / tanA;
+                }
+                else if (yLeft > end.y)
+                {
+                    float opposite = yLeft - end.y;
+                    ret.x = opposite / tanA;
+                    ret.y = end.y;
+                }
+                else
+                {
+                    ret.y = yLeft;
+                }
+            }
+        }
+    }
+
+    Point binarySearch(int startX, int startY, int finishX, int finishY)
+    {
+        if (finishX > startX || finishY > startY)
+        {
+            int midX = startX + (finishX - startX) / 2;
+            int midY = startY + (finishY - startY) / 2;
+
+            sf::Color color = image.getPixel(midX, midY);
+
+            if (color == sf::Color::Black)
+                return binarySearch(startX, startY, midX, midY);
+
+            return binarySearch(midX, midY, finishX, finishY);
+        }
+
+        return { startX, startY };
+    }
+
+    double getDistanceToBound(Point pos, double angle) {
+        Point edgeGui;
+        vectorRectangleIntersection(pos, angle, edgeGui);
+
+        Point edgeMap = binarySearch(pos.x, pos.y, edgeGui.x, edgeGui.y);
+
+        return sqrt(pow(edgeMap.x- pos.x, 2) + pow(edgeMap.y - pos.y, 2));
+    }
 
 public:
-    simulator(double x1, double y1, const sf::Image& image) {
+    simulator(float x1, float y1, const sf::Image& image1) : image(image) {
         t = 0;
-        x = x1;
-        y = y1;
+        pos.x = x1;
+        pos.y = y1;
+        // end su koordinate donjeg desnog vrha prozora, pretpostavimo da prozor pocinje od (0,0)
+        end = { 1152, 648 };
         v = 0.0;
         angle = 0.0;
         acc = 0.0;
@@ -39,72 +138,6 @@ public:
         rightDistance = 0.0;
         topLeftDistance = 0.0;
         topRightDistance = 0.0;
-
-        if (int(angle) % 360 <= 22 || int(angle) % 360 >= 338)
-        {
-            topDistance = getRightBoundDistance(x1, y1, image);
-            leftDistance = getTopBoundDistance(x1, y1, image);
-            rightDistance = getBotBoundDistance(x1, y1, image);
-            topLeftDistance = getTopRightBoundDistance(x1, y1, image);
-            topRightDistance = getBotRightBoundDistance(x1, y1, image);
-        } 
-        else if (int(angle) % 360 >= 23 && int(angle) % 360 <= 67)
-        {
-            topDistance = getTopRightBoundDistance(x1, y1, image);
-            leftDistance = getTopLeftBoundDistance(x1, y1, image);
-            rightDistance = getBotRightBoundDistance(x1, y1, image);
-            topLeftDistance = getTopBoundDistance(x1, y1, image);
-            topRightDistance = getRightBoundDistance(x1, y1, image);
-        }
-        else if (int(angle) % 360 >= 68 && int(angle) % 360 <= 112)
-        {
-            topDistance = getTopBoundDistance(x1, y1, image);
-            leftDistance = getLeftBoundDistance(x1, y1, image);
-            rightDistance = getRightBoundDistance(x1, y1, image);
-            topLeftDistance = getTopLeftBoundDistance(x1, y1, image);
-            topRightDistance = getTopRightBoundDistance(x1, y1, image);
-        }
-        else if (int(angle) % 360 >= 113 && int(angle) % 360 <= 157)
-        {
-            topDistance = getTopLeftBoundDistance(x1, y1, image);
-            leftDistance = getBotLeftBoundDistance(x1, y1, image);
-            rightDistance = getTopRightBoundDistance(x1, y1, image);
-            topLeftDistance = getLeftBoundDistance(x1, y1, image);
-            topRightDistance = getTopBoundDistance(x1, y1, image);
-        }
-        else if (int(angle) % 360 >= 158 && int(angle) % 360 <= 202)
-        {
-            topDistance = getLeftBoundDistance(x1, y1, image);
-            leftDistance = getBotBoundDistance(x1, y1, image);
-            rightDistance = getTopBoundDistance(x1, y1, image);
-            topLeftDistance = getBotLeftBoundDistance(x1, y1, image);
-            topRightDistance = getTopLeftBoundDistance(x1, y1, image);
-        }
-        else if (int(angle) % 360 >= 203 && int(angle) % 360 <= 247)
-        {
-            topDistance = getBotLeftBoundDistance(x1, y1, image);
-            leftDistance = getBotRightBoundDistance(x1, y1, image);
-            rightDistance = getTopLeftBoundDistance(x1, y1, image);
-            topLeftDistance = getBotBoundDistance(x1, y1, image);
-            topRightDistance = getLeftBoundDistance(x1, y1, image);
-        }
-        else if (int(angle) % 360 >= 248 && int(angle) % 360 <= 292)
-        {
-            topDistance = getBotBoundDistance(x1, y1, image);
-            leftDistance = getRightBoundDistance(x1, y1, image);
-            rightDistance = getLeftBoundDistance(x1, y1, image);
-            topLeftDistance = getBotRightBoundDistance(x1, y1, image);
-            topRightDistance = getBotLeftBoundDistance(x1, y1, image);
-        }
-        else if (int(angle) % 360 >= 293 && int(angle) % 360 <= 337)
-        {
-            topDistance = getBotRightBoundDistance(x1, y1, image);
-            leftDistance = getTopRightBoundDistance(x1, y1, image);
-            rightDistance = getBotLeftBoundDistance(x1, y1, image);
-            topLeftDistance = getRightBoundDistance(x1, y1, image);
-            topRightDistance = getBotBoundDistance(x1, y1, image);
-        }
-
     }
 
     void update(const sf::Image& image) {
@@ -112,79 +145,19 @@ public:
         v = (v + acc * T) * DRAG_K;
         if (v < 0) v = 0;
         if (angle <= 0) { angle += 360; }
-        x = x + cos(angle * PI / 180) * v * T;
-        y = y - sin(angle * PI / 180) * v * T;
-        if (int(angle) % 360 <= 22 || int(angle) % 360 >= 338)
-        {
-            topDistance = getRightBoundDistance(x, y, image);
-            leftDistance = getTopBoundDistance(x, y, image);
-            rightDistance = getBotBoundDistance(x, y, image);
-            topLeftDistance = getTopRightBoundDistance(x, y, image);
-            topRightDistance = getBotRightBoundDistance(x, y, image);
-        }
-        else if (int(angle) % 360 >= 23 && int(angle) % 360 <= 67)
-        {
-            topDistance = getTopRightBoundDistance(x, y, image);
-            leftDistance = getTopLeftBoundDistance(x, y, image);
-            rightDistance = getBotRightBoundDistance(x, y, image);
-            topLeftDistance = getTopBoundDistance(x, y, image);
-            topRightDistance = getRightBoundDistance(x, y, image);
-        }
-        else if (int(angle) % 360 >= 68 && int(angle) % 360 <= 112)
-        {
-            topDistance = getTopBoundDistance(x, y, image);
-            leftDistance = getLeftBoundDistance(x, y, image);
-            rightDistance = getRightBoundDistance(x, y, image);
-            topLeftDistance = getTopLeftBoundDistance(x, y, image);
-            topRightDistance = getTopRightBoundDistance(x, y, image);
-        }
-        else if (int(angle) % 360 >= 113 && int(angle) % 360 <= 157)
-        {
-            topDistance = getTopLeftBoundDistance(x, y, image);
-            leftDistance = getBotLeftBoundDistance(x, y, image);
-            rightDistance = getTopRightBoundDistance(x, y, image);
-            topLeftDistance = getLeftBoundDistance(x, y, image);
-            topRightDistance = getTopBoundDistance(x, y, image);
-        }
-        else if (int(angle) % 360 >= 158 && int(angle) % 360 <= 202)
-        {
-            topDistance = getLeftBoundDistance(x, y, image);
-            leftDistance = getBotBoundDistance(x, y, image);
-            rightDistance = getTopBoundDistance(x, y, image);
-            topLeftDistance = getBotLeftBoundDistance(x, y, image);
-            topRightDistance = getTopLeftBoundDistance(x, y, image);
-        }
-        else if (int(angle) % 360 >= 203 && int(angle) % 360 <= 247)
-        {
-            topDistance = getBotLeftBoundDistance(x, y, image);
-            leftDistance = getBotRightBoundDistance(x, y, image);
-            rightDistance = getTopLeftBoundDistance(x, y, image);
-            topLeftDistance = getBotBoundDistance(x, y, image);
-            topRightDistance = getLeftBoundDistance(x, y, image);
-        }
-        else if (int(angle) % 360 >= 248 && int(angle) % 360 <= 292)
-        {
-            topDistance = getBotBoundDistance(x, y, image);
-            leftDistance = getRightBoundDistance(x, y, image);
-            rightDistance = getLeftBoundDistance(x, y, image);
-            topLeftDistance = getBotRightBoundDistance(x, y, image);
-            topRightDistance = getBotLeftBoundDistance(x, y, image);
-        }
-        else if (int(angle) % 360 >= 293 && int(angle) % 360 <= 337)
-        {
-            topDistance = getBotRightBoundDistance(x, y, image);
-            leftDistance = getTopRightBoundDistance(x, y, image);
-            rightDistance = getBotLeftBoundDistance(x, y, image);
-            topLeftDistance = getRightBoundDistance(x, y, image);
-            topRightDistance = getBotBoundDistance(x, y, image);
-        }
-
+        pos.x = pos.x + cos(angle * PI / 180) * v * T;
+        pos.y = pos.y - sin(angle * PI / 180) * v * T;
+        topDistance = getTopBoundDistance(pos, angle);
+        leftDistance = getLeftBoundDistance(pos, angle);
+        rightDistance = getRightBoundDistance(pos, angle);
+        topLeftDistance = getTopLeftBoundDistance(pos, angle);
+        topRightDistance = getTopRightBoundDistance(pos, angle);
     }
 
     double getAngle() { return angle; }
     double getV() { return v; }
-    double getX() { return x; }
-    double getY() { return y; }
+    double getX() { return pos.x; }
+    double getY() { return poy; }
     int getT() { return t; }
     int getTopDistance() { return topDistance; }
     int getLeftDistance() { return leftDistance; }
@@ -224,108 +197,23 @@ public:
         acc = 0.0;
     }
 
-    int getTopBoundDistance(int x, int y, const sf::Image& image) {
-        sf::Color color = image.getPixel(x, y);
-        int i = 1;
-        while (color != sf::Color::Black)
-        {
-            color = image.getPixel(x, y - i);
-            i += 1;
-        }
-
-        return (i - 1) * 1.666666666666666666666;
+    int getTopBoundDistance(Point pos, double angle) {
+        return getDistanceToBound(pos, angle);
     }
 
-    int getBotBoundDistance(int x, int y, const sf::Image& image) {
-        sf::Color color = image.getPixel(x, y);
-        int i = 1;
-        while (color != sf::Color::Black)
-        {
-            color = image.getPixel(x, y + i);
-            i += 1;
-        }
-
-        return (i - 1);
+    int getLeftBoundDistance(Point pos, double angle) {
+        return getDistanceToBound(pos, ((angle + 90) % 360));
     }
 
-
-    int getLeftBoundDistance(int x, int y, const sf::Image& image) {
-        sf::Color color = image.getPixel(x, y);
-        int i = 1;
-        while (color != sf::Color::Black)
-        {
-            color = image.getPixel(x - i, y);
-            i += 1;
-        }
-
-        return (i - 1);
+    int getRightBoundDistance(Point pos, double angle) {
+        return getDistanceToBound(pos, angle);
     }
 
-    int getRightBoundDistance(int x, int y, const sf::Image& image) {
-        sf::Color color = image.getPixel(x, y);
-        int i = 1;
-        while (color != sf::Color::Black)
-        {
-            color = image.getPixel(x + i, y);
-            i += 1;
-        }
-
-        return (i - 1);
+    int getTopLeftBoundDistance(Point pos, double angle) {
+        return getDistanceToBound(pos, angle);
     }
 
-    int getTopLeftBoundDistance(int x, int y, const sf::Image& image) {
-        sf::Color color = image.getPixel(x, y);
-        int i = 1;
-        while (color != sf::Color::Black)
-        {
-            color = image.getPixel(x - i, y - i);
-            i += 1;
-        } 
-
-        i -= 1;
-
-        return SQRT2 * i;
-    }
-
-    int getTopRightBoundDistance(int x, int y, const sf::Image& image) {
-        sf::Color color = image.getPixel(x, y);
-        int i = 1;
-        while (color != sf::Color::Black)
-        {
-            color = image.getPixel(x + i, y - i);
-            i += 1;
-        }
-
-        i -= 1;
-
-        return SQRT2 * i;
-    }
-
-    int getBotLeftBoundDistance(int x, int y, const sf::Image& image) {
-        sf::Color color = image.getPixel(x, y);
-        int i = 1;
-        while (color != sf::Color::Black)
-        {
-            color = image.getPixel(x - i, y + i);
-            i += 1;
-        }
-
-        i -= 1;
-
-        return SQRT2 * i;
-    }
-
-    int getBotRightBoundDistance(int x, int y, const sf::Image& image) {
-        sf::Color color = image.getPixel(x, y);
-        int i = 1;
-        while (color != sf::Color::Black)
-        {
-            color = image.getPixel(x + i, y + i);
-            i += 1;
-        }
-
-        i -= 1;
-
-        return SQRT2 * i;
+    int getTopRightBoundDistance(Point pos, double angle) {
+        return getDistanceToBound(pos, angle);
     }
 };
