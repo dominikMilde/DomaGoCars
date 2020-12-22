@@ -4,9 +4,9 @@
 #define SQRT2 1.414213562
 #define EPSILON 1E-10
 
-#define GAS_ACC 0.001
-#define BRAKE_ACC -0.05
-#define DRAG_K 0.999
+#define GAS_ACC 0.0005
+#define BRAKE_ACC -0.001
+#define DRAG_K 0.994
 #define T 1.0
 
 #define WIDTH 1152
@@ -86,10 +86,10 @@ public:
         this->t = t;
     }
     void rotateLeft() {
-        this->angle += (getV() / 4);
+        this->angle += (getV() / 2);
     }
     void rotateRight() {
-        this->angle -= (getV() / 4);
+        this->angle -= (getV() / 2);
     }
     void gas() {
         acc = GAS_ACC;

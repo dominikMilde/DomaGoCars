@@ -21,33 +21,56 @@ int run(const simulator& sim, neuralnetwork& nn) {
     return idx + 1;
 }
 
-double evaluate(neuralnetwork& nn)
-{
-    int imageWidth = 1152;
-    int imageHeight = 648;
-    //sf::RenderWindow window(sf::VideoMode(imageWidth, imageHeight), "SFML auti", sf::Style::Close | sf::Style::Titlebar);
-    sf::RectangleShape background(sf::Vector2f(imageWidth, imageHeight));
-    sf::Texture backgroundTexture;
+int imageWidth = 1152;
+int imageHeight = 648;
+sf::RenderWindow window(sf::VideoMode(imageWidth, imageHeight), "SFML auti", sf::Style::Close | sf::Style::Titlebar);
+sf::RectangleShape background(sf::Vector2f(imageWidth, imageHeight));
+sf::Texture backgroundTexture;
+sf::CircleShape player(20.0f);
+sf::Image image;
+sf::Texture playerTexture;
+
+void init() {
     backgroundTexture.loadFromFile("background.jpg");
     background.setTexture(&backgroundTexture);
-
-    sf::CircleShape player(20.0f);
     player.setOrigin(12.0f, 15.0f);
     player.setScale(1.5, 1.2);
-    player.setPosition(imageWidth / 2, imageHeight / 1.2);
-    player.setRotation(0);
-    sf::Texture playerTexture;
     playerTexture.loadFromFile("avatar.jpg");
     player.setTexture(&playerTexture);
+    image = backgroundTexture.copyToImage();
+    player.setPosition(imageWidth / 2, imageHeight / 1.2);
+    window.clear();
+    window.draw(background);
+    window.draw(player);
+    window.display();
+}
 
-    auto image = backgroundTexture.copyToImage(); //jer texture nema getPixel, dimenzije se smanjuju za 5/3
+double evaluate(neuralnetwork& nn)
+{
+    player.setPosition(imageWidth / 2, imageHeight / 1.2);
+    player.setRotation(0);
 
     sf::Vector2f vector = player.getPosition();
     simulator sim(vector.x, vector.y, image);
     //sim.setV(0.4);
 
-    while (true)
+    while (window.isOpen())
     {
+        sf::Event evnt;
+        while (window.pollEvent(evnt))
+        {
+            switch (evnt.type)
+            {
+            case sf::Event::Closed:
+                window.close();
+                break;
+            case sf::Event::Resized:
+                std::cout << "New window width: " << evnt.size.width << " New window height: " << evnt.size.height << std::endl;
+                break;
+            case sf::Event::TextEntered:
+                break;
+            }
+        }
         int akcija = run(sim, nn);
         //cout << akcija << endl;
         if (akcija == 1)
@@ -84,13 +107,16 @@ double evaluate(neuralnetwork& nn)
         }
 
         sim.update();
+
         player.setPosition(sim.getX(), sim.getY());
         player.setRotation(sim.getAngle() * -1.0);
 
-        /*window.clear();
-        window.draw(background);
-        window.draw(player);
-        window.display();*/
+        if (sim.getT() % 20 == 0) {
+            window.clear();
+            window.draw(background);
+            window.draw(player);
+            window.display();
+        }
 
         float x = player.getPosition().x;
         float y = player.getPosition().y;
@@ -101,10 +127,10 @@ double evaluate(neuralnetwork& nn)
 
         auto color1 = image.getPixel(x, y);
 
-        if (color1 == sf::Color::Black || sim.getAngleDistance() > 10000 || sim.getT() > 100000)
+        if (color1 == sf::Color::Black || sim.getAngleDistance() > 10000 || sim.getT() > 200000)
         {
-            cout << sim.getAngleDistance() * sim.getAngleDistance() / sim.getT() << endl;
-            return sim.getAngleDistance() * sim.getAngleDistance() / sim.getT();
+            cout << pow(sim.getAngleDistance(), 2.5) / sim.getT() << endl;
+            return pow(sim.getAngleDistance(), 2.5) / sim.getT();
         }
     }
 }

@@ -53,7 +53,7 @@ simulator::simulator(float x1, float y1, const sf::Image& image) {
 void simulator::update() {
     t += 1;
     v = (v + acc * T) * DRAG_K;
-    if (v < 0) v = 0;
+    if (v < 0.1) v = 0.1;
     angle = fmod(angle + 360, 360);
     Point oldPos = pos;
     pos.x = pos.x + cos(angle * PI / 180) * v * T;

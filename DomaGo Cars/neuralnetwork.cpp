@@ -123,6 +123,7 @@ void mutate(vector<double>& individual) {
 
 int main() {
     randomEngine.seed(time(nullptr));
+    init();
 
     fillPopulation();
 
