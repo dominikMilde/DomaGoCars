@@ -1,6 +1,6 @@
 #pragma once
-#include "CGP.h"
+//#include "CGP.h"
 
 void init();
-double evaluate(CGP& cgp, std::vector<int> graph);
+double evaluate(CGP* cgp, std::vector<int> graph);
 

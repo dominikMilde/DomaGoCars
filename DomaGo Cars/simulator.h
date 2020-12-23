@@ -1,7 +1,7 @@
 #pragma once
 
-#include <math.h>
-#include <SFML/Graphics.hpp>
+//#include <math.h>
+//#include <SFML/Graphics.hpp>
 
 #define PI 3.14159265
 #define SQRT2 1.414213562

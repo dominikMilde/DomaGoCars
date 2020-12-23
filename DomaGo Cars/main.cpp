@@ -2,14 +2,16 @@
 #include <time.h>
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "simulator.cpp"
+#include "simulator.h"
 #include "CGP.h"
+
+#define KOEF 2
 
 using namespace std;
 
-std::string run(const simulator& sim, CGP& cgp, vector<int> graph) {
+string run(const simulator& sim, CGP* cgp, vector<int> graph) {
 
-    std::vector<double> inputs;
+    vector<double> inputs;
     inputs.push_back(sim.getV());
     inputs.push_back(sim.getTopDistance());
     inputs.push_back(sim.getTopRightDistance());
@@ -17,7 +19,7 @@ std::string run(const simulator& sim, CGP& cgp, vector<int> graph) {
     inputs.push_back(sim.getRightDistance());
     inputs.push_back(sim.getLeftDistance());
 
-    std::vector<double> outputs = cgp.calculateOutputs(inputs, graph);
+    vector<double> outputs = cgp->calculateOutputs(inputs, graph);
 
     double speed = outputs.at(0);
     double angle = outputs.at(1);
@@ -54,7 +56,7 @@ void init() {
     player.setPosition(imageWidth / 2, imageHeight / 1.2);
 }
 
-double evaluate(CGP& cgp, vector<int> graph)
+double evaluate(CGP* cgp, vector<int> graph)
 {
     player.setPosition(imageWidth / 2, imageHeight / 1.2);
     player.setRotation(0);
@@ -63,7 +65,9 @@ double evaluate(CGP& cgp, vector<int> graph)
     simulator sim(vector.x, vector.y, image);
 
     while (true) {
+
         std::string akcija = run(sim, cgp, graph);
+
         if (akcija == "0000")
         {
             sim.brake();
@@ -122,7 +126,7 @@ double evaluate(CGP& cgp, vector<int> graph)
             break;
         }
     }
-    return pow(sim.getAngleDistance(), 2.5) / sim.getT();
+    return pow(sim.getAngleDistance(), KOEF) / sim.getT();
 }
 
 /*int main()
