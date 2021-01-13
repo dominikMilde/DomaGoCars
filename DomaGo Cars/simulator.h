@@ -5,7 +5,7 @@
 #define EPSILON 1E-10
 
 #define GAS_ACC 0.0005
-#define BRAKE_ACC -0.01
+#define BRAKE_ACC -0.001
 #define DRAG_K 0.994
 #define T 1.0
 #define ROTATION_IDX 0.7
@@ -97,7 +97,6 @@ public:
     }
     void brake() {
         acc = BRAKE_ACC;
-        std::cout << "zakocio sam" << std::endl;
     }
     void idle() {
         acc = 0.0;

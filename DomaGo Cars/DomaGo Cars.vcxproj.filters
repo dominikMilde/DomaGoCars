@@ -24,6 +24,9 @@
     <ClCompile Include="CGP.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="neuralnetwork.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGP.h">
@@ -33,6 +36,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="simulator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="neuralnetwork.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Jedinka.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

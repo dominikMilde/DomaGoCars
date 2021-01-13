@@ -1,6 +1,6 @@
 #pragma once
-//#include "CGP.h"
+#include "CGP.h"
 
 void init();
-double evaluate(CGP& cgp);
+double evaluate(Jedinka& jedinka);
 

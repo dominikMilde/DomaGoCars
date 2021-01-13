@@ -148,11 +148,14 @@
   <ItemGroup>
     <ClCompile Include="CGP.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="neuralnetwork.cpp" />
     <ClCompile Include="simulator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGP.h" />
+    <ClInclude Include="Jedinka.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="neuralnetwork.h" />
     <ClInclude Include="simulator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

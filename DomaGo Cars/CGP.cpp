@@ -116,7 +116,7 @@ Graph crossAndReturnBestOfThree(Graph firstParent, Graph secondParent)
     return betterParent;
 }
 
-void fillPopulation()
+void fillPopulationCgp()
 {
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
@@ -220,11 +220,11 @@ Graph findBest()
     return graphs.at(idxBest);
 }
 
-int main()
+/*int main()
 {
     init();
 
-    fillPopulation();
+    fillPopulationCgp();
 
     for (int gen = 1; gen <= GENERATIONS; ++gen) {
 
@@ -289,4 +289,4 @@ int main()
 
     return 0;
 
-}
+}*/

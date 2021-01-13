@@ -1,11 +1,13 @@
 #pragma once 
 #include <vector>
 #include <random>
+#include "Jedinka.h"
 
 using namespace std;
 
 const int SPEED_BREAK_POINT = 100;
 const int ANGLE_BREAK_POINT = 100;
+
 
 struct Graph {
     vector<int> graph;
@@ -13,7 +15,7 @@ struct Graph {
     Graph(vector<int> graph, double fitness) : graph(graph), fitness(fitness) {};
 };
 
-struct CGP {
+struct CGP : Jedinka {
     // num of inputs
     int n;
     // num of outputs
@@ -25,11 +27,8 @@ struct CGP {
     // num of node inputs
     int a;
     vector<int> graph;
-    vector<double> inputs;
-    vector<double> outputs;
 
-    CGP(int n, int m, int r, int c, int a) : n(n), m(m), r(r), c(c), a(a),
-        inputs(n), outputs(m), graph(c* r* (a + 1) + m) {}
+    CGP(int n, int m, int r, int c, int a) : Jedinka(n, m), n(n), m(m), r(r), c(c), a(a), graph(c* r* (a + 1) + m) {}
 
 
     // racuna outpute za dani graf na racun danih inputa
@@ -62,8 +61,15 @@ struct CGP {
         }
     }
 
-    int akcija()
+    int akcija(vector<int> simulatorInputs) override
     {
+        inputs[0] = simulatorInputs.at(0);
+        inputs[1] = simulatorInputs.at(1);
+        inputs[2] = simulatorInputs.at(2);
+        inputs[3] = simulatorInputs.at(3);
+        inputs[4] = simulatorInputs.at(4);
+        inputs[5] = simulatorInputs.at(5);
+
         propagate();
 
         double speed = outputs.at(0);

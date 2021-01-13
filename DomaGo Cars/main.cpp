@@ -9,16 +9,17 @@
 
 using namespace std;
 
-int run(const simulator& sim, CGP& cgp) {
+int run(const simulator& sim, Jedinka& jedinka) {
 
-    cgp.inputs[0] = sim.getV();
-    cgp.inputs[1] = sim.getTopDistance();
-    cgp.inputs[2] = sim.getTopRightDistance();
-    cgp.inputs[3] = sim.getTopLeftDistance();
-    cgp.inputs[4] = sim.getRightDistance();
-    cgp.inputs[5] = sim.getLeftDistance();
+    vector<int> inputs(6);
+    inputs[0] = sim.getV();
+    inputs[1] = sim.getTopDistance();
+    inputs[2] = sim.getTopRightDistance();
+    inputs[3] = sim.getTopLeftDistance();
+    inputs[4] = sim.getRightDistance();
+    inputs[5] = sim.getLeftDistance();
 
-    return cgp.akcija();
+    return jedinka.akcija(inputs);
 }
 
 int imageWidth = 1152;
@@ -45,7 +46,7 @@ void init() {
     window.display();
 }
 
-double evaluate(CGP& cgp)
+double evaluate(Jedinka& jedinka)
 {
     player.setPosition(imageWidth / 2, imageHeight / 1.2);
     player.setRotation(0);
@@ -71,7 +72,7 @@ double evaluate(CGP& cgp)
                 break;
             }
         }
-        int akcija = run(sim, cgp);
+        int akcija = run(sim, jedinka);
         //cout << akcija << endl;
         if (akcija == 1)
         {
