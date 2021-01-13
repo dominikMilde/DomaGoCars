@@ -3,4 +3,3 @@
 
 void init();
 double evaluate(Jedinka& jedinka);
-

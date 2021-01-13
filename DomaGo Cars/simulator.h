@@ -51,6 +51,7 @@ private:
         float bc = hypot(b.x - c.x, b.y - c.y);
         return acos((ab * ab + ac * ac - bc * bc) / (2 * ab * ac)) * 180 / PI;
     }
+    
 
 public:
     simulator(float x1, float y1, const sf::Image& image);

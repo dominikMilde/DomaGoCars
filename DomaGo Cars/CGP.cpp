@@ -8,15 +8,12 @@
 #include "CGP.h"
 #include "main.h"
 
+constexpr double MUTATION_PR = 0.4;
+constexpr int POPULATION_SIZE = 10;
+constexpr int GENERATIONS = 10;
+constexpr int NUM_FUNCTIONS = 4;
+
 using namespace std;
-
-const int TREE_DEPTH = 4;
-const double MUTATION_PR = 0.4;
-const int POPULATION_SIZE = 10;
-const int GENERATIONS = 10;
-//const int DIED = 800;
-
-const int numFunctions = 4;
 
 int numNodeInputs = 2;
 int numInputs = 6;
@@ -35,7 +32,7 @@ vector<int> randomGraph()
         int currMaxNodeOut = numInputs + i * numRows;
         for (int j = 0; j < numRows; j++)
         {
-            graph.push_back(rand() % numFunctions);
+            graph.push_back(rand() % NUM_FUNCTIONS);
             for (int k = 0; k < numNodeInputs; k++)
             {
                 graph.push_back(rand() % currMaxNodeOut);
@@ -67,7 +64,7 @@ void mutation(Graph& g)
     {
         if (index % (numNodeInputs + 1) == 0)
         {
-            int functionId = rand() % numFunctions;
+            int functionId = rand() % NUM_FUNCTIONS;
             graph.at(index) = functionId;
         }
         else
@@ -220,7 +217,7 @@ Graph findBest()
     return graphs.at(idxBest);
 }
 
-/*int main()
+int main()
 {
     init();
 
@@ -256,20 +253,19 @@ Graph findBest()
                 k++;
             }
             Graph offspring = crossAndReturnBestOfThree(graphs.at(idx1), graphs.at(idx2));
-            cout << "Napravio sam crossover" << endl;
+            //cout << "Napravio sam crossover" << endl;
 
             double probability = static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
             if (probability < MUTATION_PR)
             {
                 mutation(offspring);
-                cout << "Napravio sam mutaciju" << endl;
+                //cout << "Napravio sam mutaciju" << endl;
             }
 
             newGraphs.push_back(offspring);
         }
         graphs = newGraphs;
     }
-
 
     Graph bestGraph = findBest();
     for (int i = 0; i < bestGraph.graph.size() - numOutputs; i++)
@@ -288,5 +284,4 @@ Graph findBest()
         << "CGP Fitness: " << bestGraph.fitness << endl;
 
     return 0;
-
-}*/
+}
