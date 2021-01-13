@@ -12,18 +12,21 @@ using namespace std;
 
 const int TREE_DEPTH = 4;
 const double MUTATION_PR = 0.4;
-const int POPULATION_SIZE = 5;
-const int GENERATIONS = 5;
-const int DIED = 800;
+const int POPULATION_SIZE = 10;
+const int GENERATIONS = 10;
+//const int DIED = 800;
 
 const int numFunctions = 4;
 
-Graph::Graph(vector<int> graph, double fitness) : graph(graph), fitness(fitness) {}
+int numNodeInputs = 2;
+int numInputs = 6;
+int numOutputs = 2;
+int numRows = 10;
+int numCols = 10;
 
-CGP::CGP(int numNodeInputs, int numInputs, int numOutputs, int numRows, int numCols)
-    : numNodeInputs(numNodeInputs), numInputs(numInputs), numOutputs(numOutputs), numRows(numRows), numCols(numCols) {}
+vector<Graph> graphs;
 
-vector<int> CGP::randomGraph()
+vector<int> randomGraph()
 {
     vector<int> graph;
 
@@ -48,7 +51,14 @@ vector<int> CGP::randomGraph()
     return graph;
 }
 
-void CGP::mutation(Graph& g)
+double fitnessFunction(vector<int> graph)
+{
+    CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
+    cgp.graph = graph;
+    return evaluate(cgp);
+}
+
+void mutation(Graph& g)
 {
     vector<int> graph = g.graph;
     int index = rand() % (graph.size());
@@ -76,7 +86,7 @@ void CGP::mutation(Graph& g)
     g.fitness = fitnessFunction(graph);
 }
 
-vector<int> CGP::crossover(vector<int>& mainGraph, vector<int>& otherGraph)
+vector<int> crossover(vector<int>& mainGraph, vector<int>& otherGraph)
 {
     vector<int> child = mainGraph;
     int index = rand() % (numRows * numCols);
@@ -88,30 +98,7 @@ vector<int> CGP::crossover(vector<int>& mainGraph, vector<int>& otherGraph)
     return child;
 }
 
-double CGP::fitnessFunction(vector<int> graph)
-{
-    return evaluate(this, graph);
-    /*double sum = 0.;
-
-    for (int i = 0; i < inputs.size() / numInputs; i++)
-    {
-        vector<double> currInputs;
-        for (int j = 0; j < numInputs; j++)
-        {
-            currInputs.push_back(inputs.at(i * numInputs + j));
-        }
-        vector<double> calcOut = calculateOutputs(currInputs, graph);
-        for (int j = 0; j < numOutputs; j++)
-        {
-            sum += pow((calcOut.at(j) - outputs.at(i * numOutputs + j)), 2);
-        }
-    }
-    if (sum < 1E-6)
-        return 1E+30;
-    return 1. / sqrt(sum);*/
-}
-
-Graph CGP::crossAndReturnBestOfThree(Graph firstParent, Graph secondParent)
+Graph crossAndReturnBestOfThree(Graph firstParent, Graph secondParent)
 {
     Graph child(crossover(firstParent.graph, secondParent.graph), NULL);
     child.fitness = fitnessFunction(child.graph);
@@ -129,102 +116,19 @@ Graph CGP::crossAndReturnBestOfThree(Graph firstParent, Graph secondParent)
     return betterParent;
 }
 
-// funkcija koja racuna outpute za dani graf
-vector<double> CGP::calculateOutputs(vector<double> inputs, vector<int> graph)
-{
-    vector<double> nodeOutputs = inputs;
-    for (int i = 0; i < numCols; i++)
-    {
-        vector<double> currNodeOutputs = nodeOutputs;
-        for (int j = 0; j < numRows; j++)
-        {
-            int functionIdPos = (i * numRows + j) * (numNodeInputs + 1);
-            int functionId = graph.at(functionIdPos);
-            vector<int> nodeInputIds;
-            for (int k = functionIdPos + 1; k < functionIdPos + 1 + numNodeInputs; k++)
-            {
-                nodeInputIds.push_back(graph.at(k));
-            }
-
-            nodeOutputs.push_back(calculateFunction(currNodeOutputs, functionId, nodeInputIds));
-        }
-    }
-
-    vector<double> outputs;
-    for (int i = 0; i < numOutputs; i++)
-    {
-        int pos = graph.at(graph.size() - numOutputs + i);
-        outputs.push_back(nodeOutputs.at(pos));
-    }
-    return outputs;
-}
-
-double CGP::calculateFunction(vector<double> calcOutputs, int functionId, vector<int> nodeInputIds)
-{
-
-    vector<double> calcInputs;
-    for (int i = 0; i < nodeInputIds.size(); i++)
-    {
-        calcInputs.push_back(calcOutputs.at(nodeInputIds.at(i)));
-    }
-
-    double rez = 0;
-    switch (functionId)
-    {
-    case 0:
-        for (int i = 0; i < calcInputs.size(); i++)
-        {
-            rez += calcInputs.at(i);
-        }
-        break;
-    case 1:
-        for (int i = 0; i < calcInputs.size(); i++)
-        {
-            if (i == 0)
-                rez = calcInputs.at(i);
-            else
-                rez -= calcInputs.at(i);
-        }
-        break;
-    case 2:
-        for (int i = 0; i < calcInputs.size(); i++)
-        {
-            if (i == 0)
-                rez = 1;
-            rez *= calcInputs.at(i);
-        }
-        break;
-    case 3:
-        for (int i = 0; i < calcInputs.size(); i++)
-        {
-            if (i == 0)
-                rez = calcInputs.at(i);
-            else
-            {
-                if (calcInputs.at(i) != 0)
-                    rez /= calcInputs.at(i);
-                else
-                    rez = 1E+37;
-            }
-        }
-        break;
-    }
-
-    return rez;
-}
-
-void CGP::fillPopulation()
+void fillPopulation()
 {
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
         vector<int> rG = randomGraph();
         cout << "pop " << i << endl;
         Graph randGraph = Graph(rG, fitnessFunction(rG));
+        cout << "fitness pocetnog: " << fitnessFunction(rG) << endl;
         graphs.push_back(randGraph);
     }
 }
 
-double CGP::calculateFitness() 
+double calculateFitness()
 {
     double sumFitness = 0.;
     for (int j = 0; j < POPULATION_SIZE; j++)
@@ -240,7 +144,7 @@ double CGP::calculateFitness()
     return sumFitness;
 }
 
-vector<int> CGP::run()
+vector<int> run()
 {
     vector<Graph> graphs;
     for (int i = 0; i < POPULATION_SIZE; i++)
@@ -304,7 +208,7 @@ vector<int> CGP::run()
     return graphs.at(POPULATION_SIZE - 1).graph;
 }
 
-Graph CGP::findBest() 
+Graph findBest()
 {
     double maxFitness = graphs.at(0).fitness;
     int idxBest = 0;
@@ -320,23 +224,13 @@ int main()
 {
     init();
 
-    int numNodeInputs = 2;
-    int numInputs = 6;
-    int numOutputs = 2;
-    int numRows = 5;
-    int numCols = 5;
-
-    CGP cgp(numNodeInputs, numInputs, numOutputs, numRows, numCols);
-
-    cout << "usao" << endl;
-    cgp.fillPopulation();
-    cout << "izasa" << endl;
+    fillPopulation();
 
     for (int gen = 1; gen <= GENERATIONS; ++gen) {
 
         cout << gen << endl;
 
-        double sumFitness = cgp.calculateFitness();
+        double sumFitness = calculateFitness();
 
         vector<Graph> newGraphs;
         while (newGraphs.size() < POPULATION_SIZE)
@@ -350,7 +244,7 @@ int main()
             double currSum = 0.;
             int k = 0;
             while (idx1 == -1 || idx2 == -1) {
-                currSum += cgp.graphs.at(k).fitness;
+                currSum += graphs.at(k).fitness;
                 if (idx1 == -1 && currSum >= select1)
                 {
                     idx1 = k;
@@ -361,23 +255,23 @@ int main()
                 }
                 k++;
             }
-            Graph offspring = cgp.crossAndReturnBestOfThree(cgp.graphs.at(idx1), cgp.graphs.at(idx2));
+            Graph offspring = crossAndReturnBestOfThree(graphs.at(idx1), graphs.at(idx2));
             cout << "Napravio sam crossover" << endl;
 
             double probability = static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
             if (probability < MUTATION_PR)
             {
-                cgp.mutation(offspring);
+                mutation(offspring);
                 cout << "Napravio sam mutaciju" << endl;
             }
 
             newGraphs.push_back(offspring);
         }
-        cgp.graphs = newGraphs;
+        graphs = newGraphs;
     }
 
 
-    Graph bestGraph = cgp.findBest();
+    Graph bestGraph = findBest();
     for (int i = 0; i < bestGraph.graph.size() - numOutputs; i++)
     {
         if (i % (numNodeInputs + 1) == 0)
@@ -395,4 +289,4 @@ int main()
 
     return 0;
 
- }
+}

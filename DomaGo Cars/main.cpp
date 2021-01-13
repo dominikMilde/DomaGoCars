@@ -9,35 +9,134 @@
 
 using namespace std;
 
-string run(const simulator& sim, CGP* cgp, vector<int> graph) {
+int run(const simulator& sim, CGP& cgp) {
 
-    vector<double> inputs;
-    inputs.push_back(sim.getV());
-    inputs.push_back(sim.getTopDistance());
-    inputs.push_back(sim.getTopRightDistance());
-    inputs.push_back(sim.getTopLeftDistance());
-    inputs.push_back(sim.getRightDistance());
-    inputs.push_back(sim.getLeftDistance());
+    cgp.inputs[0] = sim.getV();
+    cgp.inputs[1] = sim.getTopDistance();
+    cgp.inputs[2] = sim.getTopRightDistance();
+    cgp.inputs[3] = sim.getTopLeftDistance();
+    cgp.inputs[4] = sim.getRightDistance();
+    cgp.inputs[5] = sim.getLeftDistance();
 
-    vector<double> outputs = cgp->calculateOutputs(inputs, graph);
-
-    double speed = outputs.at(0);
-    double angle = outputs.at(1);
-
-    std::string akcija = "";
-
-    if (speed < -1.) akcija += "00"; //uspori
-    else if (speed > 1.) akcija += "11"; //ubrzaj
-    else akcija += "01"; //idle
-
-    if (angle < -1.) akcija += "00"; //left
-    else if (angle > 1.) akcija += "11"; //right
-    else akcija += "01"; //nista
-
-    return akcija;
+    return cgp.akcija();
 }
 
 int imageWidth = 1152;
+int imageHeight = 648;
+sf::RenderWindow window(sf::VideoMode(imageWidth, imageHeight), "SFML auti", sf::Style::Close | sf::Style::Titlebar);
+sf::RectangleShape background(sf::Vector2f(imageWidth, imageHeight));
+sf::Texture backgroundTexture;
+sf::CircleShape player(20.0f);
+sf::Image image;
+sf::Texture playerTexture;
+
+void init() {
+    backgroundTexture.loadFromFile("background.jpg");
+    background.setTexture(&backgroundTexture);
+    player.setOrigin(12.0f, 15.0f);
+    player.setScale(1.5, 1.2);
+    playerTexture.loadFromFile("avatar.jpg");
+    player.setTexture(&playerTexture);
+    image = backgroundTexture.copyToImage();
+    player.setPosition(imageWidth / 2, imageHeight / 1.2);
+    window.clear();
+    window.draw(background);
+    window.draw(player);
+    window.display();
+}
+
+double evaluate(CGP& cgp)
+{
+    player.setPosition(imageWidth / 2, imageHeight / 1.2);
+    player.setRotation(0);
+
+    sf::Vector2f vector = player.getPosition();
+    simulator sim(vector.x, vector.y, image);
+    //sim.setV(0.4);
+
+    while (window.isOpen())
+    {
+        sf::Event evnt;
+        while (window.pollEvent(evnt))
+        {
+            switch (evnt.type)
+            {
+            case sf::Event::Closed:
+                window.close();
+                break;
+            case sf::Event::Resized:
+                std::cout << "New window width: " << evnt.size.width << " New window height: " << evnt.size.height << std::endl;
+                break;
+            case sf::Event::TextEntered:
+                break;
+            }
+        }
+        int akcija = run(sim, cgp);
+        //cout << akcija << endl;
+        if (akcija == 1)
+        {
+            sim.rotateRight();
+        }
+        else if (akcija == 2)
+        {
+            sim.rotateLeft();
+        }
+        else if (akcija == 3)
+        {
+            sim.rotateRight();
+            sim.brake();
+        }
+        else if (akcija == 4)
+        {
+            sim.rotateLeft();
+            sim.brake();
+        }
+        else if (akcija == 5)
+        {
+            sim.gas();
+        }
+        else if (akcija == 6)
+        {
+            sim.rotateLeft();
+            sim.gas();
+        }
+        else if (akcija == 7)
+        {
+            sim.rotateRight();
+            sim.gas();
+        }
+
+        sim.update();
+
+        player.setPosition(sim.getX(), sim.getY());
+        player.setRotation(sim.getAngle() * -1.0);
+
+        if (sim.getT() % 20 == 0) {
+            window.clear();
+            window.draw(background);
+            window.draw(player);
+            window.display();
+        }
+
+        float x = player.getPosition().x;
+        float y = player.getPosition().y;
+
+        if (sim.getT() % 2000 == 0)
+            cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance()
+            << " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;
+
+        auto color1 = image.getPixel(x, y);
+
+        if (color1 == sf::Color::Black || sim.getAngleDistance() > 10000 || sim.getT() > 200000)
+        {
+            cout << pow(sim.getAngleDistance(), 2.5) / sim.getT() << endl;
+            return pow(sim.getAngleDistance(), 2.5) / sim.getT();
+        }
+    }
+}
+
+
+/*int imageWidth = 1152;
 int imageHeight = 648;
 sf::RectangleShape background(sf::Vector2f(imageWidth, imageHeight));
 sf::Texture backgroundTexture;
@@ -56,7 +155,7 @@ void init() {
     player.setPosition(imageWidth / 2, imageHeight / 1.2);
 }
 
-double evaluate(CGP* cgp, vector<int> graph)
+double evaluate(CGP& cgp)
 {
     player.setPosition(imageWidth / 2, imageHeight / 1.2);
     player.setRotation(0);
@@ -66,50 +165,41 @@ double evaluate(CGP* cgp, vector<int> graph)
 
     while (true) {
 
-        std::string akcija = run(sim, cgp, graph);
+        int akcija = run(sim, cgp);
+        if (akcija == 1)
+        {
+            sim.rotateRight();
+        }
+        else if (akcija == 2)
+        {
+            sim.rotateLeft();
+        }
+        else if (akcija == 3)
+        {
+            sim.rotateRight();
+            sim.brake();
+        }
+        else if (akcija == 4)
+        {
+            sim.rotateLeft();
+            sim.brake();
+        }
+        else if (akcija == 5)
+        {
+            sim.gas();
+        }
+        else if (akcija == 6)
+        {
+            sim.rotateLeft();
+            sim.gas();
+        }
+        else if (akcija == 7)
+        {
+            sim.rotateRight();
+            sim.gas();
+        }
 
-        if (akcija == "0000")
-        {
-            sim.brake();
-            sim.rotateLeft();
-        }
-        else if (akcija == "0001")
-        {
-            sim.brake();
-        }
-        else if (akcija == "0011")
-        {
-            sim.brake();
-            sim.rotateRight();
-        }
-        else if (akcija == "0100")
-        {
-            sim.idle();
-            sim.rotateLeft();
-        }
-        else if (akcija == "0101")
-        {
-            sim.idle();
-        }
-        else if (akcija == "0111")
-        {
-            sim.idle();
-            sim.rotateRight();
-        }
-        else if (akcija == "1100")
-        {
-            sim.gas();
-            sim.rotateLeft();
-        }
-        else if (akcija == "1101")
-        {
-            sim.gas();
-        }
-        else
-        {
-            sim.gas();
-            sim.rotateRight();
-        }
+
 
         sim.update();
         player.setPosition(sim.getX(), sim.getY());
@@ -122,6 +212,7 @@ double evaluate(CGP* cgp, vector<int> graph)
 
         if (color1 == sf::Color::Black || sim.getT() > 10000)
         {
+            cout << "Angle: " << sim.getAngleDistance() << endl;
             //return pow(sim.getAngleDistance(), KOEF) / sim.getT();
             break;
         }
