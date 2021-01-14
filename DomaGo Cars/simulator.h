@@ -4,6 +4,8 @@
 #define SQRT2 1.414213562
 #define EPSILON 1E-10
 
+
+#define KOEF 1
 #define GAS_ACC 0.0005
 #define BRAKE_ACC -0.001
 #define DRAG_K 0.994

@@ -28,7 +28,7 @@ struct neuralnetwork : Jedinka {
     }
 
     //racunanje
-    void propagate() {
+    void propagate() const {
         for (int i = 0; i < q; ++i)
             nHid[i] = 0;
         for (int i = 0; i <= p; ++i) for (int j = 0; j < q; ++j) {
@@ -46,7 +46,7 @@ struct neuralnetwork : Jedinka {
             outputs[i] = actfOut(outputs[i]);
     }
 
-    int akcija(vector<int> simulatorInputs) override 
+    const int akcija(vector<int> simulatorInputs) override 
     {
         inputs[0] = simulatorInputs.at(0);
         inputs[1] = simulatorInputs.at(1);

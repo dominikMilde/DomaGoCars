@@ -9,7 +9,7 @@ using namespace std;
 
 constexpr double FITNESS_KOEF = 2.5;
 
-int run(const simulator& sim, Jedinka& jedinka) {
+int run(const simulator& sim, const Jedinka& jedinka) {
 
     vector<int> inputs(6);
     inputs[0] = sim.getV();
@@ -46,6 +46,41 @@ void init() {
     window.display();
 }
 
+void AIdriver(int akcija, const simulator& sim) {
+    if (akcija == 1)
+    {
+        sim.rotateRight();
+    }
+    else if (akcija == 2)
+    {
+        sim.rotateLeft();
+    }
+    else if (akcija == 3)
+    {
+        sim.rotateRight();
+        sim.brake();
+    }
+    else if (akcija == 4)
+    {
+        sim.rotateLeft();
+        sim.brake();
+    }
+    else if (akcija == 5)
+    {
+        sim.gas();
+    }
+    else if (akcija == 6)
+    {
+        sim.rotateLeft();
+        sim.gas();
+    }
+    else if (akcija == 7)
+    {
+        sim.rotateRight();
+        sim.gas();
+    }
+}
+
 double evaluate(Jedinka& jedinka)
 {
     player.setPosition(imageWidth / 2, imageHeight / 1.2);
@@ -71,39 +106,28 @@ double evaluate(Jedinka& jedinka)
                 break;
             }
         }
-        int akcija = run(sim, jedinka);
+        
+        AIdriver(run(sim, jedinka), sim);
 
-        if (akcija == 1)
-        {
-            sim.rotateRight();
-        }
-        else if (akcija == 2)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         {
             sim.rotateLeft();
         }
-        else if (akcija == 3)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         {
             sim.rotateRight();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+        {
+            sim.gas();
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+        {
             sim.brake();
         }
-        else if (akcija == 4)
+        else
         {
-            sim.rotateLeft();
-            sim.brake();
-        }
-        else if (akcija == 5)
-        {
-            sim.gas();
-        }
-        else if (akcija == 6)
-        {
-            sim.rotateLeft();
-            sim.gas();
-        }
-        else if (akcija == 7)
-        {
-            sim.rotateRight();
-            sim.gas();
+            sim.idle();
         }
 
         sim.update();
