@@ -6,12 +6,8 @@
 int main() {
 	init();
 
-	// executeNN();
-	// runCGP();
-
-	while (true) {
-		evaluate();
-	}
+	// runNN();
+	runCGP();
 	
 	return 0;
 }

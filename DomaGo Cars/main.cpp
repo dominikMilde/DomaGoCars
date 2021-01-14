@@ -39,11 +39,6 @@ void init() {
 	playerTexture.loadFromFile("avatar.jpg");
 	player.setTexture(&playerTexture);
 	image = backgroundTexture.copyToImage();
-	player.setPosition(imageWidth / 2, imageHeight / 1.2);
-	window.clear();
-	window.draw(background);
-	window.draw(player);
-	window.display();
 }
 
 void AIDriver(int akcija, simulator& sim) {
@@ -104,15 +99,7 @@ void userDriver(simulator& sim) {
 	}
 }
 
-/*
-double evaluate(Jedinka& jedinka) {
-
-}
-*/
-
-
-double evaluate()
-{
+void simulate(Jedinka& jedinka) {
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
 	player.setRotation(0);
 
@@ -136,11 +123,9 @@ double evaluate()
 				break;
 			}
 		}
-		//int akcija = run(sim, jedinka);
-		//AIdriver(akcija, sim);
 
-		userDriver(sim);
-		
+		int akcija = run(sim, jedinka);
+		AIDriver(akcija, sim);
 
 		sim.update();
 
@@ -165,7 +150,42 @@ double evaluate()
 
 		if (color1 == sf::Color::Black || sim.getAngleDistance() > 10000 || sim.getT() > 200000)
 		{
-			cout << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
+			cout << "Fitness najbolje jedinke: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
+			return;
+		}
+	}
+}
+
+double evaluate(Jedinka& jedinka)
+{
+	player.setPosition(imageWidth / 2, imageHeight / 1.2);
+	player.setRotation(0);
+
+	sf::Vector2f vector = player.getPosition();
+	simulator sim(vector.x, vector.y, image);
+
+	while (true)
+	{
+		int akcija = run(sim, jedinka);
+		AIDriver(akcija, sim);
+
+		sim.update();
+
+		player.setPosition(sim.getX(), sim.getY());
+		player.setRotation(sim.getAngle() * -1.0);
+
+		float x = player.getPosition().x;
+		float y = player.getPosition().y;
+		/*
+		if (sim.getT() % 2000 == 0)
+			cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance()
+			<< " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;*/
+
+		auto color1 = image.getPixel(x, y);
+
+		if (color1 == sf::Color::Black || sim.getAngleDistance() > 10000 || sim.getT() > 200000)
+		{
+			cout << "Fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
 			return pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
 		}
 	}

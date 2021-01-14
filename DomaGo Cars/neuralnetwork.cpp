@@ -122,9 +122,8 @@ void mutate(vector<double>& individual) {
     }
 }
 
-void executeNN() {
+void runNN() {
     randomEngine.seed(time(nullptr));
-    init();
 
     fillPopulation();
 

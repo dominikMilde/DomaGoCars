@@ -13,7 +13,7 @@ using namespace std;
 minstd_rand randomEngineCGP;
 
 constexpr double MUTATION_PROB = 0.4;
-constexpr int POPULATION_SIZE = 10;
+constexpr int POPULATION_SIZE = 25;
 constexpr int GENERATIONS = 10;
 constexpr int NUM_FUNCTIONS = 4;
 
@@ -30,8 +30,7 @@ double fitnessFunction(vector<int> graph)
 {
     CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
     cgp.graph = graph;
-    return 1;
-    // return evaluate(cgp);
+    return evaluate(cgp);
 }
 
 void mutation(Graph& g)
@@ -117,7 +116,7 @@ vector<int> randomGraph()
     return graph;
 }
 
-void fillInitialPopulationCgp()
+void fillInitialPopulationCGP()
 {
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
@@ -213,18 +212,29 @@ void print(Graph& g) {
         << "CGP Fitness: " << g.fitness << endl << endl << endl;
 }
 
+void simulateCGP(vector<int> &graph) {
+    CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
+    cgp.graph = graph;
+    simulate(cgp);
+}
+
 void runCGP()
 {
-    fillInitialPopulationCgp();
+    randomEngineCGP.seed(time(nullptr));
+    srand(time(0));
+
+    fillInitialPopulationCGP();
 
     for (int gen = 1; gen <= GENERATIONS; ++gen) {
 
         cout << "GEN #" << gen << ":" << endl;
+        cout << "========================================" << endl;
 
         runGeneration();
 
         int bestGraphIndex = findBestGraph();
+        simulateCGP(graphs[bestGraphIndex].graph);
 
-        print(graphs[bestGraphIndex]);
+        //print(graphs[bestGraphIndex]);
     }
 }

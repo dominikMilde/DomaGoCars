@@ -150,7 +150,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="neuralnetwork.cpp" />
     <ClCompile Include="simulator.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="start.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGP.h" />

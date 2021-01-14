@@ -27,7 +27,7 @@
     <ClCompile Include="neuralnetwork.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source.cpp">
+    <ClCompile Include="start.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

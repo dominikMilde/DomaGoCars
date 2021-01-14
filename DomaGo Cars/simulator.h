@@ -4,47 +4,37 @@
 #define SQRT2 1.414213562
 #define EPSILON 1E-10
 
-// KOEF - koeficijent za ubrzanje ili usporenje simulacije
-#define KOEF 1
-
-#define GAS_ACC 0.00002
-#define BRAKE_ACC -0.00001
-#define DRAG 0.00001
-#define RR 0.0003
-
-#define STEERING_RATE 0.008
-#define STEERING_RETURN_RATE 0.005
-#define MAX_STEERING_ANGLE 15
-#define ROTATION_IDX_0 0.001
-#define ROTATION_IDX_1 0.1
+#define GAS_ACC 0.0005
+#define BRAKE_ACC -0.001
+#define DRAG_K 0.994
+#define T 1.0
+#define ROTATION_IDX 0.7
 
 #define WIDTH 1152
 #define HEIGHT 648
 
 #define BLOK 20
 
-struct Vector2
+struct Point
 {
     float x;
     float y;
-    Vector2() : x(0), y(0) {}
-    Vector2(float x, float y) : x(x), y(y) {}
+    Point() : x(0), y(0) {}
+    Point(float x, float y) : x(x), y(y) {}
 };
 
-const Vector2 center = Vector2(WIDTH / 2.0f, HEIGHT / 2.0f);
+const Point center = Point(WIDTH / 2.0f, HEIGHT / 2.0f);
 
 class simulator {
 private:
     bool mat[WIDTH][HEIGHT];
 
-    Vector2 pos;
+    Point pos;
     // end su koordinate donjeg desnog vrha prozora, pretpostavimo da prozor pocinje od (0,0)
-    Vector2 end;
+    Point end;
     double v;
     double angle;
-    double steering;
     double acc;
-    double traction;
     int t;
     float topDistance;
     float leftDistance;
@@ -53,9 +43,9 @@ private:
     int topRightDistance;
     float angleDistance;
 
-    float getDistanceToBound(Vector2 pos, float angle) const;
+    float getDistanceToBound(Point pos, float angle) const;
 
-    static float calcAngle(Vector2 a, Vector2 b, Vector2 c) {
+    static float calcAngle(Point a, Point b, Point c) {
         float ab = hypot(a.x - b.x, a.y - b.y);
         float ac = hypot(a.x - c.x, a.y - c.y);
         float bc = hypot(b.x - c.x, b.y - c.y);
@@ -80,6 +70,7 @@ public:
     float getAngleDistance() const { return angleDistance; }
     void setAngleDistance(float x) { angleDistance = x; }
 
+
     void setV(float v) {
         this->v = v;
     }
@@ -96,40 +87,38 @@ public:
         this->t = t;
     }
     void rotateLeft() {
-        if (steering < MAX_STEERING_ANGLE)
-            steering += STEERING_RATE;
+        this->angle += (getV() * ROTATION_IDX);
     }
     void rotateRight() {
-        if (steering > -MAX_STEERING_ANGLE)
-            steering -= STEERING_RATE;
+        this->angle -= (getV() * ROTATION_IDX);
     }
     void gas() {
-        traction = GAS_ACC;
+        acc = GAS_ACC;
     }
     void brake() {
-        traction = BRAKE_ACC;
+        acc = BRAKE_ACC;
     }
     void idle() {
-        traction = 0.0;
+        acc = 0.0;
     }
 
-    float getTopBoundDistance(Vector2 pos, float angle) const {
+    float getTopBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, angle);
     }
 
-    float getLeftBoundDistance(Vector2 pos, float angle) const {
+    float getLeftBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, fmod(angle + 90, 360));
     }
 
-    float getRightBoundDistance(Vector2 pos, float angle) const {
+    float getRightBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, fmod(angle - 90, 360));
     }
 
-    float getTopLeftBoundDistance(Vector2 pos, float angle) const {
+    float getTopLeftBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, fmod(angle + 45, 360));
     }
 
-    float getTopRightBoundDistance(Vector2 pos, float angle) const {
+    float getTopRightBoundDistance(Point pos, float angle) const {
         return getDistanceToBound(pos, fmod(angle - 45, 360));
     }
 };
