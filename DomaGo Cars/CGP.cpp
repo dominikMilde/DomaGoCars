@@ -30,7 +30,8 @@ double fitnessFunction(vector<int> graph)
 {
     CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
     cgp.graph = graph;
-    return evaluate(cgp);
+    return 1;
+    // return evaluate(cgp);
 }
 
 void mutation(Graph& g)

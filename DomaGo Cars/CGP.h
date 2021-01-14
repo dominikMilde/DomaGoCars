@@ -33,7 +33,7 @@ struct CGP : Jedinka {
 
 
     // racuna outpute za dani graf na racun danih inputa
-    void propagate() const
+    void propagate()
     {
         vector<double> nodeOutputs = inputs;
         //cout << "input: left and front " << inputs[5] << " " << inputs[1] << endl;
@@ -62,7 +62,7 @@ struct CGP : Jedinka {
         }
     }
 
-    int akcija(vector<int> simulatorInputs) const override
+    int akcija(vector<int> simulatorInputs) override
     {
         inputs[0] = simulatorInputs.at(0);
         inputs[1] = simulatorInputs.at(1);
@@ -107,7 +107,7 @@ struct CGP : Jedinka {
     }
 
     // racuna zadanu operaciju nad danim argumentima
-    double calculateFunction(vector<double> calcOutputs, int functionId, vector<int> nodeInputIds) const
+    double calculateFunction(vector<double> calcOutputs, int functionId, vector<int> nodeInputIds)
     {
 
         vector<double> calcInputs;

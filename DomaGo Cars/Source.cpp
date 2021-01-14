@@ -7,7 +7,11 @@ int main() {
 	init();
 
 	// executeNN();
-	runCGP();
+	// runCGP();
 
+	while (true) {
+		evaluate();
+	}
+	
 	return 0;
 }
