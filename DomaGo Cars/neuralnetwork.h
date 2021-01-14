@@ -3,6 +3,8 @@
 #include <random>
 #include "Jedinka.h"
 
+void executeNN();
+
 struct neuralnetwork : Jedinka {
     int p, q, r;
 

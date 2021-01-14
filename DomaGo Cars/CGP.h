@@ -8,6 +8,8 @@ using namespace std;
 constexpr int SPEED_BREAK_POINT = 100;
 constexpr int ANGLE_BREAK_POINT = 100;
 
+void runCGP();
+
 struct Graph {
     vector<int> graph;
     double fitness;
