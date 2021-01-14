@@ -58,8 +58,7 @@ double evaluate(const vector<double>& individual) {
         nn.hidOut[i][j] = individual[k++];
     }
 
-    return 1;
-    // return evaluate(nn);
+    return evaluate(nn);
 }
 
 void print(const vector<double>& individual) {

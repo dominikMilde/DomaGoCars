@@ -6,8 +6,8 @@
 int main() {
 	init();
 
-	// runNN();
-	runCGP();
+	runNN();
+	// runCGP();
 	
 	return 0;
 }
