@@ -12,11 +12,11 @@
 #define DRAG 0.00001
 #define RR 0.0003
 
-#define STEERING_RATE 0.005
-#define STEERING_RETURN_RATE 0.003
-#define MAX_STEERING_ANGLE 30
-#define ROTATION_IDX 0.01
-#define ROTATION_V_LOSS 0.000001
+#define STEERING_RATE 0.008
+#define STEERING_RETURN_RATE 0.005
+#define MAX_STEERING_ANGLE 15
+#define ROTATION_IDX_0 0.001
+#define ROTATION_IDX_1 0.1
 
 #define WIDTH 1152
 #define HEIGHT 648
@@ -98,12 +98,10 @@ public:
     void rotateLeft() {
         if (steering < MAX_STEERING_ANGLE)
             steering += STEERING_RATE;
-        v -= ROTATION_V_LOSS;
     }
     void rotateRight() {
         if (steering > -MAX_STEERING_ANGLE)
             steering -= STEERING_RATE;
-        v -= ROTATION_V_LOSS;
     }
     void gas() {
         traction = GAS_ACC;
@@ -113,10 +111,6 @@ public:
     }
     void idle() {
         traction = 0.0;
-        if (steering > 0)
-            steering -= STEERING_RETURN_RATE;
-        else 
-            steering += STEERING_RETURN_RATE;
     }
 
     float getTopBoundDistance(Vector2 pos, float angle) const {

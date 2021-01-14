@@ -46,44 +46,70 @@ void init() {
 	window.display();
 }
 
+void AIDriver(int akcija, simulator& sim) {
+	if (akcija == 1)
+	{
+		sim.rotateRight();
+	}
+	else if (akcija == 2)
+	{
+		sim.rotateLeft();
+	}
+	else if (akcija == 3)
+	{
+		sim.rotateRight();
+		sim.brake();
+	}
+	else if (akcija == 4)
+	{
+		sim.rotateLeft();
+		sim.brake();
+	}
+	else if (akcija == 5)
+	{
+		sim.gas();
+	}
+	else if (akcija == 6)
+	{
+		sim.rotateLeft();
+		sim.gas();
+	}
+	else if (akcija == 7)
+	{
+		sim.rotateRight();
+		sim.gas();
+	}
+}
+
+void userDriver(simulator& sim) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+	{
+		sim.rotateLeft();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	{
+		sim.rotateRight();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+	{
+		sim.gas();
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+	{
+		sim.brake();
+	}
+	else
+	{
+		sim.idle();
+	}
+}
+
 /*
-void AIdriver(int akcija, const simulator& sim) {
-    if (akcija == 1)
-    {
-        sim.rotateRight();
-    }
-    else if (akcija == 2)
-    {
-        sim.rotateLeft();
-    }
-    else if (akcija == 3)
-    {
-        sim.rotateRight();
-        sim.brake();
-    }
-    else if (akcija == 4)
-    {
-        sim.rotateLeft();
-        sim.brake();
-    }
-    else if (akcija == 5)
-    {
-        sim.gas();
-    }
-    else if (akcija == 6)
-    {
-        sim.rotateLeft();
-        sim.gas();
-    }
-    else if (akcija == 7)
-    {
-        sim.rotateRight();
-        sim.gas();
-    }
+double evaluate(Jedinka& jedinka) {
 
-	*/
+}
+*/
 
-//double evaluate(Jedinka& jedinka)
 
 double evaluate()
 {
@@ -111,64 +137,10 @@ double evaluate()
 			}
 		}
 		//int akcija = run(sim, jedinka);
+		//AIdriver(akcija, sim);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-		{
-			sim.rotateLeft();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-		{
-			sim.rotateRight();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-		{
-			sim.idle();
-			sim.gas();
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-		{
-			sim.idle();
-			sim.brake();
-		}
-		else
-		{
-			sim.idle();
-		}
-
-		/*
-		if (akcija == 1)
-		{
-			sim.rotateRight();
-		}
-		else if (akcija == 2)
-		{
-			sim.rotateLeft();
-		}
-		else if (akcija == 3)
-		{
-			sim.rotateRight();
-			sim.brake();
-		}
-		else if (akcija == 4)
-		{
-			sim.rotateLeft();
-			sim.brake();
-		}
-		else if (akcija == 5)
-		{
-			sim.gas();
-		}
-		else if (akcija == 6)
-		{
-			sim.rotateLeft();
-			sim.gas();
-		}
-		else if (akcija == 7)
-		{
-			sim.rotateRight();
-			sim.gas();
-		}
-		*/
+		userDriver(sim);
+		
 
 		sim.update();
 

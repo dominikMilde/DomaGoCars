@@ -57,8 +57,12 @@ void simulator::update() {
     acc = traction - DRAG * v * v - RR * v;
     v = v + acc;
     if (v < 0) v = 0;
-    angle += ROTATION_IDX * steering;
+    
+    if (steering > 0.) steering -= STEERING_RETURN_RATE;
+    else if (steering < 0.) steering += STEERING_RETURN_RATE;
+    angle += (ROTATION_IDX_1 * getV() + ROTATION_IDX_0) * steering;
     angle = fmod(angle + 360, 360);
+    
     Vector2 oldPos = pos;
     pos.x = pos.x + KOEF * cos(angle * PI / 180) * v;
     pos.y = pos.y - KOEF * sin(angle * PI / 180) * v;
