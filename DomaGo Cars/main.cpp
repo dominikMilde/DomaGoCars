@@ -9,7 +9,7 @@ using namespace std;
 
 constexpr double FITNESS_KOEF = 2.5;
 
-int run(const simulator& sim, Jedinka& jedinka) {
+int run(const simulator& sim, Jedinka* jedinka) {
 
 	vector<int> inputs(6);
 	inputs[0] = sim.getV();
@@ -19,7 +19,7 @@ int run(const simulator& sim, Jedinka& jedinka) {
 	inputs[4] = sim.getRightDistance();
 	inputs[5] = sim.getLeftDistance();
 
-	return jedinka.akcija(inputs);
+	return (*jedinka).akcija(inputs);
 }
 
 int imageWidth = 1152;
@@ -99,7 +99,7 @@ void userDriver(simulator& sim) {
 	}
 }
 
-void simulate(Jedinka& jedinka) {
+void simulate(Jedinka* jedinka) {
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
 	player.setRotation(0);
 
@@ -124,8 +124,13 @@ void simulate(Jedinka& jedinka) {
 			}
 		}
 
-		int akcija = run(sim, jedinka);
-		AIDriver(akcija, sim);
+		if (jedinka == nullptr) {
+			userDriver(sim);
+		}
+		else {
+			int akcija = run(sim, jedinka);
+			AIDriver(akcija, sim);
+		}
 
 		sim.update();
 
@@ -141,10 +146,8 @@ void simulate(Jedinka& jedinka) {
 
 		float x = player.getPosition().x;
 		float y = player.getPosition().y;
-		/*
-		if (sim.getT() % 2000 == 0)
-			cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance()
-			<< " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;*/
+		
+		//if (sim.getT() % 2000 == 0) sim.print();
 
 		auto color1 = image.getPixel(x, y);
 
@@ -156,7 +159,11 @@ void simulate(Jedinka& jedinka) {
 	}
 }
 
-double evaluate(Jedinka& jedinka)
+void simulate() {
+	simulate(nullptr);
+}
+
+double evaluate(Jedinka* jedinka)
 {
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
 	player.setRotation(0);
@@ -185,7 +192,7 @@ double evaluate(Jedinka& jedinka)
 
 		if (color1 == sf::Color::Black || sim.getAngleDistance() > 10000 || sim.getT() > 200000)
 		{
-			cout << "Fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
+			cout << "fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
 			return pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
 		}
 	}

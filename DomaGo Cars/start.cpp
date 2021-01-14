@@ -4,10 +4,18 @@
 #include "CGP.h"
 
 int main() {
+	
+	// inicijalizira simulator
 	init();
 
-	runNN();
-	// runCGP();
+	// pokretanje uèenja pomoæu NN-a
+	//runNN();
+
+	// pokretanje uèenja pomoæu CGP-a
+	runCGP();
+
+	// simulacija autica - korisnik vozac
+	//simulate();
 	
 	return 0;
 }

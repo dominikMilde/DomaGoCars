@@ -2,5 +2,6 @@
 #include "CGP.h"
 
 void init();
-double evaluate(Jedinka& jedinka);
-void simulate(Jedinka& jedinka);
+double evaluate(Jedinka* jedinka);
+void simulate(Jedinka* jedinka);
+void simulate();

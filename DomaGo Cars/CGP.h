@@ -5,8 +5,7 @@
 
 using namespace std;
 
-constexpr int SPEED_BREAK_POINT = 100;
-constexpr int ANGLE_BREAK_POINT = 100;
+constexpr int BREAKPOINT = 100;
 
 void runCGP();
 
@@ -78,12 +77,12 @@ struct CGP : Jedinka {
 
         std::string action = "";
 
-        if (speed < -SPEED_BREAK_POINT) action += "00"; //uspori
-        else if (speed > SPEED_BREAK_POINT) action += "11"; //ubrzaj
+        if (speed < -BREAKPOINT) action += "00"; //uspori
+        else if (speed > BREAKPOINT) action += "11"; //ubrzaj
         else action += "01"; //idle
 
-        if (angle < -ANGLE_BREAK_POINT) action += "00"; //left
-        else if (angle > ANGLE_BREAK_POINT) action += "11"; //right
+        if (angle < -BREAKPOINT) action += "00"; //left
+        else if (angle > BREAKPOINT) action += "11"; //right
         else action += "01"; //nista
 
         if (action == "0111") {
@@ -101,7 +100,6 @@ struct CGP : Jedinka {
         } else if (action == "1111") {
             return 7;
         }
-
 
         return -1;   
     }

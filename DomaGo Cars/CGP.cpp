@@ -30,7 +30,7 @@ double fitnessFunction(vector<int> graph)
 {
     CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
     cgp.graph = graph;
-    return evaluate(cgp);
+    return evaluate(&cgp);
 }
 
 void mutation(Graph& g)
@@ -118,10 +118,11 @@ vector<int> randomGraph()
 
 void fillInitialPopulationCGP()
 {
+    cout << "Generating initial population..." << endl;
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
         vector<int> rG = randomGraph();
-        //cout << "pop " << i << endl;
+        cout << "pop #" << i << ": ";
         Graph randGraph = Graph(rG, fitnessFunction(rG));
         //cout << "fitness pocetnog: " << fitnessFunction(rG) << endl;
         graphs.push_back(randGraph);
@@ -148,8 +149,11 @@ void runGeneration() {
     double sumFitness = calculateFitness();
 
     vector<Graph> newGraphs;
+    int i = 0
+;
     while (newGraphs.size() < POPULATION_SIZE)
     {
+        cout << "pop #" << i++ << ": ";
         double select1 = sumFitness * static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
         double select2 = sumFitness * static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
 
@@ -215,11 +219,12 @@ void print(Graph& g) {
 void simulateCGP(vector<int> &graph) {
     CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
     cgp.graph = graph;
-    simulate(cgp);
+    simulate(&cgp);
 }
 
 void runCGP()
 {
+    cout << "Started CGP learning" << endl << "Number of generations: " << GENERATIONS << endl << "Population size: " << POPULATION_SIZE << endl;
     randomEngineCGP.seed(time(nullptr));
     srand(time(0));
 
@@ -227,8 +232,8 @@ void runCGP()
 
     for (int gen = 1; gen <= GENERATIONS; ++gen) {
 
+        cout << endl << "========================================" << endl << endl;
         cout << "GEN #" << gen << ":" << endl;
-        cout << "========================================" << endl;
 
         runGeneration();
 
