@@ -111,7 +111,7 @@ Graph crossAndReturnBestOfThree(Graph &firstParent, Graph &secondParent)
         betterParent = secondParent;
     }
 
-    cout << "Zapoceo crossover: fitnessi su: " << firstParent.fitness << " " << secondParent.fitness << " " << child.fitness << endl;
+    //cout << "Zapoceo crossover: fitnessi su: " << firstParent.fitness << " " << secondParent.fitness << " " << child.fitness << endl;
 
     if (child.fitness > betterParent.fitness)
     {
@@ -232,9 +232,9 @@ void runGeneration() {
         static bernoulli_distribution choice(MUTATION_PROB);
         if (choice(randomEngineCGP))
         {
-            cout << "mutirao sam: prije=" << offspring.fitness;
+            //cout << "mutirao sam: prije=" << offspring.fitness;
             offspring = mutateAndChooseBetter(offspring);
-            cout << " poslije=" << offspring.fitness << " ";
+            //cout << " poslije=" << offspring.fitness << " ";
         }
         cout << "fitness: " << offspring.fitness << endl;
 
