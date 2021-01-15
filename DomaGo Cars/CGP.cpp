@@ -73,7 +73,7 @@ vector<int> crossover(vector<int>& mainGraph, vector<int>& otherGraph)
     return child;
 }
 
-Graph crossAndReturnBestOfThree(Graph firstParent, Graph secondParent)
+Graph crossAndReturnBestOfThree(Graph &firstParent, Graph &secondParent)
 {
     vector<int> crossGraph = crossover(firstParent.graph, secondParent.graph);
     Graph child(crossGraph, fitnessFunction(crossGraph));
@@ -83,6 +83,8 @@ Graph crossAndReturnBestOfThree(Graph firstParent, Graph secondParent)
     {
         betterParent = secondParent;
     }
+
+    //cout << "Zapoceo crossover: fitnessi su: " << firstParent.fitness << " " << secondParent.fitness << " " << child.fitness << endl;
 
     if (child.fitness > betterParent.fitness)
     {
@@ -118,15 +120,20 @@ vector<int> randomGraph()
 
 void fillInitialPopulationCGP()
 {
+    graphs.clear();
+    graphs.reserve(POPULATION_SIZE);
+
     cout << "Generating initial population..." << endl;
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
         vector<int> rG = randomGraph();
         cout << "pop #" << i << ": ";
-        Graph randGraph = Graph(rG, fitnessFunction(rG));
-        //cout << "fitness pocetnog: " << fitnessFunction(rG) << endl;
+        double fitness = fitnessFunction(rG);
+        Graph randGraph = Graph(rG, fitness);
         graphs.push_back(randGraph);
     }
+
+    graphs.shrink_to_fit();
 }
 
 double calculateFitness()
@@ -134,69 +141,15 @@ double calculateFitness()
     double sumFitness = 0.;
     for (int j = 0; j < POPULATION_SIZE; j++)
     {
-        double fitness = graphs[0].fitness;
+        double fitness = graphs.at(j).fitness;
         if (isnan(fitness))
             fitness = 0.;
 
-        graphs[j].fitness = fitness;
+        graphs.at(j).fitness = fitness;
         sumFitness += fitness;
     }
     //cout << "izracunao sam fitness" << endl;
     return sumFitness;
-}
-
-void runGeneration() {
-    double sumFitness = calculateFitness();
-
-    vector<Graph> newGraphs;
-    int i = 0
-;
-    while (newGraphs.size() < POPULATION_SIZE)
-    {
-        cout << "pop #" << i++ << ": ";
-        double select1 = sumFitness * static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
-        double select2 = sumFitness * static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
-
-        int idx1 = -1;
-        int idx2 = -1;
-
-        double currSum = 0.;
-        int k = 0;
-        while (idx1 == -1 || idx2 == -1) {
-            currSum += graphs[k].fitness;
-            if (idx1 == -1 && currSum >= select1)
-            {
-                idx1 = k;
-            }
-            if (idx2 == -1 && currSum >= select2)
-            {
-                idx2 = k;
-            }
-            k++;
-        }
-        Graph offspring = crossAndReturnBestOfThree(graphs[idx1], graphs[idx2]);
-
-        static bernoulli_distribution choice(MUTATION_PROB);
-        if (choice(randomEngineCGP))
-        {
-            mutation(offspring);
-        }
-
-        newGraphs.push_back(offspring);
-    }
-    graphs = newGraphs;
-}
-
-int findBestGraph()
-{
-    double maxFitness = graphs[0].fitness;
-    int idxBest = 0;
-    for (int i = 1; i < POPULATION_SIZE; i++) {
-        if (graphs[i].fitness > maxFitness) {
-            idxBest = i;
-        }
-    }
-    return idxBest;
 }
 
 void print(Graph& g) {
@@ -216,6 +169,61 @@ void print(Graph& g) {
         << "CGP Fitness: " << g.fitness << endl << endl << endl;
 }
 
+void runGeneration() {
+    double sumFitness = calculateFitness();
+    
+    vector<Graph> newGraphs;
+    int i = 0;
+;
+    while (newGraphs.size() < POPULATION_SIZE)
+    {
+        cout << "pop " << i++ << ": ";
+
+        double select1 = sumFitness * static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
+        double select2 = sumFitness * static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
+
+        int idx1 = -1;
+        int idx2 = -1;
+
+        double currSum = 0.;
+        int k = 0;
+        while (idx1 == -1 || idx2 == -1) {
+            currSum += graphs.at(k).fitness;
+            if (idx1 == -1 && currSum >= select1)
+            {
+                idx1 = k;
+            }
+            if (idx2 == -1 && currSum >= select2)
+            {
+                idx2 = k;
+            }
+            k++;
+        }
+        Graph offspring = crossAndReturnBestOfThree(graphs.at(idx1), graphs.at(idx2));
+
+        static bernoulli_distribution choice(MUTATION_PROB);
+        if (choice(randomEngineCGP))
+        {
+            mutation(offspring);
+        }
+
+        newGraphs.push_back(offspring);
+    }
+    graphs = newGraphs;
+}
+
+int findBestGraph()
+{
+    double maxFitness = graphs.at(0).fitness;
+    int idxBest = 0;
+    for (int i = 1; i < POPULATION_SIZE; i++) {
+        if (graphs.at(i).fitness > maxFitness) {
+            idxBest = i;
+        }
+    }
+    return idxBest;
+}
+
 void simulateCGP(vector<int> &graph) {
     CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
     cgp.graph = graph;
@@ -224,7 +232,10 @@ void simulateCGP(vector<int> &graph) {
 
 void runCGP()
 {
-    cout << "Started CGP learning" << endl << "Number of generations: " << GENERATIONS << endl << "Population size: " << POPULATION_SIZE << endl;
+    cout << "Started CGP learning" << endl 
+        << "Number of generations: " << GENERATIONS << endl 
+        << "Population size: " << POPULATION_SIZE << endl << endl;
+    
     randomEngineCGP.seed(time(nullptr));
     srand(time(0));
 
@@ -233,13 +244,13 @@ void runCGP()
     for (int gen = 1; gen <= GENERATIONS; ++gen) {
 
         cout << endl << "========================================" << endl << endl;
-        cout << "GEN #" << gen << ":" << endl;
+        cout << "GEN #" << gen << endl;
 
         runGeneration();
 
         int bestGraphIndex = findBestGraph();
-        simulateCGP(graphs[bestGraphIndex].graph);
+        simulateCGP(graphs.at(bestGraphIndex).graph);
 
-        //print(graphs[bestGraphIndex]);
+        //print(graphs.at(bestGraphIndex));
     }
 }
