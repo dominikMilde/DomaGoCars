@@ -4,11 +4,30 @@
 #define SQRT2 1.414213562
 #define EPSILON 1E-10
 
-#define GAS_ACC 0.0005
-#define BRAKE_ACC -0.001
-#define DRAG_K 0.994
-#define T 1.0
-#define ROTATION_IDX 0.7
+// KOEF - koeficijent za ubrzanje ili usporenje simulacije
+#define KOEF 1
+
+// KONSTANTE ZA UBRZANJE/USPORENJE AUTICA
+// gas - konstantno povecava brzinu
+#define GAS_ACC 0.00002
+// kocnica - konstantno smanjuje brzinu
+#define BRAKE_ACC -0.00001
+// trenje - ovisi o brzini
+#define RR 0.0003
+// otpor zraka - ovisi o brzini na kvadrat
+#define DRAG 0.00001
+
+// KONSTANTE ZA SKRETANJE AUTICA
+// brzina okretanja volana
+#define STEERING_RATE 0.007
+// brzina vracanja volana u normalu
+#define STEERING_RETURN_RATE 0.005
+// maksimalan kut zakretaja volana
+#define MAX_STEERING_ANGLE 10
+// rotacija autica pri mirovanju - ne ovisi o brzini
+#define ROTATION_IDX_0 0.001
+// rotacija autica pri voznji - ovisi o brzini
+#define ROTATION_IDX_1 0.1
 
 #define WIDTH 1152
 #define HEIGHT 648
@@ -34,7 +53,9 @@ private:
     Vector2 end;
     double v;
     double angle;
+    double steering;
     double acc;
+    double traction;
     int t;
     float topDistance;
     float leftDistance;
@@ -70,7 +91,6 @@ public:
     float getAngleDistance() const { return angleDistance; }
     void setAngleDistance(float x) { angleDistance = x; }
 
-
     void setV(float v) {
         this->v = v;
     }
@@ -87,19 +107,21 @@ public:
         this->t = t;
     }
     void rotateLeft() {
-        this->angle += (getV() * ROTATION_IDX);
+        if (steering < MAX_STEERING_ANGLE)
+            steering += STEERING_RATE;
     }
     void rotateRight() {
-        this->angle -= (getV() * ROTATION_IDX);
+        if (steering > -MAX_STEERING_ANGLE)
+            steering -= STEERING_RATE;
     }
     void gas() {
-        acc = GAS_ACC;
+        traction = GAS_ACC;
     }
     void brake() {
-        acc = BRAKE_ACC;
+        traction = BRAKE_ACC;
     }
     void idle() {
-        acc = 0.0;
+        traction = 0.0;
     }
 
     float getTopBoundDistance(Vector2 pos, float angle) const {
@@ -122,4 +144,3 @@ public:
         return getDistanceToBound(pos, fmod(angle - 45, 360));
     }
 };
-

@@ -12,10 +12,10 @@ int main() {
 	//runNN();
 
 	// pokretanje uèenja pomoæu CGP-a
-	runCGP();
+	//runCGP();
 
 	// simulacija autica - korisnik vozac
-	//simulate();
+	while(true) simulate();
 	
 	return 0;
 }

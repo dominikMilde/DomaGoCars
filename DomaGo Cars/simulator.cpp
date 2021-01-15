@@ -41,7 +41,9 @@ simulator::simulator(float x1, float y1, const sf::Image& image) {
     end = { 1152.f, 648.f };
     v = 0.0;
     angle = 0.0;
+    steering = 0.0;
     acc = 0.0;
+    traction = 0.0;
     topDistance = 0.0f;
     leftDistance = 0.0f;
     rightDistance = 0.0f;
@@ -52,12 +54,19 @@ simulator::simulator(float x1, float y1, const sf::Image& image) {
 
 void simulator::update() {
     t += 1;
-    v = (v + acc * T) * DRAG_K;
-    if (v < 0.1) v = 0.1;
+    acc = traction - DRAG * v * v - RR * v;
+    v = v + acc;
+    if (v < 0) v = 0;
+
+    if (steering > 0.) steering -= STEERING_RETURN_RATE;
+    else if (steering < 0.) steering += STEERING_RETURN_RATE;
+    angle += (ROTATION_IDX_1 * getV() + ROTATION_IDX_0) * steering;
     angle = fmod(angle + 360, 360);
+
     Vector2 oldPos = pos;
-    pos.x = pos.x + cos(angle * PI / 180) * v * T;
-    pos.y = pos.y - sin(angle * PI / 180) * v * T;
+    pos.x = pos.x + KOEF * cos(angle * PI / 180) * v;
+    pos.y = pos.y - KOEF * sin(angle * PI / 180) * v;
+
     topDistance = getTopBoundDistance(pos, angle);
     leftDistance = getLeftBoundDistance(pos, angle);
     rightDistance = getRightBoundDistance(pos, angle);
@@ -67,5 +76,3 @@ void simulator::update() {
     if (isfinite(newAngle))
         angleDistance += newAngle;
 }
-
-
