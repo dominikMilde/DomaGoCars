@@ -183,16 +183,18 @@ double evaluate(Jedinka* jedinka)
 
 		float x = player.getPosition().x;
 		float y = player.getPosition().y;
-		/*
-		if (sim.getT() % 2000 == 0)
+		
+		/*if (sim.getT() % 2000 == 0)
 			cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance()
 			<< " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;*/
 
 		auto color1 = image.getPixel(x, y);
 
-		if (color1 == sf::Color::Black || sim.getAngleDistance() > 10000 || sim.getT() > 200000)
+		if (color1 == sf::Color::Black || sim.getAngleDistance() > 2500 || sim.getT() > 10000)
 		{
-			cout << "fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
+			//cout << "fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
+			if (sim.getT() > 30000)
+				cout << "(time expired) ";
 			return pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
 		}
 	}

@@ -13,15 +13,16 @@ using namespace std;
 minstd_rand randomEngineCGP;
 
 constexpr double MUTATION_PROB = 0.4;
-constexpr int POPULATION_SIZE = 25;
-constexpr int GENERATIONS = 10;
+//constexpr double MUTATION_RATE = 0.05;
+constexpr int POPULATION_SIZE = 400;
+constexpr int GENERATIONS = 30;
 constexpr int NUM_FUNCTIONS = 4;
 
 int numNodeInputs = 2;
 int numInputs = 6;
 int numOutputs = 2;
-int numRows = 10;
-int numCols = 10;
+int numRows = 5;
+int numCols = 5;
 int graphSize = numCols * numRows * (numNodeInputs + 1) + numOutputs;
 
 vector<Graph> graphs;
@@ -33,32 +34,49 @@ double fitnessFunction(vector<int> graph)
     return evaluate(&cgp);
 }
 
-void mutation(Graph& g)
+Graph mutation(Graph& g)
 {
     vector<int> graph = g.graph;
-    int index = rand() % (graphSize);
 
-    if (index < graphSize - numOutputs)
-    {
-        if (index % (numNodeInputs + 1) == 0)
+    //int numMutations = round(graphSize / MUTATION_RATE);
+    int numMutations = 1;
+
+    for (int i = 0; i < numMutations; i++) {
+        int index = rand() % (graphSize);
+
+        if (index < graphSize - numOutputs)
         {
-            int functionId = rand() % NUM_FUNCTIONS;
-            graph[index] = functionId;
+            if (index % (numNodeInputs + 1) == 0)
+            {
+                int functionId = rand() % NUM_FUNCTIONS;
+                graph[index] = functionId;
+            }
+            else
+            {
+                int indOfColumn = index / (numRows * (1 + numNodeInputs));
+                int currMaxNodeOut = numInputs + indOfColumn * numRows;
+                graph[index] = rand() % currMaxNodeOut;
+            }
         }
         else
         {
-            int indOfColumn = index / (numRows * (1 + numNodeInputs));
-            int currMaxNodeOut = numInputs + indOfColumn * numRows;
-            graph[index] = rand() % currMaxNodeOut;
+            int outRandom = rand() % (numInputs + numCols * numRows);
+            graph[index] = outRandom;
         }
     }
-    else
-    {
-        int outRandom = rand() % (numInputs + numCols * numRows);
-        graph[index] = outRandom;
-    }
-    g.graph = graph;
-    g.fitness = fitnessFunction(graph);
+    
+    double fitness = fitnessFunction(graph);
+    Graph mutatedGraph(graph, fitness);
+
+    return mutatedGraph;
+}
+
+Graph mutateAndChooseBetter(Graph& parent) {
+    Graph child = mutation(parent);
+
+    //if (child.fitness > parent.fitness)
+        return child;
+    //return parent;
 }
 
 vector<int> crossover(vector<int>& mainGraph, vector<int>& otherGraph)
@@ -75,7 +93,17 @@ vector<int> crossover(vector<int>& mainGraph, vector<int>& otherGraph)
 
 Graph crossAndReturnBestOfThree(Graph &firstParent, Graph &secondParent)
 {
-    vector<int> crossGraph = crossover(firstParent.graph, secondParent.graph);
+    vector<int> crossGraph;
+
+    static bernoulli_distribution choice(0.5);
+    if (choice(randomEngineCGP))
+    {
+        crossGraph = crossover(firstParent.graph, secondParent.graph);
+    }
+    else {
+        crossGraph = crossover(secondParent.graph, firstParent.graph);
+    }
+    
     Graph child(crossGraph, fitnessFunction(crossGraph));
 
     Graph betterParent = firstParent;
@@ -124,11 +152,12 @@ void fillInitialPopulationCGP()
     graphs.reserve(POPULATION_SIZE);
 
     cout << "Generating initial population..." << endl;
-    for (int i = 0; i < POPULATION_SIZE; i++)
+    for (int i = 1; i <= POPULATION_SIZE; i++)
     {
         vector<int> rG = randomGraph();
         cout << "pop #" << i << ": ";
         double fitness = fitnessFunction(rG);
+        cout << "fitness: " << fitness << endl;
         Graph randGraph = Graph(rG, fitness);
         graphs.push_back(randGraph);
     }
@@ -173,8 +202,8 @@ void runGeneration() {
     double sumFitness = calculateFitness();
     
     vector<Graph> newGraphs;
-    int i = 0;
-;
+    int i = 1;
+
     while (newGraphs.size() < POPULATION_SIZE)
     {
         cout << "pop " << i++ << ": ";
@@ -204,8 +233,11 @@ void runGeneration() {
         static bernoulli_distribution choice(MUTATION_PROB);
         if (choice(randomEngineCGP))
         {
-            mutation(offspring);
+            cout << "mutirao sam: prije=" << offspring.fitness;
+            offspring = mutateAndChooseBetter(offspring);
+            cout << " poslije=" << offspring.fitness << " ";
         }
+        cout << "fitness: " << offspring.fitness << endl;
 
         newGraphs.push_back(offspring);
     }
@@ -240,6 +272,9 @@ void runCGP()
     srand(time(0));
 
     fillInitialPopulationCGP();
+
+    int bestGraphIndex = findBestGraph();
+    simulateCGP(graphs.at(bestGraphIndex).graph);
 
     for (int gen = 1; gen <= GENERATIONS; ++gen) {
 
