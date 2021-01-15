@@ -9,10 +9,10 @@ int main() {
 	init();
 
 	// pokretanje uèenja pomoæu NN-a
-	//runNN();
+	runNN();
 
 	// pokretanje uèenja pomoæu CGP-a
-	runCGP();
+	//runCGP();
 
 	// simulacija autica - korisnik vozac
 	//simulate();
