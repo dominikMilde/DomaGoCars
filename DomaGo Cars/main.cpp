@@ -151,9 +151,8 @@ void simulate(Jedinka* jedinka) {
 
 		auto color1 = image.getPixel(x, y);
 
-		if (color1 == sf::Color::Black || sim.getAngleDistance() > 10000 || sim.getT() > 200000)
+		if (color1 == sf::Color::Black || sim.getAngleDistance() > 2500 || sim.getT() > 50000)
 		{
-			cout << "Fitness najbolje jedinke: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
 			return;
 		}
 	}
@@ -190,10 +189,15 @@ double evaluate(Jedinka* jedinka)
 
 		auto color1 = image.getPixel(x, y);
 
-		if (color1 == sf::Color::Black || sim.getAngleDistance() > 2500 || sim.getT() > 10000)
+		int maxDistance = 2500;
+		int maxT = 50000;
+
+		if (color1 == sf::Color::Black || sim.getAngleDistance() > maxDistance || sim.getT() > maxT)
 		{
 			//cout << "fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
-			if (sim.getT() > 30000)
+			if (sim.getAngleDistance() > maxDistance)
+				cout << "(distance exceeded) ";
+			if (sim.getT() > 50000)
 				cout << "(time expired) ";
 			return pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
 		}

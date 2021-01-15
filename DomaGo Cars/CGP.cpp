@@ -12,17 +12,17 @@ using namespace std;
 
 minstd_rand randomEngineCGP;
 
-constexpr double MUTATION_PROB = 0.4;
-//constexpr double MUTATION_RATE = 0.05;
-constexpr int POPULATION_SIZE = 400;
-constexpr int GENERATIONS = 30;
+constexpr double MUTATION_PROB = 1;
+constexpr double MUTATION_RATE = 0.05;
+constexpr int POPULATION_SIZE = 10;
+constexpr int GENERATIONS = 10;
 constexpr int NUM_FUNCTIONS = 4;
 
 int numNodeInputs = 2;
 int numInputs = 6;
 int numOutputs = 2;
-int numRows = 5;
-int numCols = 5;
+int numRows = 10;
+int numCols = 10;
 int graphSize = numCols * numRows * (numNodeInputs + 1) + numOutputs;
 
 vector<Graph> graphs;
@@ -38,8 +38,7 @@ Graph mutation(Graph& g)
 {
     vector<int> graph = g.graph;
 
-    //int numMutations = round(graphSize / MUTATION_RATE);
-    int numMutations = 1;
+    int numMutations = round(graphSize / MUTATION_RATE);
 
     for (int i = 0; i < numMutations; i++) {
         int index = rand() % (graphSize);
@@ -74,9 +73,9 @@ Graph mutation(Graph& g)
 Graph mutateAndChooseBetter(Graph& parent) {
     Graph child = mutation(parent);
 
-    //if (child.fitness > parent.fitness)
+    if (child.fitness > parent.fitness)
         return child;
-    //return parent;
+    return parent;
 }
 
 vector<int> crossover(vector<int>& mainGraph, vector<int>& otherGraph)
@@ -112,7 +111,7 @@ Graph crossAndReturnBestOfThree(Graph &firstParent, Graph &secondParent)
         betterParent = secondParent;
     }
 
-    //cout << "Zapoceo crossover: fitnessi su: " << firstParent.fitness << " " << secondParent.fitness << " " << child.fitness << endl;
+    cout << "Zapoceo crossover: fitnessi su: " << firstParent.fitness << " " << secondParent.fitness << " " << child.fitness << endl;
 
     if (child.fitness > betterParent.fitness)
     {
@@ -285,6 +284,7 @@ void runCGP()
 
         int bestGraphIndex = findBestGraph();
         simulateCGP(graphs.at(bestGraphIndex).graph);
+        cout << "Fitness najbolje jedinke: " << graphs.at(bestGraphIndex).fitness << endl;
 
         //print(graphs.at(bestGraphIndex));
     }
