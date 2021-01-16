@@ -5,11 +5,11 @@
 #define EPSILON 1E-10
 
 // KOEF - koeficijent za ubrzanje ili usporenje simulacije
-#define KOEF 1
+#define KOEF 10
 
 // KONSTANTE ZA UBRZANJE/USPORENJE AUTICA
 // gas - konstantno povecava brzinu
-#define GAS_ACC 0.00002
+#define GAS_ACC 0.000013
 // kocnica - konstantno smanjuje brzinu
 #define BRAKE_ACC -0.00001
 // trenje - ovisi o brzini
@@ -27,7 +27,7 @@
 // rotacija autica pri mirovanju - ne ovisi o brzini
 #define ROTATION_IDX_0 0.001
 // rotacija autica pri voznji - ovisi o brzini
-#define ROTATION_IDX_1 0.1
+#define ROTATION_IDX_1 0.005
 
 #define WIDTH 1152
 #define HEIGHT 648

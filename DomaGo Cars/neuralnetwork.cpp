@@ -121,6 +121,21 @@ void mutate(vector<double>& individual) {
     }
 }
 
+void simulateNN(const vector<double>& individual) {
+    neuralnetwork nn(P, Q, R);
+
+    int k = 0;
+    for (int i = 0; i <= P; ++i) for (int j = 0; j < Q; ++j) {
+        nn.inHid[i][j] = individual[k++];
+    }
+    for (int i = 0; i <= Q; ++i) for (int j = 0; j < R; ++j) {
+        nn.hidOut[i][j] = individual[k++];
+    }
+
+    simulate(&nn);
+}
+
+
 void runNN() {
     randomEngine.seed(time(nullptr));
 
@@ -145,5 +160,6 @@ void runNN() {
 
         crossover(population[0], population[1], population[2]);
         mutate(population[2]);
+        simulateNN(population[2]);
     }
 }
