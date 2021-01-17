@@ -2,8 +2,7 @@
 #include <vector>
 #include <random>
 #include "Jedinka.h"
-
-void runNN();
+#include "main.h"
 
 struct neuralnetwork : Jedinka {
     int p, q, r;
@@ -62,4 +61,8 @@ struct neuralnetwork : Jedinka {
 
     }
 };
+
+vector<double> runNN();
+
+void simulateNN(const vector<double>& individual);
 

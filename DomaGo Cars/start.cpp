@@ -1,7 +1,20 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 #include "main.h"
 #include "neuralnetwork.h"
 #include "CGP.h"
+#include "storage.h"
+
+using namespace std;
+
+int nodeInputs = 2;
+int inputs = 6;
+int outputs = 2;
+int rows = 10;
+int cols = 10;
+
 
 int main() {
 	
@@ -9,13 +22,19 @@ int main() {
 	init();
 
 	// pokretanje uèenja pomoæu NN-a
-	runNN();
+	vector<double> nn = runNN();
+	storeNnDriver(nn);
+	vector<double> driver = readNnDriver();
+	simulateNN(driver);
 
 	// pokretanje uèenja pomoæu CGP-a
-	//runCGP();
+	/*CGP best = runCGP();
+	storeCgpDriver(best.graph);
+	vector<int> driver = readCgpDriver();
+	simulateCGP(driver);*/
 
 	// simulacija autica - korisnik vozac
 	//simulate();
-	
+
 	return 0;
 }

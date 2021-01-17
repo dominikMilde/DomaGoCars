@@ -135,7 +135,7 @@ void simulateNN(const vector<double>& individual) {
     simulate(&nn);
 }
 
-void runNN() {
+vector<double> runNN() {
     randomEngine.seed(time(nullptr));
 
     fillPopulation();
@@ -151,6 +151,10 @@ void runNN() {
             cout << fitness[best] << '\n';
             //print(population[best]);
             cout << flush;
+
+            if (fitness[best] > 100) {
+                return population[best];
+            }
         }
 
         //izbacujemo najlosijeg iz turnira i zamjenjujemo ga djetetom
@@ -159,6 +163,8 @@ void runNN() {
 
         crossover(population[0], population[1], population[2]);
         mutate(population[2]);
-        simulateNN(population[2]);
+        //simulateNN(population[best]);
     }
+    int best = max_element(fitness.begin(), fitness.end()) - fitness.begin();
+    return population[best];
 }

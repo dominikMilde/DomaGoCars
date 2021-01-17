@@ -151,7 +151,12 @@ void simulate(Jedinka* jedinka) {
 
 		auto color1 = image.getPixel(x, y);
 
-		if (color1 == sf::Color::Black || sim.getAngleDistance() > 2500 || sim.getT() > 50000)
+		/*if (color1 == sf::Color::Black || sim.getAngleDistance() > 2500 || sim.getT() > 50000)
+		{
+			return;
+		}*/
+
+		if (color1 == sf::Color::Black)
 		{
 			return;
 		}

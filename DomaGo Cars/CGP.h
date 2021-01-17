@@ -2,12 +2,11 @@
 #include <vector>
 #include <random>
 #include "Jedinka.h"
+#include "main.h"
 
 using namespace std;
 
 constexpr int BREAKPOINT = 100;
-
-void runCGP();
 
 struct Graph {
     vector<int> graph;
@@ -158,4 +157,9 @@ struct CGP : Jedinka {
         }
         return rez;
     }
+
 };
+
+CGP runCGP();
+
+void simulateCGP(vector<int>& graph);

@@ -261,7 +261,7 @@ void simulateCGP(vector<int> &graph) {
     simulate(&cgp);
 }
 
-void runCGP()
+CGP runCGP()
 {
     cout << "Started CGP learning" << endl 
         << "Number of generations: " << GENERATIONS << endl 
@@ -273,7 +273,7 @@ void runCGP()
     fillInitialPopulationCGP();
 
     int bestGraphIndex = findBestGraph();
-    simulateCGP(graphs.at(bestGraphIndex).graph);
+    //simulateCGP(graphs.at(bestGraphIndex).graph);
 
     for (int gen = 1; gen <= GENERATIONS; ++gen) {
 
@@ -283,9 +283,18 @@ void runCGP()
         runGeneration();
 
         int bestGraphIndex = findBestGraph();
-        simulateCGP(graphs.at(bestGraphIndex).graph);
+        //simulateCGP(graphs.at(bestGraphIndex).graph);
         cout << "Fitness najbolje jedinke: " << graphs.at(bestGraphIndex).fitness << endl;
 
+        if (graphs.at(bestGraphIndex).fitness > 100) {
+            CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
+            cgp.graph = graphs.at(bestGraphIndex).graph;
+            return cgp;
+        }
         //print(graphs.at(bestGraphIndex));
     }
+
+    CGP cgp(numInputs, numOutputs, numRows, numCols, numNodeInputs);
+    cgp.graph = graphs.at(bestGraphIndex).graph;
+    return cgp;
 }
