@@ -4,18 +4,15 @@
 #define SQRT2 1.414213562
 #define EPSILON 1E-10
 
-// KOEF - koeficijent za ubrzanje ili usporenje simulacije
-#define KOEF 10
-
 // KONSTANTE ZA UBRZANJE/USPORENJE AUTICA
 // gas - konstantno povecava brzinu
 #define GAS_ACC 0.000013
 // kocnica - konstantno smanjuje brzinu
-#define BRAKE_ACC -0.00001
+#define BRAKE_ACC -0.000008
 // trenje - ovisi o brzini
 #define RR 0.0003
 // otpor zraka - ovisi o brzini na kvadrat
-#define DRAG 0.00001
+#define DRAG 0.00005
 
 // KONSTANTE ZA SKRETANJE AUTICA
 // brzina okretanja volana
@@ -27,7 +24,7 @@
 // rotacija autica pri mirovanju - ne ovisi o brzini
 #define ROTATION_IDX_0 0.001
 // rotacija autica pri voznji - ovisi o brzini
-#define ROTATION_IDX_1 0.005
+#define ROTATION_IDX_1 0.01
 
 #define WIDTH 1152
 #define HEIGHT 648
@@ -47,6 +44,9 @@ const Vector2 center = Vector2(WIDTH / 2.0f, HEIGHT / 2.0f);
 class simulator {
 private:
     bool mat[WIDTH][HEIGHT];
+
+    // KOEF - koeficijent za ubrzanje ili usporenje simulacije
+    double KOEF;
 
     Vector2 pos;
     // end su koordinate donjeg desnog vrha prozora, pretpostavimo da prozor pocinje od (0,0)
@@ -90,6 +90,10 @@ public:
     float getTopRightDistance() const { return topRightDistance; }
     float getAngleDistance() const { return angleDistance; }
     void setAngleDistance(float x) { angleDistance = x; }
+
+    void setKOEF(float KOEF) {
+        this->KOEF = KOEF;
+    }
 
     void setV(float v) {
         this->v = v;

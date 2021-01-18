@@ -105,6 +105,10 @@ void simulate(Jedinka* jedinka) {
 
 	sf::Vector2f vector = player.getPosition();
 	simulator sim(vector.x, vector.y, image);
+	
+	if (jedinka == nullptr)
+		sim.setKOEF(1);
+	else sim.setKOEF(5);
 
 	while (window.isOpen())
 	{
@@ -176,6 +180,7 @@ double evaluate(Jedinka* jedinka)
 
 	sf::Vector2f vector = player.getPosition();
 	simulator sim(vector.x, vector.y, image);
+	sim.setKOEF(5);
 
 	while (true)
 	{

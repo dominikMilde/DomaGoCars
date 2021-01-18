@@ -60,7 +60,7 @@ void simulator::update() {
 
     if (steering > 0.) steering -= STEERING_RETURN_RATE;
     else if (steering < 0.) steering += STEERING_RETURN_RATE;
-    angle += (ROTATION_IDX_1 * getV() + ROTATION_IDX_0) * steering;
+    angle += KOEF * (ROTATION_IDX_1 * getV() + ROTATION_IDX_0) * steering;
     angle = fmod(angle + 360, 360);
 
     Vector2 oldPos = pos;
