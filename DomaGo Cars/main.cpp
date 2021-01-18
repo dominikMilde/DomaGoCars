@@ -49,7 +49,7 @@ void init() {
 	tracks.push_back("background1.jpg");
 	tracks.push_back("background2.jpg");
 	tracks.push_back("background3.jpg");
-	tracks.push_back("background4.jpg");
+	//tracks.push_back("background4.jpg");
 
 	displayedTrack = "background5.jpg";
 
@@ -131,10 +131,7 @@ void userDriver(simulator& sim) {
 }
 
 void simulate(Jedinka* jedinka) {
-	for (int i = 0; i < tracks.size(); i++)
-		cout << tracks.at(i) << " " << endl;
-	cout << displayedTrack << " " << endl;
-	
+
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
 	player.setRotation(0);
 
@@ -143,7 +140,7 @@ void simulate(Jedinka* jedinka) {
 	
 	if (jedinka == nullptr)
 		sim.setKOEF(1);
-	else sim.setKOEF(5);
+	else sim.setKOEF(20);
 
 	while (window.isOpen())
 	{
@@ -190,12 +187,12 @@ void simulate(Jedinka* jedinka) {
 
 		auto color1 = displayedImage.getPixel(x, y);
 
-		/*
-		if (color1 == sf::Color::Black || sim.getAngleDistance() > 2500 || sim.getT() > 50000)
+		
+		if (color1 == sf::Color::Black || sim.getAngleDistance() > 5000 || sim.getT() > 50000)
 		{
 			return;
 		}
-		*/
+		
 		
 
 		if (color1 == sf::Color::Black)
@@ -223,6 +220,9 @@ double evaluate(Jedinka* jedinka)
 		simulator sim(vector.x, vector.y, image);
 		sim.setKOEF(5);
 
+		int maxDistance = 2500;
+		int maxT = 50000;
+
 		while (true)
 		{
 			int akcija = run(sim, jedinka);
@@ -240,24 +240,27 @@ double evaluate(Jedinka* jedinka)
 				cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance()
 				<< " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;*/
 
-			auto color1 = image.getPixel(x, y);
+			if (x < 0 || x > imageWidth || y < 0 || y > imageHeight) {
+				fitness += pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
+				break;
+			}
 
-			int maxDistance = 2500;
-			int maxT = 50000;
+			auto color1 = image.getPixel(x, y);
 
 			if (color1 == sf::Color::Black || sim.getAngleDistance() > maxDistance || sim.getT() > maxT)
 			{
 				//cout << "fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
 				if (sim.getAngleDistance() > maxDistance)
 					cout << "(distance exceeded) ";
-				if (sim.getT() > 50000)
+				if (sim.getT() > 100000)
 					cout << "(time expired) ";
 				fitness += pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
 				break;
 			}
 		}
 
+		//simulate(jedinka);
 	}
-	
+
 	return fitness;
 }
