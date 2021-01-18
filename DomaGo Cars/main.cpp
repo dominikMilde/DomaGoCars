@@ -46,10 +46,11 @@ void init() {
 
 	// ovdje smo hardkodirali da mozemo isprobat, zanemari ovu inicijalizaciju tracks i displayedTrack
 
-	tracks.push_back("background1.jpg");
-	tracks.push_back("background2.jpg");
-	tracks.push_back("background3.jpg");
+	//tracks.push_back("background1.jpg");
+	//tracks.push_back("background2.jpg");
+	//tracks.push_back("background3.jpg");
 	//tracks.push_back("background4.jpg");
+	tracks.push_back("background5.jpg");
 
 	displayedTrack = "background5.jpg";
 
@@ -218,7 +219,7 @@ double evaluate(Jedinka* jedinka)
 
 		sf::Vector2f vector = player.getPosition();
 		simulator sim(vector.x, vector.y, image);
-		sim.setKOEF(5);
+		sim.setKOEF(10);
 
 		int maxDistance = 2500;
 		int maxT = 50000;

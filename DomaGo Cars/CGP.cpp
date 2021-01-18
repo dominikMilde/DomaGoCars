@@ -12,10 +12,10 @@ using namespace std;
 
 minstd_rand randomEngineCGP;
 
-constexpr double MUTATION_PROB = 0.1;
+constexpr double MUTATION_PROB = 0.4;
 constexpr double MUTATION_RATE = 0.1;
 constexpr int POPULATION_SIZE = 25;
-constexpr int GENERATIONS = 10;
+constexpr int GENERATIONS = 500;
 constexpr int NUM_FUNCTIONS = 4;
 
 int numNodeInputs = 2;
