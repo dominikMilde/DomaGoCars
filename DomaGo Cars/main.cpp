@@ -27,18 +27,49 @@ int imageHeight = 648;
 sf::RenderWindow window(sf::VideoMode(imageWidth, imageHeight), "SFML auti", sf::Style::Close | sf::Style::Titlebar);
 sf::RectangleShape background(sf::Vector2f(imageWidth, imageHeight));
 sf::Texture backgroundTexture;
+
+vector<sf::Image> images;
+sf::Image displayedImage;
+
 sf::CircleShape player(20.0f);
-sf::Image image;
 sf::Texture playerTexture;
 
+vector<string> tracks;
+string displayedTrack;
+
 void init() {
-	backgroundTexture.loadFromFile("background.jpg");
-	background.setTexture(&backgroundTexture);
+	// TODO Vilim - Ovdje uèitaj iz config datoteke
+	// tracks - imena datoteka staza na kojima jedinke uèe
+	// displayedTrack - ime datoteke staze koja se prikazuje
+	//tracks = config.fillTracks();
+	//displayedTrack = config.getDisplayedTrack();
+
+	// ovdje smo hardkodirali da mozemo isprobat, zanemari ovu inicijalizaciju tracks i displayedTrack
+
+	tracks.push_back("background1.jpg");
+	tracks.push_back("background2.jpg");
+	tracks.push_back("background3.jpg");
+	tracks.push_back("background4.jpg");
+
+	displayedTrack = "background5.jpg";
+
+	// dalje ostaje isto
+
 	player.setOrigin(12.0f, 15.0f);
 	player.setScale(1.5, 1.2);
 	playerTexture.loadFromFile("avatar.jpg");
 	player.setTexture(&playerTexture);
-	image = backgroundTexture.copyToImage();
+
+	for (int i = 0; i < tracks.size(); i++) {
+		sf::Texture texture;
+		texture.loadFromFile(tracks.at(i));
+		images.push_back(texture.copyToImage());
+	}
+
+	backgroundTexture.loadFromFile(displayedTrack);
+	background.setTexture(&backgroundTexture);
+	displayedImage = backgroundTexture.copyToImage();
+	
 }
 
 void AIDriver(int akcija, simulator& sim) {
@@ -100,11 +131,15 @@ void userDriver(simulator& sim) {
 }
 
 void simulate(Jedinka* jedinka) {
+	for (int i = 0; i < tracks.size(); i++)
+		cout << tracks.at(i) << " " << endl;
+	cout << displayedTrack << " " << endl;
+	
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
 	player.setRotation(0);
 
 	sf::Vector2f vector = player.getPosition();
-	simulator sim(vector.x, vector.y, image);
+	simulator sim(vector.x, vector.y, displayedImage);
 	
 	if (jedinka == nullptr)
 		sim.setKOEF(1);
@@ -153,13 +188,14 @@ void simulate(Jedinka* jedinka) {
 		
 		//if (sim.getT() % 2000 == 0) sim.print();
 
-		auto color1 = image.getPixel(x, y);
+		auto color1 = displayedImage.getPixel(x, y);
 
-		
+		/*
 		if (color1 == sf::Color::Black || sim.getAngleDistance() > 2500 || sim.getT() > 50000)
 		{
 			return;
 		}
+		*/
 		
 
 		if (color1 == sf::Color::Black)
@@ -175,43 +211,53 @@ void simulate() {
 
 double evaluate(Jedinka* jedinka)
 {
-	player.setPosition(imageWidth / 2, imageHeight / 1.2);
-	player.setRotation(0);
+	double fitness = 0;
 
-	sf::Vector2f vector = player.getPosition();
-	simulator sim(vector.x, vector.y, image);
-	sim.setKOEF(5);
+	for (int i = 0; i < tracks.size(); i++) {
+		sf::Image image = images.at(i);
 
-	while (true)
-	{
-		int akcija = run(sim, jedinka);
-		AIDriver(akcija, sim);
+		player.setPosition(imageWidth / 2, imageHeight / 1.2);
+		player.setRotation(0);
 
-		sim.update();
+		sf::Vector2f vector = player.getPosition();
+		simulator sim(vector.x, vector.y, image);
+		sim.setKOEF(5);
 
-		player.setPosition(sim.getX(), sim.getY());
-		player.setRotation(sim.getAngle() * -1.0);
-
-		float x = player.getPosition().x;
-		float y = player.getPosition().y;
-		
-		/*if (sim.getT() % 2000 == 0)
-			cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance()
-			<< " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;*/
-
-		auto color1 = image.getPixel(x, y);
-
-		int maxDistance = 2500;
-		int maxT = 50000;
-
-		if (color1 == sf::Color::Black || sim.getAngleDistance() > maxDistance || sim.getT() > maxT)
+		while (true)
 		{
-			//cout << "fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
-			if (sim.getAngleDistance() > maxDistance)
-				cout << "(distance exceeded) ";
-			if (sim.getT() > 50000)
-				cout << "(time expired) ";
-			return pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
+			int akcija = run(sim, jedinka);
+			AIDriver(akcija, sim);
+
+			sim.update();
+
+			player.setPosition(sim.getX(), sim.getY());
+			player.setRotation(sim.getAngle() * -1.0);
+
+			float x = player.getPosition().x;
+			float y = player.getPosition().y;
+
+			/*if (sim.getT() % 2000 == 0)
+				cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance()
+				<< " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;*/
+
+			auto color1 = image.getPixel(x, y);
+
+			int maxDistance = 2500;
+			int maxT = 50000;
+
+			if (color1 == sf::Color::Black || sim.getAngleDistance() > maxDistance || sim.getT() > maxT)
+			{
+				//cout << "fitness: " << pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT() << endl;
+				if (sim.getAngleDistance() > maxDistance)
+					cout << "(distance exceeded) ";
+				if (sim.getT() > 50000)
+					cout << "(time expired) ";
+				fitness += pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
+				break;
+			}
 		}
+
 	}
+	
+	return fitness;
 }

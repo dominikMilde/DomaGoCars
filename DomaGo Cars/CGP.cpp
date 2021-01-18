@@ -12,9 +12,9 @@ using namespace std;
 
 minstd_rand randomEngineCGP;
 
-constexpr double MUTATION_PROB = 1;
-constexpr double MUTATION_RATE = 0.05;
-constexpr int POPULATION_SIZE = 10;
+constexpr double MUTATION_PROB = 0.1;
+constexpr double MUTATION_RATE = 0.1;
+constexpr int POPULATION_SIZE = 25;
 constexpr int GENERATIONS = 10;
 constexpr int NUM_FUNCTIONS = 4;
 
@@ -73,9 +73,9 @@ Graph mutation(Graph& g)
 Graph mutateAndChooseBetter(Graph& parent) {
     Graph child = mutation(parent);
 
-    if (child.fitness > parent.fitness)
+    //if (child.fitness > parent.fitness)
         return child;
-    return parent;
+    //return parent;
 }
 
 vector<int> crossover(vector<int>& mainGraph, vector<int>& otherGraph)
