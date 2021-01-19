@@ -149,7 +149,7 @@ void runNN() {
         //ispis ponekad i za kraj
         int best = max_element(fitness.begin(), fitness.end()) - fitness.begin();
         if (gen % 20 == 0 || -fitness[best] < 1e-5) {
-            cout << fitness[best] << '\n';
+            cout << "gen#" << gen << ": best fitness = " << fitness[best] << '\n';
             //print(population[best]);
             cout << flush;
         }

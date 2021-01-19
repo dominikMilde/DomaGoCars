@@ -53,7 +53,6 @@ private:
     Vector2 end;
     double v;
     double angle;
-    double steering;
     double acc;
     double traction;
     int t;
@@ -111,12 +110,10 @@ public:
         this->t = t;
     }
     void rotateLeft() {
-        if (steering < MAX_STEERING_ANGLE)
-            steering += STEERING_RATE;
+        angle += (ROTATION_IDX_1 * getV() + ROTATION_IDX_0) * KOEF;
     }
     void rotateRight() {
-        if (steering > -MAX_STEERING_ANGLE)
-            steering -= STEERING_RATE;
+        angle -= (ROTATION_IDX_1 * getV() + ROTATION_IDX_0) * KOEF;
     }
     void gas() {
         traction = GAS_ACC;
