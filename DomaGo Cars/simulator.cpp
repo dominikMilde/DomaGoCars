@@ -42,6 +42,7 @@ simulator::simulator(float x1, float y1, const sf::Image& image) {
     v = 0.0;
     angle = 0.0;
     acc = 0.0;
+    traction = 0.0;
     topDistance = 0.0f;
     leftDistance = 0.0f;
     rightDistance = 0.0f;
@@ -52,12 +53,16 @@ simulator::simulator(float x1, float y1, const sf::Image& image) {
 
 void simulator::update() {
     t += 1;
-    v = (v + acc * T) * DRAG_K;
-    if (v < 0.1) v = 0.1;
+    acc = traction - DRAG * v * v - RR * v;
+    v = v + acc * KOEF;
+    if (v < 0) v = 0;
+
     angle = fmod(angle + 360, 360);
+
     Vector2 oldPos = pos;
-    pos.x = pos.x + cos(angle * PI / 180) * v * T;
-    pos.y = pos.y - sin(angle * PI / 180) * v * T;
+    pos.x = pos.x + cos(angle * PI / 180) * v * KOEF;
+    pos.y = pos.y - sin(angle * PI / 180) * v * KOEF;
+
     topDistance = getTopBoundDistance(pos, angle);
     leftDistance = getLeftBoundDistance(pos, angle);
     rightDistance = getRightBoundDistance(pos, angle);
@@ -67,5 +72,3 @@ void simulator::update() {
     if (isfinite(newAngle))
         angleDistance += newAngle;
 }
-
-
