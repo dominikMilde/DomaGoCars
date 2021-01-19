@@ -5,38 +5,28 @@
 #include <algorithm>
 #include "main.h"
 #include "neuralnetwork.h"
+#include "config.h"
 
 using namespace std;
 
 minstd_rand randomEngine;
-
-constexpr double MUTATION_STRENGTH = 0.4;
-constexpr double MUTATION_PROB = 0.2;
-
-constexpr int POPULATION_SIZE = 10;
-constexpr int P = 6, Q = 6, R = 7;
-constexpr int INHID_GENES = (P + 1) * Q;
-constexpr int HIDOUT_GENES = (Q + 1) * R;
-constexpr int GENES_NUMBER = INHID_GENES + HIDOUT_GENES;
-constexpr int TOURNAMENT_SIZE = 3;
-constexpr int GENERATIONS = 100000;
 
 vector<vector<double>> population;
 vector<double> fitness;
 
 void fillPopulation() {
     population.clear();
-    population.reserve(POPULATION_SIZE);
+    population.reserve(neuralNetworkConfig.populationSize);
 
     //popuni populaciju sa svim vrijednostima random(0, 1)
     uniform_real_distribution<double> dist(-1, 1);
-    for (int i = 0; i < POPULATION_SIZE; ++i) {
+    for (int i = 0; i < neuralNetworkConfig.populationSize; ++i) {
         vector<double> individual;
 
-        for (int i = 0; i <= P; ++i) for (int j = 0; j < Q; ++j) {
+        for (int i = 0; i <= neuralNetworkConfig.p; ++i) for (int j = 0; j < neuralNetworkConfig.q; ++j) {
             individual.push_back(dist(randomEngine));
         }
-        for (int i = 0; i <= Q; ++i) for (int j = 0; j < R; ++j) {
+        for (int i = 0; i <= neuralNetworkConfig.q; ++i) for (int j = 0; j < neuralNetworkConfig.r; ++j) {
             individual.push_back(dist(randomEngine));
         }
 
@@ -47,14 +37,14 @@ void fillPopulation() {
 }
 
 double evaluate(const vector<double>& individual) {
-    neuralnetwork nn(P, Q, R);
+    neuralnetwork nn(neuralNetworkConfig.p, neuralNetworkConfig.q, neuralNetworkConfig.r);
 
     //prebaci vrijednosti u tezine mreze
     int k = 0;
-    for (int i = 0; i <= P; ++i) for (int j = 0; j < Q; ++j) {
+    for (int i = 0; i <= neuralNetworkConfig.p; ++i) for (int j = 0; j < neuralNetworkConfig.q; ++j) {
         nn.inHid[i][j] = individual[k++];
     }
-    for (int i = 0; i <= Q; ++i) for (int j = 0; j < R; ++j) {
+    for (int i = 0; i <= neuralNetworkConfig.q; ++i) for (int j = 0; j < neuralNetworkConfig.r; ++j) {
         nn.hidOut[i][j] = individual[k++];
     }
 
@@ -62,13 +52,13 @@ double evaluate(const vector<double>& individual) {
 }
 
 void print(const vector<double>& individual) {
-    neuralnetwork nn(P, Q, R);
+    neuralnetwork nn(neuralNetworkConfig.p, neuralNetworkConfig.q, neuralNetworkConfig.r);
 
     int k = 0;
-    for (int i = 0; i <= P; ++i) for (int j = 0; j < Q; ++j) {
+    for (int i = 0; i <= neuralNetworkConfig.p; ++i) for (int j = 0; j < neuralNetworkConfig.q; ++j) {
         nn.inHid[i][j] = individual[k++];
     }
-    for (int i = 0; i <= Q; ++i) for (int j = 0; j < R; ++j) {
+    for (int i = 0; i <= neuralNetworkConfig.q; ++i) for (int j = 0; j < neuralNetworkConfig.r; ++j) {
         nn.hidOut[i][j] = individual[k++];
     }
 
@@ -79,7 +69,7 @@ void print(const vector<double>& individual) {
 
         cout << a << " " << b << " " << nn.outputs[0] << '\n';
     }
-    /*for (int i = 0; i < GENES_NUMBER; ++i) {
+    /*for (int i = 0; i < neuralNetworkConfig.genesNumber; ++i) {
         cout<<individual[i]<<" ";
     }
     cout<<endl;*/
@@ -87,9 +77,9 @@ void print(const vector<double>& individual) {
 
 void calculateFitness() {
     fitness.clear();
-    fitness.reserve(TOURNAMENT_SIZE);
+    fitness.reserve(neuralNetworkConfig.tournamentSize);
 
-    for (int i = 0; i < TOURNAMENT_SIZE; ++i) {
+    for (int i = 0; i < neuralNetworkConfig.tournamentSize; ++i) {
         fitness.push_back(evaluate(population[i]));
     }
 
@@ -99,9 +89,9 @@ void calculateFitness() {
 //za crossover ce biti nasumicna linearna interpolacija izmeu roditelja
 void crossover(vector<double>& mom, vector<double>& dad, vector<double>& kid) {
     kid.clear();
-    kid.reserve(GENES_NUMBER);
+    kid.reserve(neuralNetworkConfig.genesNumber);
     static uniform_real_distribution<double> dist(0, 1);
-    for (int i = 0; i < GENES_NUMBER; ++i) {
+    for (int i = 0; i < neuralNetworkConfig.genesNumber; ++i) {
         kid.push_back(mom[i] + dist(randomEngine) * (dad[i] - mom[i]));
     }
     kid.shrink_to_fit();
@@ -109,11 +99,11 @@ void crossover(vector<double>& mom, vector<double>& dad, vector<double>& kid) {
 
 //za mutaciju ce se nasumicne gene mrdnuti u stranu s normalnom distribucijom
 void mutate(vector<double>& individual) {
-    //static uniform_int_distribution<int> posDist(0, GENES_NUMBER - 1);
-    static normal_distribution<double> valDist(0, MUTATION_STRENGTH);
-    static bernoulli_distribution choice(MUTATION_PROB);
+    //static uniform_int_distribution<int> posDist(0, neuralNetworkConfig.genesNumber - 1);
+    static normal_distribution<double> valDist(0, neuralNetworkConfig.mutationStrength);
+    static bernoulli_distribution choice(neuralNetworkConfig.mutationProb);
     //int pos = posDist(randomEngine);
-    for (int pos = 0; pos < GENES_NUMBER; ++pos) {
+    for (int pos = 0; pos < neuralNetworkConfig.genesNumber; ++pos) {
         if (choice(randomEngine)) {
             double val = valDist(randomEngine);
             individual[pos] += val;
@@ -122,13 +112,13 @@ void mutate(vector<double>& individual) {
 }
 
 void simulateNN(const vector<double>& individual) {
-    neuralnetwork nn(P, Q, R);
+    neuralnetwork nn(neuralNetworkConfig.p, neuralNetworkConfig.q, neuralNetworkConfig.r);
 
     int k = 0;
-    for (int i = 0; i <= P; ++i) for (int j = 0; j < Q; ++j) {
+    for (int i = 0; i <= neuralNetworkConfig.p; ++i) for (int j = 0; j < neuralNetworkConfig.q; ++j) {
         nn.inHid[i][j] = individual[k++];
     }
-    for (int i = 0; i <= Q; ++i) for (int j = 0; j < R; ++j) {
+    for (int i = 0; i <= neuralNetworkConfig.q; ++i) for (int j = 0; j < neuralNetworkConfig.r; ++j) {
         nn.hidOut[i][j] = individual[k++];
     }
 
@@ -140,7 +130,7 @@ vector<double> runNN() {
 
     fillPopulation();
 
-    for (int gen = 1; gen <= GENERATIONS; ++gen) {
+    for (int gen = 1; gen <= neuralNetworkConfig.generations; ++gen) {
         shuffle(population.begin(), population.end(), randomEngine);
 
         calculateFitness();

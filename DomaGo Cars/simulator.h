@@ -1,35 +1,12 @@
 #pragma once
+#include "config.h"
 
 #define PI 3.14159265
 #define SQRT2 1.414213562
 #define EPSILON 1E-10
 
-// KONSTANTE ZA UBRZANJE/USPORENJE AUTICA
-// gas - konstantno povecava brzinu
-#define GAS_ACC 0.000013
-// kocnica - konstantno smanjuje brzinu
-#define BRAKE_ACC -0.000008
-// trenje - ovisi o brzini
-#define RR 0.0003
-// otpor zraka - ovisi o brzini na kvadrat
-#define DRAG 0.00005
-
-// KONSTANTE ZA SKRETANJE AUTICA
-// brzina okretanja volana
-#define STEERING_RATE 0.007
-// brzina vracanja volana u normalu
-#define STEERING_RETURN_RATE 0.005
-// maksimalan kut zakretaja volana
-#define MAX_STEERING_ANGLE 10
-// rotacija autica pri mirovanju - ne ovisi o brzini
-#define ROTATION_IDX_0 0.001
-// rotacija autica pri voznji - ovisi o brzini
-#define ROTATION_IDX_1 0.01
-
 #define WIDTH 1152
 #define HEIGHT 648
-
-#define BLOK 20
 
 struct Vector2
 {
@@ -110,16 +87,16 @@ public:
         this->t = t;
     }
     void rotateLeft() {
-        angle += (ROTATION_IDX_1 * getV() + ROTATION_IDX_0) * KOEF;
+        angle += (globalConfig.rotationIdx1 * getV() + globalConfig.rotationIdx0) * KOEF;
     }
     void rotateRight() {
-        angle -= (ROTATION_IDX_1 * getV() + ROTATION_IDX_0) * KOEF;
+        angle -= (globalConfig.rotationIdx1 * getV() + globalConfig.rotationIdx0) * KOEF;
     }
     void gas() {
-        traction = GAS_ACC;
+        traction = globalConfig.gasAcc;
     }
     void brake() {
-        traction = BRAKE_ACC;
+        traction = globalConfig.brakeAcc;
     }
     void idle() {
         traction = 0.0;

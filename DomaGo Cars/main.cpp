@@ -4,15 +4,9 @@
 #include <SFML/Graphics.hpp>
 #include "simulator.h"
 #include "CGP.h"
+#include "config.h"
 
 using namespace std;
-
-constexpr double FITNESS_KOEF = 2.5;
-
-constexpr int MAX_SIM_TIME = 2.5;
-constexpr int MAX_SIM_DIST = 2.5;
-constexpr int MAX_EVA_TIME = 2.5;
-constexpr int MAX_EVA_DIST = 2.5;
 
 int run(const simulator& sim, Jedinka* jedinka) {
 
@@ -200,9 +194,9 @@ void simulate(Jedinka* jedinka) {
 
 		if (color1 == sf::Color::Black)
 		{
-			if (sim.getAngleDistance() > MAX_SIM_DIST)
+			if (sim.getAngleDistance() > globalConfig.maxSimDist)
 				cout << "(distance exceeded) ";
-			else if (sim.getT() > MAX_SIM_TIME)
+			else if (sim.getT() > globalConfig.maxSimTime)
 				cout << "(time expired) ";
 			else
 				cout << "(crashed) ";
@@ -252,21 +246,21 @@ double evaluate(Jedinka* jedinka)
 				<< " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;*/
 
 			if (x < 0 || x > imageWidth || y < 0 || y > imageHeight) {
-				fitness += pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT();
+				fitness += pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getT();
 				break;
 			}
 
 			auto color1 = image.getPixel(x, y);
 
-			if (color1 == sf::Color::Black || sim.getAngleDistance() > MAX_EVA_DIST || sim.getT() > MAX_EVA_TIME)
+			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxEvaDist || sim.getT() > globalConfig.maxEvaTime)
 			{
-				if (sim.getAngleDistance() > MAX_EVA_DIST)
+				if (sim.getAngleDistance() > globalConfig.maxEvaDist)
 					cout << "(distance exceeded) ";
-				else if (sim.getT() > MAX_EVA_TIME)
+				else if (sim.getT() > globalConfig.maxEvaTime)
 					cout << "(time expired) ";
 				else
 					cout << "(crashed) ";
-				fitness += pow(pow(sim.getAngleDistance(), FITNESS_KOEF) / sim.getT(), 0.4);
+				fitness += pow(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getT(), 0.4);
 				break;
 			}
 		}

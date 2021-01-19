@@ -9,14 +9,14 @@ float simulator::getDistanceToBound(Vector2 pos, float angle) const {
     float dirX = cos(angle / 180 * PI);
     float dirY = -sin(angle / 180 * PI); // Y se smanjuje prema gore
 
-    int dist = BLOK;
+    int dist = globalConfig.blok;
     while (true) {
         int x = round(pos.x + dist * dirX);
         int y = round(pos.y + dist * dirY);
         if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || mat[x][y]) break;
-        dist += BLOK;
+        dist += globalConfig.blok;
     }
-    dist -= BLOK;
+    dist -= globalConfig.blok;
     while (true) {
         int x = round(pos.x + dist * dirX);
         int y = round(pos.y + dist * dirY);
@@ -53,7 +53,7 @@ simulator::simulator(float x1, float y1, const sf::Image& image) {
 
 void simulator::update() {
     t += 1;
-    acc = traction - DRAG * v * v - RR * v;
+    acc = traction - globalConfig.drag * v * v - globalConfig.rr * v;
     v = v + acc * KOEF;
     if (v < 0) v = 0;
 

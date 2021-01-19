@@ -6,18 +6,14 @@
 #include "neuralnetwork.h"
 #include "CGP.h"
 #include "storage.h"
+#include "config.h"
 
 using namespace std;
 
-int nodeInputs = 2;
-int inputs = 6;
-int outputs = 2;
-int rows = 10;
-int cols = 10;
-
-
 int main() {
 	
+	initConfig();
+
 	// inicijalizira simulator
 	init();
 

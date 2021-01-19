@@ -30,25 +30,31 @@
     <ClCompile Include="start.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CGP.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="simulator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="neuralnetwork.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="config.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Jedinka.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simulator.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="storage.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="neuralnetwork.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGP.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

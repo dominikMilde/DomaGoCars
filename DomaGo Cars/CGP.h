@@ -3,10 +3,9 @@
 #include <random>
 #include "Jedinka.h"
 #include "main.h"
+#include "config.h"
 
 using namespace std;
-
-constexpr int BREAKPOINT = 100;
 
 struct Graph {
     vector<int> graph;
@@ -76,12 +75,12 @@ struct CGP : Jedinka {
 
         std::string action = "";
 
-        if (speed < -BREAKPOINT) action += "00"; //uspori
-        else if (speed > BREAKPOINT) action += "11"; //ubrzaj
+        if (speed < -cgpConfig.breakpoint) action += "00"; //uspori
+        else if (speed > cgpConfig.breakpoint) action += "11"; //ubrzaj
         else action += "01"; //idle
 
-        if (angle < -BREAKPOINT) action += "00"; //left
-        else if (angle > BREAKPOINT) action += "11"; //right
+        if (angle < -cgpConfig.breakpoint) action += "00"; //left
+        else if (angle > cgpConfig.breakpoint) action += "11"; //right
         else action += "01"; //nista
 
         if (action == "0111") {
