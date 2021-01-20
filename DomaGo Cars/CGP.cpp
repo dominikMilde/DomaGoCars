@@ -248,7 +248,7 @@ void simulateCGP(vector<int> &graph) {
     simulate(&cgp);
 }
 
-CGP runCGP()
+vector<int> runCGP()
 {
     cout << "Started CGP learning" << endl 
         << "Number of generations: " << cgpConfig.generations << endl

@@ -159,6 +159,6 @@ struct CGP : Jedinka {
 
 };
 
-CGP runCGP();
+vector<int> runCGP();
 
 void simulateCGP(vector<int>& graph);
