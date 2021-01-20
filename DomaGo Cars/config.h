@@ -1,19 +1,17 @@
 #pragma once
+#include <string>
+#include <vector>
 
 struct DgcConfig {
-	//start
-	int nodeInputs;
-	int inputs;
-	int outputs;
-	int rows;
-	int cols;
-
 	//main
-	int fitnessKoef;
+	double fitnessKoef;
 	int maxSimTime;
 	int maxSimDist;
 	int maxEvaTime;
 	int maxEvaDist;
+
+	std::vector<std::string> tracks;
+	std::string displayedTrack;
 
 	//simulator
 	double gasAcc;

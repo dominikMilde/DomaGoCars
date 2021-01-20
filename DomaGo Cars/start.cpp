@@ -6,7 +6,6 @@
 #include "neuralnetwork.h"
 #include "CGP.h"
 #include "storage.h"
-#include "config.h"
 
 using namespace std;
 

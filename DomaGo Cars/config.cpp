@@ -13,23 +13,22 @@ CgpConfig cgpConfig;
 void initConfig() {
 	Config dgcConfig;
 	dgcConfig.readFile("dgc.cfg");
-	Setting& startSetting = dgcConfig.lookup("start");
 	Setting& mainSetting = dgcConfig.lookup("main");
 	Setting& simulatorSetting = dgcConfig.lookup("simulator");
 	Setting& neuralNetworkSetting = dgcConfig.lookup("neuralNetwork");
-	Setting& cgpSetting = dgcConfig.lookup("cgp");
-
-	startSetting.lookupValue("nodeInputs", globalConfig.nodeInputs);
-	startSetting.lookupValue("nodeinputsInputs", globalConfig.inputs);
-	startSetting.lookupValue("outputs", globalConfig.outputs);
-	startSetting.lookupValue("rows", globalConfig.rows);
-	startSetting.lookupValue("cols", globalConfig.cols);
+	Setting& cgpSetting = dgcConfig.lookup("cgp");+
 
 	mainSetting.lookupValue("fitnessKoef", globalConfig.fitnessKoef);
 	mainSetting.lookupValue("maxSimTime", globalConfig.maxSimTime);
 	mainSetting.lookupValue("maxSimDist", globalConfig.maxSimDist);
 	mainSetting.lookupValue("maxEvaTime", globalConfig.maxEvaTime);
 	mainSetting.lookupValue("maxEvaDist", globalConfig.maxEvaDist);
+
+	Setting& tracksArray = mainSetting.lookup("tracks");
+	for (Setting& trackSetting : tracksArray) {
+		globalConfig.tracks.push_back(trackSetting);
+	}
+	mainSetting.lookupValue("displayedTrack", globalConfig.displayedTrack);
 
 	simulatorSetting.lookupValue("gasAcc", globalConfig.gasAcc);
 	simulatorSetting.lookupValue("brakeAcc", globalConfig.brakeAcc);

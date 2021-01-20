@@ -33,40 +33,20 @@ sf::Image displayedImage;
 sf::CircleShape player(20.0f);
 sf::Texture playerTexture;
 
-vector<string> tracks;
-string displayedTrack;
-
 void init() {
-	// TODO Vilim - Ovdje uèitaj iz config datoteke
-	// tracks - imena datoteka staza na kojima jedinke uèe
-	// displayedTrack - ime datoteke staze koja se prikazuje
-	//tracks = config.fillTracks();
-	//displayedTrack = config.getDisplayedTrack();
-
-	// ovdje smo hardkodirali da mozemo isprobat, zanemari ovu inicijalizaciju tracks i displayedTrack
-
-	tracks.push_back("background1.jpg");
-	tracks.push_back("background2.jpg");
-	tracks.push_back("background3.jpg");
-	tracks.push_back("background4.jpg");
-	tracks.push_back("background5.jpg");
-
-	displayedTrack = "background5.jpg";
-
-	// dalje ostaje isto
 
 	player.setOrigin(12.0f, 15.0f);
 	player.setScale(1.5, 1.2);
 	playerTexture.loadFromFile("avatar.jpg");
 	player.setTexture(&playerTexture);
 
-	for (int i = 0; i < tracks.size(); i++) {
+	for (int i = 0; i < globalConfig.tracks.size(); i++) {
 		sf::Texture texture;
-		texture.loadFromFile(tracks.at(i));
+		texture.loadFromFile(globalConfig.tracks.at(i));
 		images.push_back(texture.copyToImage());
 	}
 
-	backgroundTexture.loadFromFile(displayedTrack);
+	backgroundTexture.loadFromFile(globalConfig.displayedTrack);
 	background.setTexture(&backgroundTexture);
 	displayedImage = backgroundTexture.copyToImage();
 	
@@ -212,11 +192,19 @@ void simulate() {
 	simulate(nullptr);
 }
 
+double fitnessMeanFunc(double x) {
+	return pow(x, 0.4);
+}
+
+double fitnessMeanFuncInv(double x) {
+	return pow(x, 1.25);
+}
+
 double evaluate(Jedinka* jedinka)
 {
 	double fitness = 0;
 
-	for (int i = 0; i < tracks.size(); i++) {
+	for (int i = 0; i < globalConfig.tracks.size(); i++) {
 		cout << i + 1 << ": ";
 
 		sf::Image image = images.at(i);
@@ -256,11 +244,11 @@ double evaluate(Jedinka* jedinka)
 					cout << "(time expired) " << globalConfig.maxEvaTime;
 				else
 					cout << "(crashed) ";
-				fitness += pow(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT(), 0.4);
+				fitness += fitnessMeanFunc(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT());
 				break;
 			}
 		}
 	}
 
-	return fitness;
+	return fitnessMeanFuncInv(fitness);
 }
