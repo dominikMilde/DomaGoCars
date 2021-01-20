@@ -16,7 +16,7 @@ void initConfig() {
 	Setting& mainSetting = dgcConfig.lookup("main");
 	Setting& simulatorSetting = dgcConfig.lookup("simulator");
 	Setting& neuralNetworkSetting = dgcConfig.lookup("neuralNetwork");
-	Setting& cgpSetting = dgcConfig.lookup("cgp");+
+	Setting& cgpSetting = dgcConfig.lookup("cgp");
 
 	mainSetting.lookupValue("fitnessKoef", globalConfig.fitnessKoef);
 	mainSetting.lookupValue("maxSimTime", globalConfig.maxSimTime);

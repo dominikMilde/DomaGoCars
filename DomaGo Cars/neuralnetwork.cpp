@@ -18,6 +18,8 @@ void fillPopulation() {
     population.clear();
     population.reserve(neuralNetworkConfig.populationSize);
 
+    cout << "Generating initial population..." << endl;
+
     //popuni populaciju sa svim vrijednostima random(0, 1)
     uniform_real_distribution<double> dist(-1, 1);
     for (int i = 0; i < neuralNetworkConfig.populationSize; ++i) {
@@ -126,6 +128,10 @@ void simulateNN(const vector<double>& individual) {
 }
 
 vector<double> runNN() {
+    cout << "Started neural network learning" << endl
+        << "Number of generations: " << neuralNetworkConfig.generations << endl
+        << "Population size: " << neuralNetworkConfig.populationSize << endl << endl;
+    
     randomEngine.seed(time(nullptr));
 
     fillPopulation();
@@ -138,7 +144,7 @@ vector<double> runNN() {
         //ispis ponekad i za kraj
         int best = max_element(fitness.begin(), fitness.end()) - fitness.begin();
         if (gen % 20 == 0 || -fitness[best] < 1e-5) {
-            cout << endl << "gen#" << gen << ": best fitness = " << fitness[best] << '\n';
+            cout << endl << endl << "gen#" << gen << ": best fitness = " << fitness[best] << '\n';
             cout << flush;
 
             if (fitness[best] > 100) {

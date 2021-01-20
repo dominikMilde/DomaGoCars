@@ -175,13 +175,14 @@ void simulate(Jedinka* jedinka) {
 		else if (!isUser) {
 			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxSimDist || sim.getScaledT() > globalConfig.maxSimTime)
 			{
-
+				/*
 				if (sim.getAngleDistance() > globalConfig.maxSimDist)
 					cout << "(distance exceeded) ";
 				else if (sim.getScaledT() > globalConfig.maxSimTime)
 					cout << "(time expired) ";
 				else
 					cout << "(crashed) ";
+				*/
 				return;
 			}
 		}
@@ -241,7 +242,7 @@ double evaluate(Jedinka* jedinka)
 				if (sim.getAngleDistance() > globalConfig.maxEvaDist)
 					cout << "(distance exceeded) ";
 				else if (sim.getScaledT() > globalConfig.maxEvaTime)
-					cout << "(time expired) " << globalConfig.maxEvaTime;
+					cout << "(time expired) ";
 				else
 					cout << "(crashed) ";
 				fitness += fitnessMeanFunc(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT());
@@ -249,6 +250,8 @@ double evaluate(Jedinka* jedinka)
 			}
 		}
 	}
+
+	cout << endl;
 
 	return fitnessMeanFuncInv(fitness);
 }
