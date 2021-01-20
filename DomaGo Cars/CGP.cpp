@@ -276,12 +276,12 @@ vector<int> runCGP()
         if (graphs.at(bestGraphIndex).fitness > 100) {
             CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
             cgp.graph = graphs.at(bestGraphIndex).graph;
-            return cgp;
+            return cgp.graph;
         }
         //print(graphs.at(bestGraphIndex));
     }
 
     CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
     cgp.graph = graphs.at(bestGraphIndex).graph;
-    return cgp;
+    return cgp.graph;
 }
