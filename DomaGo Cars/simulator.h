@@ -23,7 +23,7 @@ private:
     bool mat[WIDTH][HEIGHT];
 
     // KOEF - koeficijent za ubrzanje ili usporenje simulacije
-    double KOEF;
+    float KOEF;
 
     Vector2 pos;
     // end su koordinate donjeg desnog vrha prozora, pretpostavimo da prozor pocinje od (0,0)
@@ -33,6 +33,7 @@ private:
     double acc;
     double traction;
     int t;
+    float scaledT;
     float topDistance;
     float leftDistance;
     float rightDistance;
@@ -59,6 +60,7 @@ public:
     float getX() const { return pos.x; }
     float getY() const { return pos.y; }
     int getT() const { return t; }
+    float getScaledT() const { return scaledT; }
     float getTopDistance() const { return topDistance; }
     float getLeftDistance() const { return leftDistance; }
     float getRightDistance() const { return rightDistance; }
@@ -83,8 +85,11 @@ public:
     void setAngle(float angle) {
         this->angle = angle;
     }
-    void setT(int t) {
+    void setT(float t) {
         this->t = t;
+    }
+    void setScaledT(float scaledT) {
+        this->scaledT = scaledT;
     }
     void rotateLeft() {
         angle += (globalConfig.rotationIdx1 * getV() + globalConfig.rotationIdx0) * KOEF;

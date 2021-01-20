@@ -138,8 +138,7 @@ vector<double> runNN() {
         //ispis ponekad i za kraj
         int best = max_element(fitness.begin(), fitness.end()) - fitness.begin();
         if (gen % 20 == 0 || -fitness[best] < 1e-5) {
-            cout << "gen#" << gen << ": best fitness = " << fitness[best] << '\n';
-            //print(population[best]);
+            cout << endl << "gen#" << gen << ": best fitness = " << fitness[best] << '\n';
             cout << flush;
 
             if (fitness[best] > 100) {
@@ -153,7 +152,7 @@ vector<double> runNN() {
 
         crossover(population[0], population[1], population[2]);
         mutate(population[2]);
-        //simulateNN(population[best]);
+        simulateNN(population[best]);
     }
     int best = max_element(fitness.begin(), fitness.end()) - fitness.begin();
     return population[best];
