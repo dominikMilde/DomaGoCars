@@ -9,11 +9,11 @@ struct DgcConfig {
 	int cols;
 
 	//main
-	double fitnessKoef;
-	double maxSimTime;
-	double maxSimDist;
-	double maxEvaTime;
-	double maxEvaDist;
+	int fitnessKoef;
+	int maxSimTime;
+	int maxSimDist;
+	int maxEvaTime;
+	int maxEvaDist;
 
 	//simulator
 	double gasAcc;

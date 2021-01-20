@@ -24,8 +24,6 @@ float simulator::getDistanceToBound(Vector2 pos, float angle) const {
         dist += 1;
     }
 
-    //cout << angle << " " << dirX << " " << dirY << " " << dist << endl;
-
     return dist;
 }
 
@@ -35,6 +33,7 @@ simulator::simulator(float x1, float y1, const sf::Image& image) {
         mat[i][j] = (image.getPixel(i, j) == sf::Color::Black);
     }
     t = 0;
+    scaledT = 0.0;
     pos.x = x1;
     pos.y = y1;
     // end su koordinate donjeg desnog vrha prozora, pretpostavimo da prozor pocinje od (0,0)
@@ -53,6 +52,7 @@ simulator::simulator(float x1, float y1, const sf::Image& image) {
 
 void simulator::update() {
     t += 1;
+    scaledT += KOEF;
     acc = traction - globalConfig.drag * v * v - globalConfig.rr * v;
     v = v + acc * KOEF;
     if (v < 0) v = 0;

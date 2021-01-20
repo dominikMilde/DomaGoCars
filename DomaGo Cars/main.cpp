@@ -137,10 +137,12 @@ void simulate(Jedinka* jedinka) {
 
 	sf::Vector2f vector = player.getPosition();
 	simulator sim(vector.x, vector.y, displayedImage);
-	
-	if (jedinka == nullptr)
+
+	bool isUser = jedinka == nullptr;
+
+	if (isUser)
 		sim.setKOEF(1);
-	else sim.setKOEF(20);
+	else sim.setKOEF(10);
 
 	while (window.isOpen())
 	{
@@ -160,7 +162,7 @@ void simulate(Jedinka* jedinka) {
 			}
 		}
 
-		if (jedinka == nullptr) {
+		if (isUser) {
 			userDriver(sim);
 		}
 		else {
@@ -182,28 +184,26 @@ void simulate(Jedinka* jedinka) {
 
 		float x = player.getPosition().x;
 		float y = player.getPosition().y;
-		
-		//if (sim.getT() % 2000 == 0) sim.print();
 
 		auto color1 = displayedImage.getPixel(x, y);
 
-		/*if (color1 == sf::Color::Black || sim.getAngleDistance() > 2500 || sim.getT() > 50000)
-		{
-			return;
-		}*/
-
-		if (color1 == sf::Color::Black)
-		{
-			if (sim.getAngleDistance() > globalConfig.maxSimDist)
-				cout << "(distance exceeded) ";
-			else if (sim.getT() > globalConfig.maxSimTime)
-				cout << "(time expired) ";
-			else
-				cout << "(crashed) ";
-			return;
+		if (isUser) {
+			if (color1 == sf::Color::Black) {
+				return;
+			}
 		}
-		else if (color1 == sf::Color::Black) {
-			return;
+		else if (!isUser) {
+			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxSimDist || sim.getScaledT() > globalConfig.maxSimTime)
+			{
+
+				if (sim.getAngleDistance() > globalConfig.maxSimDist)
+					cout << "(distance exceeded) ";
+				else if (sim.getScaledT() > globalConfig.maxSimTime)
+					cout << "(time expired) ";
+				else
+					cout << "(crashed) ";
+				return;
+			}
 		}
 	}
 }
@@ -218,7 +218,7 @@ double evaluate(Jedinka* jedinka)
 
 	for (int i = 0; i < tracks.size(); i++) {
 		cout << i + 1 << ": ";
-		
+
 		sf::Image image = images.at(i);
 
 		player.setPosition(imageWidth / 2, imageHeight / 1.2);
@@ -241,26 +241,22 @@ double evaluate(Jedinka* jedinka)
 			float x = player.getPosition().x;
 			float y = player.getPosition().y;
 
-			/*if (sim.getT() % 2000 == 0)
-				cout << sim.getAngle() << " " << sim.getTopDistance() << " " << sim.getLeftDistance() << " " << sim.getRightDistance()
-				<< " " << sim.getV() << " " << akcija << " " << sim.getT() << endl;*/
-
 			if (x < 0 || x > imageWidth || y < 0 || y > imageHeight) {
-				fitness += pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getT();
+				fitness += pow(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT(), 0.4);
 				break;
 			}
 
 			auto color1 = image.getPixel(x, y);
 
-			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxEvaDist || sim.getT() > globalConfig.maxEvaTime)
+			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxEvaDist || sim.getScaledT() > globalConfig.maxEvaTime)
 			{
 				if (sim.getAngleDistance() > globalConfig.maxEvaDist)
 					cout << "(distance exceeded) ";
-				else if (sim.getT() > globalConfig.maxEvaTime)
-					cout << "(time expired) ";
+				else if (sim.getScaledT() > globalConfig.maxEvaTime)
+					cout << "(time expired) " << globalConfig.maxEvaTime;
 				else
 					cout << "(crashed) ";
-				fitness += pow(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getT(), 0.4);
+				fitness += pow(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT(), 0.4);
 				break;
 			}
 		}
