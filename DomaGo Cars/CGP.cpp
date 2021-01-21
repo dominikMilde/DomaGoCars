@@ -12,6 +12,228 @@ using namespace std;
 
 minstd_rand randomEngineCGP;
 
+vector<bool> mutatedGenes;
+vector<Graph> graphs;
+Graph bestGraph;
+
+void vectorInit() {
+    graphs.clear();
+    graphs.reserve(cgpConfig.populationSize);
+    mutatedGenes.clear();
+    for (int i = 0; i < cgpConfig.graphSize; i++) {
+        mutatedGenes.push_back(false);
+    }
+}
+
+double fitnessFunction(vector<int> graph)
+{
+    CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
+    cgp.graph = graph;
+    return evaluate(&cgp);
+}
+
+void findBestGraph()
+{
+    //cout << "Usao sam u findBestGraph" << endl;
+    shuffle(graphs.begin(), graphs.end(), randomEngineCGP);
+
+    int idxBest = 0;
+    for (int i = 1; i < cgpConfig.populationSize; i++) {
+        if (graphs.at(i).fitness > graphs.at(idxBest).fitness) {
+            idxBest = i;
+        }
+    }
+    bestGraph = graphs.at(idxBest);
+}
+
+Graph mutation()
+{
+    vector<int> graph = bestGraph.graph;
+
+    int numMutations = round(cgpConfig.graphSize / cgpConfig.mutationRate);
+
+    for (int i = 0; i < numMutations; i++) {
+        int index = rand() % (cgpConfig.graphSize);
+
+        if (index < cgpConfig.graphSize - cgpConfig.numOutputs)
+        {
+            if (index % (cgpConfig.numNodeInputs + 1) == 0)
+            {
+                int functionId = rand() % cgpConfig.numFunctions;
+                graph[index] = functionId;
+            }
+            else
+            {
+                int indOfColumn = index / (cgpConfig.numRows * (1 + cgpConfig.numNodeInputs));
+                int currMaxNodeOut = cgpConfig.numInputs + indOfColumn * cgpConfig.numRows;
+                graph[index] = rand() % currMaxNodeOut;
+            }
+        }
+        else
+        {
+            int outRandom = rand() % (cgpConfig.numInputs + cgpConfig.numCols * cgpConfig.numRows);
+            graph[index] = outRandom;
+        }
+    }
+
+    double fitness = fitnessFunction(graph);
+    Graph mutatedGraph(graph, fitness);
+
+    return mutatedGraph;
+}
+
+vector<int> randomGraph()
+{
+    vector<int> graph;
+
+    for (int i = 0; i < cgpConfig.numCols; i++)
+    {
+        int currMaxNodeOut = cgpConfig.numInputs + i * cgpConfig.numRows;
+        for (int j = 0; j < cgpConfig.numRows; j++)
+        {
+            graph.push_back(rand() % cgpConfig.numFunctions);
+            for (int k = 0; k < cgpConfig.numNodeInputs; k++)
+            {
+                graph.push_back(rand() % currMaxNodeOut);
+            }
+        }
+    }
+
+    int maxNodeOut = cgpConfig.numInputs + cgpConfig.numRows * cgpConfig.numCols;
+    for (int i = 0; i < cgpConfig.numOutputs; i++)
+    {
+        graph.push_back(rand() % maxNodeOut);
+    }
+    return graph;
+}
+
+void fillInitialPopulationCGP()
+{
+    vectorInit();
+
+    cout << "Generating initial population..." << endl;
+    for (int i = 1; i <= cgpConfig.populationSize; i++)
+    {
+        vector<int> rG = randomGraph();
+        cout << "pop #" << i << ": ";
+        double fitness = fitnessFunction(rG);
+        cout << "fitness: " << fitness << endl;
+        Graph randGraph = Graph(rG, fitness);
+        graphs.push_back(randGraph);
+    }
+
+    findBestGraph();
+}
+
+void print(Graph& g) {
+    for (int i = 0; i < cgpConfig.graphSize - cgpConfig.numOutputs; i++)
+    {
+        if (i % (cgpConfig.numNodeInputs + 1) == 0)
+            cout << endl;
+        cout << g.graph[i] << " ";
+    }
+    cout << endl << "Output: ";
+    for (int i = cgpConfig.graphSize - cgpConfig.numOutputs; i < cgpConfig.graphSize; i++)
+    {
+        cout << g.graph[i] << " ";
+    }
+
+    cout << endl
+        << "CGP Fitness: " << g.fitness << endl << endl << endl;
+}
+
+void runGeneration() {    
+    vectorInit();
+
+    graphs.push_back(bestGraph);
+
+    for (int i = 1; i < cgpConfig.populationSize; i++)
+    {
+        cout << "pop " << i << ": ";
+
+        Graph child = mutation();
+        graphs.push_back(child);
+
+        cout << "fitness: " << child.fitness << endl;
+    }
+    
+    findBestGraph();
+    //cout << "Zavrsio sam findBestGraph" << endl;
+}
+
+void simulateCGP(vector<int> &graph) {
+    CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
+    cgp.graph = graph;
+    simulate(&cgp);
+}
+
+vector<int> runCGP()
+{
+    cout << "Started CGP learning" << endl 
+        << "Number of generations: " << cgpConfig.generations << endl
+        << "Population size: " << cgpConfig.populationSize << endl << endl;
+    
+    randomEngineCGP.seed(time(nullptr));
+    srand(time(0));
+
+    fillInitialPopulationCGP();
+
+    simulateCGP(bestGraph.graph);
+    cout << "Fitness najbolje jedinke: " << bestGraph.fitness << endl;
+
+    for (int gen = 1; gen <= cgpConfig.generations; ++gen) {
+
+        cout << endl << "========================================" << endl << endl;
+        cout << "GEN #" << gen << endl;
+
+        runGeneration();
+
+        simulateCGP(bestGraph.graph);
+        cout << "Fitness najbolje jedinke: " << bestGraph.fitness << endl;
+
+        if (bestGraph.fitness > 10000) {
+            CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
+            cgp.graph = bestGraph.graph;
+            return cgp.graph;
+        }
+    }
+
+    CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
+    cgp.graph = bestGraph.graph;
+    return cgp.graph;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+#include <iostream>
+#include <memory>
+#include <vector>
+#include <algorithm>
+#include <time.h>
+#include <math.h>
+
+#include "CGP.h"
+#include "main.h"
+
+using namespace std;
+
+minstd_rand randomEngineCGP;
+
 vector<Graph> graphs;
 
 double fitnessFunction(vector<int> graph)
@@ -50,7 +272,7 @@ Graph mutation(Graph& g)
             graph[index] = outRandom;
         }
     }
-    
+
     double fitness = fitnessFunction(graph);
     Graph mutatedGraph(graph, fitness);
 
@@ -61,7 +283,7 @@ Graph mutateAndChooseBetter(Graph& parent) {
     Graph child = mutation(parent);
 
     //if (child.fitness > parent.fitness)
-        return child;
+    return child;
     //return parent;
 }
 
@@ -77,7 +299,7 @@ vector<int> crossover(vector<int>& mainGraph, vector<int>& otherGraph)
     return child;
 }
 
-Graph crossAndReturnBestOfThree(Graph &firstParent, Graph &secondParent)
+Graph crossAndReturnBestOfThree(Graph& firstParent, Graph& secondParent)
 {
     vector<int> crossGraph;
 
@@ -89,7 +311,7 @@ Graph crossAndReturnBestOfThree(Graph &firstParent, Graph &secondParent)
     else {
         crossGraph = crossover(secondParent.graph, firstParent.graph);
     }
-    
+
     Graph child(crossGraph, fitnessFunction(crossGraph));
 
     Graph betterParent = firstParent;
@@ -186,7 +408,7 @@ void print(Graph& g) {
 
 void runGeneration() {
     double sumFitness = calculateFitness();
-    
+
     vector<Graph> newGraphs;
     int i = 1;
 
@@ -242,7 +464,7 @@ int findBestGraph()
     return idxBest;
 }
 
-void simulateCGP(vector<int> &graph) {
+void simulateCGP(vector<int>& graph) {
     CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
     cgp.graph = graph;
     simulate(&cgp);
@@ -250,10 +472,10 @@ void simulateCGP(vector<int> &graph) {
 
 vector<int> runCGP()
 {
-    cout << "Started CGP learning" << endl 
+    cout << "Started CGP learning" << endl
         << "Number of generations: " << cgpConfig.generations << endl
         << "Population size: " << cgpConfig.populationSize << endl << endl;
-    
+
     randomEngineCGP.seed(time(nullptr));
     srand(time(0));
 
@@ -276,12 +498,13 @@ vector<int> runCGP()
         if (graphs.at(bestGraphIndex).fitness > 100) {
             CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
             cgp.graph = graphs.at(bestGraphIndex).graph;
-            return cgp;
+            return cgp.graph;
         }
         //print(graphs.at(bestGraphIndex));
     }
 
     CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
     cgp.graph = graphs.at(bestGraphIndex).graph;
-    return cgp;
+    return cgp.graph;
 }
+*/

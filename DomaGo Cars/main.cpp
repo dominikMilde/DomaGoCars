@@ -215,7 +215,7 @@ double evaluate(Jedinka* jedinka)
 
 		sf::Vector2f vector = player.getPosition();
 		simulator sim(vector.x, vector.y, image);
-		sim.setKOEF(10);
+		sim.setKOEF(20);
 
 		while (true)
 		{
@@ -227,11 +227,18 @@ double evaluate(Jedinka* jedinka)
 			player.setPosition(sim.getX(), sim.getY());
 			player.setRotation(sim.getAngle() * -1.0);
 
+			if (sim.getT() % 20 == 0) {
+				window.clear();
+				window.draw(background);
+				window.draw(player);
+				window.display();
+			}
+
 			float x = player.getPosition().x;
 			float y = player.getPosition().y;
 
 			if (x < 0 || x > imageWidth || y < 0 || y > imageHeight) {
-				fitness += pow(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT(), 0.4);
+				fitness += fitnessMeanFunc(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT());
 				break;
 			}
 
@@ -245,6 +252,11 @@ double evaluate(Jedinka* jedinka)
 					cout << "(time expired) ";
 				else
 					cout << "(crashed) ";
+
+				if (sim.getAngleDistance() < 0) {
+					fitness += 0;
+					break;
+				}
 				fitness += fitnessMeanFunc(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT());
 				break;
 			}

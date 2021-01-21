@@ -8,6 +8,8 @@
 #define WIDTH 1152
 #define HEIGHT 648
 
+using namespace std;
+
 struct Vector2
 {
     float x;
@@ -43,11 +45,39 @@ private:
 
     float getDistanceToBound(Vector2 pos, float angle) const;
 
+    static float vectorAngle(Vector2 pos, Vector2 center) {
+        float x = pos.x - center.x;
+        float y = center.y - pos.y;
+
+        if (abs(x) < 1e-6) {
+            if (y > 0) return (PI / 2);
+            else if (y < 0) return ((PI * 3) / 2);
+            else return 0.f;
+        }
+
+        float angle = atan2(y, x);
+        if (x > 0 && y > 0)
+            return angle;
+        else if (x > 0 && y < 0)
+            return (angle + (2 * PI));
+        else
+            return (angle + PI);
+    }
+
     static float calcAngle(Vector2 a, Vector2 b, Vector2 c) {
-        float ab = hypot(a.x - b.x, a.y - b.y);
-        float ac = hypot(a.x - c.x, a.y - c.y);
-        float bc = hypot(b.x - c.x, b.y - c.y);
-        return acos((ab * ab + ac * ac - bc * bc) / (2 * ab * ac)) * 180 / PI;
+        float diff = (vectorAngle(c, a) - vectorAngle(b, a)) * 180 / PI;
+        //cout << "diff " << diff << " " << endl;
+
+        if (diff < -180) {
+            cout << "diff < -180" << endl;
+            diff += 180;
+        }
+        else if (diff > 180) {
+            cout << "diff > 180" << endl;
+            diff = 180 - diff;
+        }
+        
+        return diff;
     }
 
 public:
