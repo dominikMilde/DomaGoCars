@@ -9,15 +9,6 @@
 
 using namespace std;
 
-/*
-* 0 - pohrani nn vozaca
-* 1 - pohran cgp vozaca
-* 2 - ucitaj nn vozaca
-* 3 - ucitaj cgp vozaca
-* 4 - korisnik vozi
-*/
-int akcija = 2;
-
 int main() {
 	
 	initConfig();
@@ -31,7 +22,7 @@ int main() {
 	vector<int> driverCgp;
 	string s;
 
-	switch (akcija) {
+	switch (globalConfig.akcija) {
 	case 0:
 		nn = runNN();
 		storeNnDriver(nn);

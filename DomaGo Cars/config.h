@@ -3,6 +3,8 @@
 #include <vector>
 
 struct DgcConfig {
+	int akcija;
+	
 	//main
 	double fitnessKoef;
 	int maxSimTime;
