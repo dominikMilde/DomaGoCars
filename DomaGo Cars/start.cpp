@@ -16,7 +16,7 @@ using namespace std;
 * 3 - ucitaj cgp vozaca
 * 4 - korisnik vozi
 */
-int akcija = 1;
+int akcija = 2;
 
 int main() {
 	
@@ -29,15 +29,34 @@ int main() {
 	vector<int> cgp;
 	vector<double> driverNn;
 	vector<int> driverCgp;
+	string s;
 
 	switch (akcija) {
 	case 0:
 		nn = runNN();
 		storeNnDriver(nn);
+		cout << "Learning finished. Do you want to simulate learned driver? (Y/N) ";
+		cin >> s;
+		if (s.compare("Y") == 0) {
+			driverNn = readNnDriver();
+			simulateNN(driverNn);
+		}
+		else if (s.compare("N") != 0) {
+			cout << "Unexpected input." << endl;
+		}
 		break;
 	case 1:
 		cgp = runCGP();
 		storeCgpDriver(cgp);
+		cout << "Learning finished. Do you want to simulate learned driver? (Y/N) ";
+		cin >> s;
+		if (s.compare("Y") == 0) {
+			driverCgp = readCgpDriver();
+			simulateCGP(driverCgp);
+		}
+		else if (s.compare("N") != 0) {
+			cout << "Unexpected input." << endl;
+		}
 		break;
 	case 2:
 		driverNn = readNnDriver();
@@ -50,22 +69,6 @@ int main() {
 	case 4:
 		simulate();
 	}
-
-	// pokretanje uèenja pomoæu NN-a
-	/*vector<double> nn = runNN();
-
-	storeNnDriver(nn);
-	vector<double> driver = readNnDriver();
-	simulateNN(driver);*/
-
-	// pokretanje uèenja pomoæu CGP-a
-	/*CGP best = runCGP();
-	storeCgpDriver(best.graph);
-	vector<int> driver = readCgpDriver();
-	simulateCGP(driver);*/
-
-	// simulacija autica - korisnik vozac
-	//simulate();
 
 	return 0;
 }

@@ -158,7 +158,7 @@ vector<double> runNN() {
 
         crossover(population[0], population[1], population[2]);
         mutate(population[2]);
-        simulateNN(population[best]);
+        //simulateNN(population[best]);
     }
     int best = max_element(fitness.begin(), fitness.end()) - fitness.begin();
     return population[best];

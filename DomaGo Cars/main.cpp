@@ -122,7 +122,7 @@ void simulate(Jedinka* jedinka) {
 
 	if (isUser)
 		sim.setKOEF(1);
-	else sim.setKOEF(10);
+	else sim.setKOEF(1);
 
 	while (window.isOpen())
 	{
