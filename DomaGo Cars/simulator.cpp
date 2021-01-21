@@ -69,6 +69,8 @@ void simulator::update() {
     topLeftDistance = getTopLeftBoundDistance(pos, angle);
     topRightDistance = getTopRightBoundDistance(pos, angle);
     float newAngle = calcAngle(center, oldPos, pos);
+    if (abs(newAngle) > 0.1)
+        newAngle = 0;
     if (isfinite(newAngle))
         angleDistance += newAngle;
 }

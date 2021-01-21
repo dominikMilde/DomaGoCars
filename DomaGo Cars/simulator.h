@@ -56,12 +56,10 @@ private:
         }
 
         float angle = atan2(y, x);
-        if (x > 0 && y > 0)
-            return angle;
-        else if (x > 0 && y < 0)
-            return (angle + (2 * PI));
-        else
-            return (angle + PI);
+        if (y < 0)
+            angle = (angle + (2 * PI));
+
+        return angle;
     }
 
     static float calcAngle(Vector2 a, Vector2 b, Vector2 c) {
@@ -70,11 +68,11 @@ private:
 
         if (diff < -180) {
             cout << "diff < -180" << endl;
-            diff += 180;
+            diff += 360;
         }
         else if (diff > 180) {
             cout << "diff > 180" << endl;
-            diff = 180 - diff;
+            diff = 360 - diff;
         }
         
         return diff;
