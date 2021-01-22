@@ -8,7 +8,7 @@
 #include "storage.h"
 
 using namespace std;
-
+/*
 int main() {
 	
 	initConfig();
@@ -63,3 +63,4 @@ int main() {
 
 	return 0;
 }
+*/
