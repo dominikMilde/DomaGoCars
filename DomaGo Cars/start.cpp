@@ -11,7 +11,7 @@ using namespace std;
 
 /*
 * 0 - pohrani nn vozaca
-* 1 - pohran cgp vozaca
+* 1 - pohrani cgp vozaca
 * 2 - ucitaj nn vozaca
 * 3 - ucitaj cgp vozaca
 * 4 - korisnik vozi
@@ -48,7 +48,7 @@ int main() {
 		simulateCGP(driverCgp);
 		break;
 	case 4:
-		simulate();
+		while(true) simulate();
 	}
 
 	// pokretanje uèenja pomoæu NN-a

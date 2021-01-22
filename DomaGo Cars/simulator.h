@@ -67,11 +67,11 @@ private:
         //cout << "diff " << diff << " " << endl;
 
         if (diff < -180) {
-            cout << "diff < -180" << endl;
+            //cout << "diff < -180" << endl;
             diff += 360;
         }
         else if (diff > 180) {
-            cout << "diff > 180" << endl;
+            //cout << "diff > 180" << endl;
             diff = 360 - diff;
         }
         

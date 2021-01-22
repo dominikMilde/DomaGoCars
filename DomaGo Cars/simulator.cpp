@@ -69,6 +69,7 @@ void simulator::update() {
     topLeftDistance = getTopLeftBoundDistance(pos, angle);
     topRightDistance = getTopRightBoundDistance(pos, angle);
     float newAngle = calcAngle(center, oldPos, pos);
+    // zanemaruje posebne sluèajeve koje nastaju kada vozilo prolazi preko x ili y osi
     if (abs(newAngle) > 0.1)
         newAngle = 0;
     if (isfinite(newAngle))

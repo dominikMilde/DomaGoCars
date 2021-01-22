@@ -215,7 +215,7 @@ double evaluate(Jedinka* jedinka)
 
 		sf::Vector2f vector = player.getPosition();
 		simulator sim(vector.x, vector.y, image);
-		sim.setKOEF(20);
+		sim.setKOEF(30);
 
 		while (true)
 		{
@@ -226,13 +226,6 @@ double evaluate(Jedinka* jedinka)
 
 			player.setPosition(sim.getX(), sim.getY());
 			player.setRotation(sim.getAngle() * -1.0);
-
-			if (sim.getT() % 20 == 0) {
-				window.clear();
-				window.draw(background);
-				window.draw(player);
-				window.display();
-			}
 
 			float x = player.getPosition().x;
 			float y = player.getPosition().y;

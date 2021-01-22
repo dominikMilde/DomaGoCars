@@ -12,18 +12,8 @@ using namespace std;
 
 minstd_rand randomEngineCGP;
 
-vector<bool> mutatedGenes;
 vector<Graph> graphs;
 Graph bestGraph;
-
-void vectorInit() {
-    graphs.clear();
-    graphs.reserve(cgpConfig.populationSize);
-    mutatedGenes.clear();
-    for (int i = 0; i < cgpConfig.graphSize; i++) {
-        mutatedGenes.push_back(false);
-    }
-}
 
 double fitnessFunction(vector<int> graph)
 {
@@ -34,7 +24,6 @@ double fitnessFunction(vector<int> graph)
 
 void findBestGraph()
 {
-    //cout << "Usao sam u findBestGraph" << endl;
     shuffle(graphs.begin(), graphs.end(), randomEngineCGP);
 
     int idxBest = 0;
@@ -109,7 +98,8 @@ vector<int> randomGraph()
 
 void fillInitialPopulationCGP()
 {
-    vectorInit();
+    graphs.clear();
+    graphs.reserve(cgpConfig.populationSize);
 
     cout << "Generating initial population..." << endl;
     for (int i = 1; i <= cgpConfig.populationSize; i++)
@@ -143,7 +133,8 @@ void print(Graph& g) {
 }
 
 void runGeneration() {    
-    vectorInit();
+    graphs.clear();
+    graphs.reserve(cgpConfig.populationSize);
 
     graphs.push_back(bestGraph);
 
@@ -158,7 +149,6 @@ void runGeneration() {
     }
     
     findBestGraph();
-    //cout << "Zavrsio sam findBestGraph" << endl;
 }
 
 void simulateCGP(vector<int> &graph) {
