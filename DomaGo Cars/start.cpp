@@ -58,7 +58,7 @@ int main() {
 		simulateCGP(driverCgp);
 		break;
 	case 4:
-		simulate();
+		while(true) simulate();
 	}
 
 	return 0;

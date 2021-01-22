@@ -10,7 +10,8 @@ using namespace std;
 struct Graph {
     vector<int> graph;
     double fitness;
-    Graph(vector<int> graph, double fitness) : graph(graph), fitness(fitness) {};
+    Graph(vector<int> graph, double fitness) : graph(graph), fitness(fitness) {}
+    Graph() {}
 };
 
 struct CGP : Jedinka {
@@ -160,5 +161,4 @@ struct CGP : Jedinka {
 };
 
 vector<int> runCGP();
-
 void simulateCGP(vector<int>& graph);
