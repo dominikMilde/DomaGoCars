@@ -2,7 +2,7 @@
 // Created by Denis Wagner on 1/14/19.
 //
 
-#include "Node.hpp"
+#include "Node.h"
 
 void Node::eventHandler(const sf::Event& event)
 {

@@ -7,7 +7,7 @@
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include "Application.hpp"
+#include "Application.h"
 
 class Node {
 protected:

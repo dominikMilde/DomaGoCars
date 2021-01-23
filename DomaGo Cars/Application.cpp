@@ -4,8 +4,8 @@
 
 #include <SFML/Window/Event.hpp>
 #include <iostream>
-#include "Application.hpp"
-#include "Node.hpp"
+#include "Application.h"
+#include "Node.h"
 
 Application::Application(const std::string& windowText, float windowWidth, float windowHeight)
     : window(sf::VideoMode(windowWidth, windowHeight), windowText),
