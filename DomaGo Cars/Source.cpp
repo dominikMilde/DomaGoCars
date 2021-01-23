@@ -8,7 +8,7 @@
 
 int main() {
 	// Create the main SFML window
-	sf::RenderWindow app_window(sf::VideoMode(800, 600), "SFGUI Buttons Example", sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow app_window(sf::VideoMode(800, 600), "DomaGo Cars", sf::Style::Titlebar | sf::Style::Close);
 
 	// We have to do this because we don't use SFML to draw.
 	app_window.resetGLStates();
@@ -18,7 +18,7 @@ int main() {
 
 	// Create our main SFGUI window
 	auto window = sfg::Window::Create();
-	window->SetTitle("Title");
+	window->SetTitle("DomaGo Cars");
 
 	// Create a Box to contain all our fun buttons ;)
 	auto box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 5.f);
