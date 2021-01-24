@@ -1,11 +1,18 @@
 //#include <SFGUI/SFGUI.hpp>
 //#include <SFGUI/Widgets.hpp>
-//
 //#include <SFML/Graphics.hpp>
+//#include "main.h"
+//#include "storage.h"
+//
+//void handleStart() {
+//	initConfig();
+//	init();
+//	while (true) simulate();
+//}
 //
 //int main() {
 //	// Create the main SFML window
-//	sf::RenderWindow app_window(sf::VideoMode(1152, 648), "DomaGo Cars", sf::Style::Titlebar | sf::Style::Close);
+//	sf::RenderWindow app_window(sf::VideoMode(800, 600), "DomaGo Cars", sf::Style::Titlebar | sf::Style::Close);
 //
 //	// We have to do this because we don't use SFML to draw.
 //	app_window.resetGLStates();
@@ -13,112 +20,79 @@
 //	// Create an SFGUI. This is required before doing anything with SFGUI.
 //	sfg::SFGUI sfgui;
 //
+//	sfg::Desktop desktop;
+//	desktop.SetProperty("Button#create_window", "FontSize", 18.f);
+//
 //	// Create our main SFGUI window
-//	auto window = sfg::Window::Create();
-//	//window->SetTitle("Title");
+//	auto mainmenu_window = sfg::Window::Create();
 //
-//	// Create a Box to contain all our fun buttons ;)
-//	auto box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 5.f);
+//	// Since only being able to add one widget to a window is very limiting
+//	// there are Box widgets. They are a subclass of the Container class and
+//	// can contain an unlimited amount of child widgets. Not only that, they
+//	// also have the ability to lay out your widgets nicely.
 //
-//	// Create the Button itself.
-//	auto button = sfg::Button::Create("Click me");
+//	// Create the box.
+//	// For layout purposes we must specify in what direction new widgets
+//	// should be added, horizontally or vertically.
+//	auto box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL);
+//	auto logo_box = sfg::Box::Create(sfg::Box::Orientation::HORIZONTAL);
+//	auto table = sfg::Table::Create();
 //
-//	// Add the Button to the Box
-//	box->Pack(button);
+//	sf::Image sfml_logo;
 //
-//	// So that our Button has a meaningful purpose
-//	// (besides just looking awesome :P) we need to tell it to connect
-//	// to a callback of our choosing to notify us when it is clicked.
-//	button->GetSignal(sfg::Widget::OnLeftClick).Connect([&button] {
-//		// When the Button is clicked it's label should change.
-//		button->SetLabel("I was clicked");
-//		});
+//	// Our sfg::Image
+//	auto logo = sfg::Image::Create();
 //
-//	// If attempting to connect to a class method you need to provide
-//	// a pointer to it as the second parameter after the function address.
-//	// Refer to the Signals example for more information.
+//	// Try to load the image
+//	if (sfml_logo.loadFromFile("logo.png")) {
+//		logo->SetImage(sfml_logo);
+//	}
 //
-//	// Create the ToggleButton itself.
-//	auto toggle_button = sfg::ToggleButton::Create("Toggle me");
+//	auto btn_CGP_l = sfg::Button::Create("Start CGP Learning");
+//	auto btn_CGP_s = sfg::Button::Create("Simulate CGP");
+//	auto btn_start = sfg::Button::Create("START");
+//	auto btn_settings = sfg::Button::Create("SETTINGS");
+//	auto btn_NN_l = sfg::Button::Create("Start NN Learning");
+//	auto btn_NN_s = sfg::Button::Create("Simulate NN");
 //
-//	// Connect the OnToggle signal to our handler.
-//	toggle_button->GetSignal(sfg::ToggleButton::OnToggle).Connect([&toggle_button, &window] {
-//		// When the ToggleButton is active hide the window's titlebar.
-//		if (toggle_button->IsActive()) {
-//			window->SetStyle(window->GetStyle() ^ sfg::Window::TITLEBAR);
-//		}
-//		else {
-//			window->SetStyle(window->GetStyle() | sfg::Window::TITLEBAR);
-//		}
-//		});
+//	btn_start->GetSignal(sfg::Widget::OnLeftClick).Connect([&btn_start] {
+//		handleStart();
+//	});
 //
-//	// Add the ToggleButton to the Box
-//	box->Pack(toggle_button);
+//	// To add our widgets to the box we use the Pack() method instead of the
+//	// Add() method. This makes sure the widgets are added and layed out
+//	// properly in the box.
+//	logo_box->Pack(logo);
 //
-//	// Create the CheckButton itself.
-//	auto check_button = sfg::CheckButton::Create("Check me");
+//	// Attach a widget to the table.
+//	// The first parameter is the widget to attach.
+//	//
+//	// The second parameter tells the table how to place the widget.
+//	// It is a 4-tuple (ignore the fact that it is a rect) containing
+//	// in order: column index, row index, column span, row span.
+//	// ( 0, 0, 1, 1 ) would mean 0th column, 0th row, occupy 1 column and 1 row.
+//	//
+//	// Similar to boxes you have optional packing options such as FILL and EXPAND.
+//	// With tables you have 2 directions to pack, the first is the horizontal
+//	// packing options and the second the vertical packing options.
+//	//
+//	// The last option is the padding you want to apply to the cell.
+//	table->Attach(btn_CGP_l, sf::Rect<sf::Uint32>(0, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 10.f));
+//	table->Attach(btn_CGP_s, sf::Rect<sf::Uint32>(0, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 10.f));
+//	table->Attach(btn_start, sf::Rect<sf::Uint32>(1, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 10.f));
+//	table->Attach(btn_settings, sf::Rect<sf::Uint32>(1, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 10.f));
+//	table->Attach(btn_NN_l, sf::Rect<sf::Uint32>(2, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 10.f));
+//	table->Attach(btn_NN_s, sf::Rect<sf::Uint32>(2, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 10.f));
 //
-//	// Since a CheckButton is also a ToggleButton we can use
-//	// ToggleButton signals to handle events for CheckButtons.
-//	check_button->GetSignal(sfg::ToggleButton::OnToggle).Connect([&check_button, &window] {
-//		// When the CheckButton is active hide the window's background.
-//		if (check_button->IsActive()) {
-//			window->SetStyle(window->GetStyle() ^ sfg::Window::BACKGROUND);
-//		}
-//		else {
-//			window->SetStyle(window->GetStyle() | sfg::Window::BACKGROUND);
-//		}
-//		});
+//	box->Pack(logo_box);
+//	box->Pack(table);
 //
-//	// Add the CheckButton to the Box
-//	box->Pack(check_button);
-//
-//	// Just to keep things tidy ;)
-//	box->Pack(sfg::Separator::Create());
-//
-//	// Create our RadioButtons.
-//	// RadioButtons each have a group they belong to. If not specified,
-//	// a new group is created by default for each RadioButton. You can
-//	// then use RadioButton::SetGroup() to set the group of a RadioButton
-//	// after you create them. If you already know which buttons will belong
-//	// to the same group you can just pass the group of the first button
-//	// to the following buttons when you construct them as we have done here.
-//	auto radio_button1 = sfg::RadioButton::Create("Either this");
-//	auto radio_button2 = sfg::RadioButton::Create("Or this", radio_button1->GetGroup());
-//	auto radio_button3 = sfg::RadioButton::Create("Or maybe even this", radio_button1->GetGroup());
-//
-//	// Set the third RadioButton to be the active one.
-//	// By default none of the RadioButtons are active at start.
-//	radio_button3->SetActive(true);
-//
-//	auto button_select = [&radio_button1, &radio_button2, &radio_button3, &window] {
-//		// Depending on which RadioButton is active
-//		// we set the window title accordingly.
-//		if (radio_button1->IsActive()) {
-//			window->SetTitle("First button selected");
-//		}
-//		else if (radio_button2->IsActive()) {
-//			window->SetTitle("Second button selected");
-//		}
-//		else if (radio_button3->IsActive()) {
-//			window->SetTitle("Third button selected");
-//		}
-//	};
-//
-//	// Here we use the same handler for all three RadioButtons.
-//	// RadioButtons are CheckButtons and therefore also ToggleButtons,
-//	// hence we can use ToggleButton signals with RadioButtons as well.
-//	radio_button1->GetSignal(sfg::ToggleButton::OnToggle).Connect(button_select);
-//	radio_button2->GetSignal(sfg::ToggleButton::OnToggle).Connect(button_select);
-//	radio_button3->GetSignal(sfg::ToggleButton::OnToggle).Connect(button_select);
-//
-//	// Add the RadioButtons to the Box
-//	box->Pack(radio_button1);
-//	box->Pack(radio_button2);
-//	box->Pack(radio_button3);
-//
-//	// Finally add the Box to the window.
-//	window->Add(box);
+//	// Finally we add our box to the window as it's only child.
+//	// Notice that we don't have to add the children of a box to it's parent
+//	// Because all children and grandchildren and .... are automatically
+//	// considered descendents of the parent.
+//	mainmenu_window->Add(box);
+//	desktop.Add(mainmenu_window);
 //
 //	// Start the game loop
 //	while (app_window.isOpen()) {
@@ -127,7 +101,7 @@
 //
 //		while (app_window.pollEvent(event)) {
 //			// Handle events
-//			window->HandleEvent(event);
+//			mainmenu_window->HandleEvent(event);
 //
 //			// Close window : exit
 //			if (event.type == sf::Event::Closed) {
@@ -137,7 +111,7 @@
 //
 //		// Update the GUI, note that you shouldn't normally
 //		// pass 0 seconds to the update method.
-//		window->Update(0.f);
+//		mainmenu_window->Update(0.f);
 //
 //		// Clear screen
 //		app_window.clear();

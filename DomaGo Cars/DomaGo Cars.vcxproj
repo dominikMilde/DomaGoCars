@@ -149,6 +149,7 @@
     <ClCompile Include="CGP.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="neuralnetwork.cpp" />
     <ClCompile Include="simulator.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -158,9 +159,12 @@
   <ItemGroup>
     <ClInclude Include="CGP.h" />
     <ClInclude Include="config.h" />
+    <ClInclude Include="mainmenu.h" />
+    <ClInclude Include="Screen.h" />
     <ClInclude Include="Jedinka.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="neuralnetwork.h" />
+    <ClInclude Include="screens.h" />
     <ClInclude Include="simulator.h" />
     <ClInclude Include="storage.h" />
   </ItemGroup>
