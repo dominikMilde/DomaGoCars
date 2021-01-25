@@ -6,15 +6,15 @@
 #include <windows.h>
 #include <Shellapi.h>
 
-#include "mainmenu.h"
+#include "FinishScreen.h"
 
-void MainMenu::setAction(int action) {
+void FinishScreen::setAction(int action) {
 	this->action = action;
 }
 
-int MainMenu::Run(sf::RenderWindow& App) {
+int FinishScreen::Run(sf::RenderWindow& App) {
 	action = 0;
-	
+
 	// We have to do this because we don't use SFML to draw.
 	App.resetGLStates();
 
@@ -60,18 +60,6 @@ int MainMenu::Run(sf::RenderWindow& App) {
 	btn_start->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		setAction(1);
 		});
-	btn_NN_l->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(2);
-		});
-	btn_CGP_l->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(3);
-		});
-	btn_NN_s->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(4);
-		});
-	btn_CGP_s->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(5);
-		});
 	btn_settings->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		ShellExecute(
 			NULL,
@@ -86,7 +74,7 @@ int MainMenu::Run(sf::RenderWindow& App) {
 	// To add our widgets to the box we use the Pack() method instead of the
 	// Add() method. This makes sure the widgets are added and layed out
 	// properly in the box.
-	
+
 
 	// Attach a widget to the table.
 	// The first parameter is the widget to attach.
@@ -149,9 +137,7 @@ int MainMenu::Run(sf::RenderWindow& App) {
 		App.display();
 
 		switch (action) {
-		case 1:
-		case 4:
-		case 5: return action;
+		case 1: return 1;
 		defualt: break;
 		}
 	}

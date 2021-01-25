@@ -1,6 +1,7 @@
 #pragma once
 #include "Jedinka.h"
 #include "Screen.h"
+#include "simulator.h"
 
 class Main : public Screen {
 private:
@@ -29,4 +30,5 @@ public:
 	void simulate();
 	void setNNJedinka();
 	void setCGPJedinka();
+	void resetJedinka();
 };

@@ -5,22 +5,24 @@
 #include "simulator.h"
 #include "neuralnetwork.h"
 #include "CGP.h"
+#include "Jedinka.h"
 #include "config.h"
 #include "storage.h"
 #include "main.h"
 
 using namespace std;
 
-int run(const simulator& sim, Jedinka* jedinka) {
-
+int run(simulator& sim, Jedinka* jedinka) {
 	vector<int> inputs(6);
 	inputs[0] = sim.getV();
 	inputs[1] = sim.getTopDistance();
+	cout << "top dstnc" << sim.getTopDistance() << endl;
 	inputs[2] = sim.getTopRightDistance();
 	inputs[3] = sim.getTopLeftDistance();
 	inputs[4] = sim.getRightDistance();
 	inputs[5] = sim.getLeftDistance();
 
+	(*jedinka).getClass();
 	return (*jedinka).akcija(inputs);
 }
 
@@ -205,11 +207,17 @@ int Main::Run(sf::RenderWindow& App) {
 
 			if (isUser) {
 				userDriver(sim);
+				cout << sim.getTopDistance() << endl;
 			}
 			else {
+				cout << sim.getTopDistance() << endl;
 				int akcija = run(sim, jedinka);
+				cout << "A ovdje?6" << endl;
 				AIDriver(akcija, sim);
+				cout << "A ovdje?7" << endl;
 			}
+
+			cout << "A ovdje?5" << endl;
 
 			sim.update();
 
@@ -247,10 +255,19 @@ int Main::Run(sf::RenderWindow& App) {
 }
 
 void Main::setNNJedinka() {
-	//vector<double> driverNn = readNnDriver();
-	//simulateNN(driverNn);
+	vector<double> driverNn = readNnDriver();
+	*jedinka = createNN(driverNn);
 }
 
 void Main::setCGPJedinka() {
+	vector<int> driverCgp = readCgpDriver();
+	cout << "Usao sam ovdje" << endl;
+	CGP cgp = createCGP(driverCgp);
+	cout << "I ovdje" << endl;
+	jedinka = &cgp;
+	cout << "A ovdje?" << endl;
+}
 
+void Main::resetJedinka() {
+	jedinka = nullptr;
 }

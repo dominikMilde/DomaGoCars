@@ -7,6 +7,7 @@
 //#include "CGP.h"
 //#include "storage.h"
 
+
 int main(int argc, char** argv)
 {
 	//Applications variables
@@ -14,9 +15,7 @@ int main(int argc, char** argv)
 	int screen = 0;
 
 	//Window creation
-	sf::RenderWindow App(sf::VideoMode(1152, 648, 32), "DomaGo Cars");
-	//HWND hWnd = GetConsoleWindow();
-	//ShowWindow(hWnd, SW_HIDE);
+	sf::RenderWindow App(sf::VideoMode(1152, 648, 32), "DomaGo Cars", sf::Style::Titlebar | sf::Style::Close);
 
 	//Screens preparations
 	MainMenu mainmenu;
@@ -27,9 +26,12 @@ int main(int argc, char** argv)
 	//Main loop
 	while (screen >= 0)
 	{
-		/*
 		switch (screen) {
-		case 2: {
+		case 1: {
+			main.resetJedinka();
+			break;
+		}
+			/*case 2: {
 			vector<double> nn = runNN();
 			storeNnDriver(nn);
 			cout << "Learning finished. Do you want to simulate learned driver? (Y/N) ";
@@ -46,23 +48,23 @@ int main(int argc, char** argv)
 			break;
 		}
 		case 3: {
-			
+
 			ShowWindow(hWnd, SW_SHOW);
 			screen = 1;
 			break;
-		}
+		}*/
 		case 4: {
 			main.setNNJedinka();
 			screen = 1;
 			break;
 		}
 		case 5: {
-			main.setNNJedinka();
+			main.setCGPJedinka();
 			screen = 1;
 			break;
 		}
 		}
-		*/
+		std::cout << "Screen je " << screen << std::endl;
 		screen = Screens[screen]->Run(App);
 	}
 

@@ -7,5 +7,6 @@
 //Including each screen of application
 #include "mainmenu.h"
 #include "main.h"
+#include "FinishScreen.h"
 
 #endif // SCREENS_HPP_INCLUDED
