@@ -65,7 +65,7 @@ void initRace() {
 
 	player2.setOrigin(12.0f, 15.0f);
 	player2.setScale(1.5, 1.2);
-	playerTexture2.loadFromFile("avatar.jpg");
+	playerTexture2.loadFromFile("avatar2.jpg");
 	player2.setTexture(&playerTexture2);
 
 	for (int i = 0; i < globalConfig.tracks.size(); i++) {
@@ -212,10 +212,10 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 
 void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 
-	player.setPosition(imageWidth / 2, imageHeight / 1.2 + 45);
+	player.setPosition(imageWidth / 2, imageHeight / 1.2 + -10);
 	player.setRotation(0);
 
-	player2.setPosition(imageWidth / 2, imageHeight / 1.2 - 10);
+	player2.setPosition(imageWidth / 2, imageHeight / 1.2 + 45);
 	player2.setRotation(0);
 
 	sf::Vector2f vector1 = player.getPosition();

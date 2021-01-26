@@ -8,8 +8,6 @@
 #define WIDTH 1152
 #define HEIGHT 648
 
-#define WIDTH2 576
-
 using namespace std;
 
 struct Vector2
@@ -22,10 +20,8 @@ struct Vector2
 
 const Vector2 center = Vector2(WIDTH / 2.0f, HEIGHT / 2.0f);
 
-class simulator {
+class raceSimulator {
 private:
-    bool mat[WIDTH2][HEIGHT];
-
     // KOEF - koeficijent za ubrzanje ili usporenje simulacije
     float KOEF;
 
@@ -38,14 +34,7 @@ private:
     double traction;
     int t;
     float scaledT;
-    float topDistance;
-    float leftDistance;
-    float rightDistance;
-    float topLeftDistance;
-    int topRightDistance;
     float angleDistance;
-
-    float getDistanceToBound(Vector2 pos, float angle) const;
 
     static float vectorAngle(Vector2 pos, Vector2 center) {
         float x = pos.x - center.x;
@@ -76,12 +65,12 @@ private:
             //cout << "diff > 180" << endl;
             diff = 360 - diff;
         }
-        
+
         return diff;
     }
 
 public:
-    simulator(float x1, float y1, const sf::Image& image);
+    raceSimulator(float x1, float y1, const sf::Image& image);
 
     void update();
 
@@ -91,11 +80,6 @@ public:
     float getY() const { return pos.y; }
     int getT() const { return t; }
     float getScaledT() const { return scaledT; }
-    float getTopDistance() const { return topDistance; }
-    float getLeftDistance() const { return leftDistance; }
-    float getRightDistance() const { return rightDistance; }
-    float getTopLeftDistance() const { return topLeftDistance; }
-    float getTopRightDistance() const { return topRightDistance; }
     float getAngleDistance() const { return angleDistance; }
     void setAngleDistance(float x) { angleDistance = x; }
 
@@ -137,23 +121,5 @@ public:
         traction = 0.0;
     }
 
-    float getTopBoundDistance(Vector2 pos, float angle) const {
-        return getDistanceToBound(pos, angle);
-    }
-
-    float getLeftBoundDistance(Vector2 pos, float angle) const {
-        return getDistanceToBound(pos, fmod(angle + 90, 360));
-    }
-
-    float getRightBoundDistance(Vector2 pos, float angle) const {
-        return getDistanceToBound(pos, fmod(angle - 90, 360));
-    }
-
-    float getTopLeftBoundDistance(Vector2 pos, float angle) const {
-        return getDistanceToBound(pos, fmod(angle + 45, 360));
-    }
-
-    float getTopRightBoundDistance(Vector2 pos, float angle) const {
-        return getDistanceToBound(pos, fmod(angle - 45, 360));
-    }
 };
+

@@ -13,14 +13,14 @@ float simulator::getDistanceToBound(Vector2 pos, float angle) const {
     while (true) {
         int x = round(pos.x + dist * dirX);
         int y = round(pos.y + dist * dirY);
-        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || mat[x][y]) break;
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || mat[x/2][y]) break;
         dist += globalConfig.blok;
     }
     dist -= globalConfig.blok;
     while (true) {
         int x = round(pos.x + dist * dirX);
         int y = round(pos.y + dist * dirY);
-        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || mat[x][y]) { break; }
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || mat[x/2][y]) { break; }
         dist += 1;
     }
 
@@ -29,8 +29,8 @@ float simulator::getDistanceToBound(Vector2 pos, float angle) const {
 
 
 simulator::simulator(float x1, float y1, const sf::Image& image) {
-    for (int i = 0; i < WIDTH; ++i) for (int j = 0; j < HEIGHT; ++j) {
-        mat[i][j] = (image.getPixel(i, j) == sf::Color::Black);
+    for (int i = 0; i < WIDTH2; ++i) for (int j = 0; j < HEIGHT; ++j) {
+        mat[i][j] = (image.getPixel(i*2, j) == sf::Color::Black);
     }
     t = 0;
     scaledT = 0.0;
