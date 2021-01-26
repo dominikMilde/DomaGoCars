@@ -156,10 +156,8 @@
     <ClCompile Include="NNLearning.cpp" />
     <ClCompile Include="NNSimulation.cpp" />
     <ClCompile Include="simulator.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="start.cpp" />
     <ClCompile Include="storage.cpp" />
-    <ClCompile Include="test.cpp" />
     <ClCompile Include="UserSimulation.cpp" />
   </ItemGroup>
   <ItemGroup>
