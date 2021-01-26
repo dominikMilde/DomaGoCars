@@ -27,6 +27,7 @@ void initConfig() {
 	mainSetting.lookupValue("maxEvaDist", globalConfig.maxEvaDist);
 
 	Setting& tracksArray = mainSetting.lookup("tracks");
+	globalConfig.tracks.clear();
 	for (Setting& trackSetting : tracksArray) {
 		globalConfig.tracks.push_back(trackSetting);
 	}

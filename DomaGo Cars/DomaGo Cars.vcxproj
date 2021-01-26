@@ -113,7 +113,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\libconfig\lib;$(SolutionDir)\sfgui\lib;$(SolutionDir)\sfml\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-system.lib;sfml-graphics.lib;sfml-audio.lib;sfml-network.lib;sfml-window.lib;sfml-main.lib;OpenGL32.lib;libconfig++.lib;SFGUI.lib</AdditionalDependencies>
+      <AdditionalDependencies>sfml-system.lib;sfml-graphics.lib;sfml-audio.lib;sfml-network.lib;sfml-window.lib;OpenGL32.lib;libconfig++.lib;SFGUI.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -147,21 +147,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CGP.cpp" />
+    <ClCompile Include="CGPLearning.cpp" />
+    <ClCompile Include="CGPSimulation.cpp" />
     <ClCompile Include="config.cpp" />
-    <ClCompile Include="FinishScreen.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainmenu.cpp" />
     <ClCompile Include="neuralnetwork.cpp" />
+    <ClCompile Include="NNLearning.cpp" />
+    <ClCompile Include="NNSimulation.cpp" />
     <ClCompile Include="simulator.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="start.cpp" />
+    <ClCompile Include="storage.cpp" />
     <ClCompile Include="test.cpp" />
+    <ClCompile Include="UserSimulation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGP.h" />
+    <ClInclude Include="CGPLearning.h" />
+    <ClInclude Include="CGPSimulation.h" />
     <ClInclude Include="config.h" />
-    <ClInclude Include="FinishScreen.h" />
     <ClInclude Include="mainmenu.h" />
+    <ClInclude Include="NNLearning.h" />
+    <ClInclude Include="NNSimulation.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Jedinka.h" />
     <ClInclude Include="main.h" />
@@ -169,6 +177,7 @@
     <ClInclude Include="screens.h" />
     <ClInclude Include="simulator.h" />
     <ClInclude Include="storage.h" />
+    <ClInclude Include="UserSimulation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

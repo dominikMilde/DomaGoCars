@@ -2,31 +2,39 @@
 #include <time.h>
 #include <vector>
 #include <SFML/Graphics.hpp>
+
 #include "simulator.h"
 #include "neuralnetwork.h"
 #include "CGP.h"
-#include "Jedinka.h"
 #include "config.h"
-#include "storage.h"
-#include "main.h"
 
 using namespace std;
 
-int run(simulator& sim, Jedinka* jedinka) {
+int run(const simulator& sim, Jedinka* jedinka) {
+
 	vector<int> inputs(6);
 	inputs[0] = sim.getV();
 	inputs[1] = sim.getTopDistance();
-	cout << "top dstnc" << sim.getTopDistance() << endl;
 	inputs[2] = sim.getTopRightDistance();
 	inputs[3] = sim.getTopLeftDistance();
 	inputs[4] = sim.getRightDistance();
 	inputs[5] = sim.getLeftDistance();
 
-	(*jedinka).getClass();
 	return (*jedinka).akcija(inputs);
 }
 
-void Main::init() {
+int imageWidth = 1152;
+int imageHeight = 648;
+sf::RectangleShape background(sf::Vector2f(imageWidth, imageHeight));
+sf::Texture backgroundTexture;
+
+vector<sf::Image> images;
+sf::Image displayedImage;
+
+sf::CircleShape player(20.0f);
+sf::Texture playerTexture;
+
+void init() {
 
 	player.setOrigin(12.0f, 15.0f);
 	player.setScale(1.5, 1.2);
@@ -42,7 +50,7 @@ void Main::init() {
 	backgroundTexture.loadFromFile(globalConfig.displayedTrack);
 	background.setTexture(&backgroundTexture);
 	displayedImage = backgroundTexture.copyToImage();
-	
+
 }
 
 void AIDriver(int akcija, simulator& sim) {
@@ -103,6 +111,82 @@ void userDriver(simulator& sim) {
 	}
 }
 
+void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
+
+	player.setPosition(imageWidth / 2, imageHeight / 1.2);
+	player.setRotation(0);
+
+	sf::Vector2f vector = player.getPosition();
+	simulator sim(vector.x, vector.y, displayedImage);
+
+	bool isUser = jedinka == nullptr;
+
+	if (isUser)
+		sim.setKOEF(1);
+	else sim.setKOEF(1);
+
+	while (window.isOpen())
+	{
+		sf::Event evnt;
+		while (window.pollEvent(evnt))
+		{
+			switch (evnt.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::Resized:
+				std::cout << "New window width: " << evnt.size.width << " New window height: " << evnt.size.height << std::endl;
+				break;
+			case sf::Event::TextEntered:
+				break;
+			}
+		}
+
+		if (isUser) {
+			userDriver(sim);
+		}
+		else {
+			int akcija = run(sim, jedinka);
+			AIDriver(akcija, sim);
+		}
+
+		sim.update();
+
+		player.setPosition(sim.getX(), sim.getY());
+		player.setRotation(sim.getAngle() * -1.0);
+
+		if (sim.getT() % 20 == 0) {
+			window.clear();
+			window.draw(background);
+			window.draw(player);
+			window.display();
+		}
+
+		float x = player.getPosition().x;
+		float y = player.getPosition().y;
+
+		auto color1 = displayedImage.getPixel(x, y);
+
+		if (isUser) {
+			if (color1 == sf::Color::Black) 
+			{
+				return;
+			}
+		}
+		else if (!isUser) {
+			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxSimDist || sim.getScaledT() > globalConfig.maxSimTime)
+			{
+				return;
+			}
+		}
+	}
+}
+
+void simulate(sf::RenderWindow& App) {
+	simulate(App, nullptr);
+}
+
 double fitnessMeanFunc(double x) {
 	return pow(x, 0.4);
 }
@@ -111,7 +195,7 @@ double fitnessMeanFuncInv(double x) {
 	return pow(x, 1.25);
 }
 
-double Main::evaluate(Jedinka* jedinka)
+double evaluate(Jedinka* jedinka)
 {
 	double fitness = 0;
 
@@ -169,105 +253,4 @@ double Main::evaluate(Jedinka* jedinka)
 	cout << endl;
 
 	return fitnessMeanFuncInv(fitness);
-}
-
-int Main::Run(sf::RenderWindow& App) {
-	initConfig();
-	init();
-
-	while (true) {
-		player.setPosition(imageWidth / 2, imageHeight / 1.2);
-		player.setRotation(0);
-
-		sf::Vector2f vector = player.getPosition();
-		simulator sim(vector.x, vector.y, displayedImage);
-
-		bool isUser = jedinka == nullptr;
-
-		if (isUser)
-			sim.setKOEF(1);
-		else sim.setKOEF(1);
-
-		while (App.isOpen())
-		{
-			sf::Event evnt;
-			while (App.pollEvent(evnt))
-			{
-				switch (evnt.type)
-				{
-				case sf::Event::Closed:
-					return -1;
-				case sf::Event::Resized:
-					std::cout << "New window width: " << evnt.size.width << " New window height: " << evnt.size.height << std::endl;
-					break;
-				case sf::Event::TextEntered:
-					break;
-				}
-			}
-
-			if (isUser) {
-				userDriver(sim);
-				cout << sim.getTopDistance() << endl;
-			}
-			else {
-				cout << sim.getTopDistance() << endl;
-				int akcija = run(sim, jedinka);
-				cout << "A ovdje?6" << endl;
-				AIDriver(akcija, sim);
-				cout << "A ovdje?7" << endl;
-			}
-
-			cout << "A ovdje?5" << endl;
-
-			sim.update();
-
-			player.setPosition(sim.getX(), sim.getY());
-			player.setRotation(sim.getAngle() * -1.0);
-
-			if (sim.getT() % 20 == 0) {
-				App.clear();
-				App.draw(background);
-				App.draw(player);
-				App.display();
-			}
-
-			float x = player.getPosition().x;
-			float y = player.getPosition().y;
-
-			auto color1 = displayedImage.getPixel(x, y);
-
-			if (isUser) {
-				if (color1 == sf::Color::Black) {
-					return 0;
-				}
-			}
-			else if (!isUser) {
-				if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxSimDist || sim.getScaledT() > globalConfig.maxSimTime)
-				{
-					return 0;
-				}
-			}
-		}
-	}
-
-	//Never reaching this point normally, but just in case, exit the application
-	return -1;
-}
-
-void Main::setNNJedinka() {
-	vector<double> driverNn = readNnDriver();
-	*jedinka = createNN(driverNn);
-}
-
-void Main::setCGPJedinka() {
-	vector<int> driverCgp = readCgpDriver();
-	cout << "Usao sam ovdje" << endl;
-	CGP cgp = createCGP(driverCgp);
-	cout << "I ovdje" << endl;
-	jedinka = &cgp;
-	cout << "A ovdje?" << endl;
-}
-
-void Main::resetJedinka() {
-	jedinka = nullptr;
 }

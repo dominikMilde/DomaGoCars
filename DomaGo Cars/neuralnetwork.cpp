@@ -50,8 +50,7 @@ double evaluate(const vector<double>& individual) {
         nn.hidOut[i][j] = individual[k++];
     }
 
-    //return evaluate(&nn);
-    return 0;
+    return evaluate(&nn);
 }
 
 void print(const vector<double>& individual) {
@@ -114,7 +113,7 @@ void mutate(vector<double>& individual) {
     }
 }
 
-neuralnetwork createNN(const vector<double>& individual) {
+void simulateNN(sf::RenderWindow& App, const vector<double>& individual) {
     neuralnetwork nn(neuralNetworkConfig.p, neuralNetworkConfig.q, neuralNetworkConfig.r);
 
     int k = 0;
@@ -125,14 +124,14 @@ neuralnetwork createNN(const vector<double>& individual) {
         nn.hidOut[i][j] = individual[k++];
     }
 
-    return nn;
+    simulate(App, &nn);
 }
 
 vector<double> runNN() {
     cout << "Started neural network learning" << endl
         << "Number of generations: " << neuralNetworkConfig.generations << endl
         << "Population size: " << neuralNetworkConfig.populationSize << endl << endl;
-    
+
     randomEngine.seed(time(nullptr));
 
     fillPopulation();

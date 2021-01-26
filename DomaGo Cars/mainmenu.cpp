@@ -37,7 +37,7 @@ int MainMenu::Run(sf::RenderWindow& App) {
 	auto table = sfg::Table::Create();
 
 	logo_box->SetRequisition(sf::Vector2f(1130.f, 350.f));
-	box->SetRequisition(sf::Vector2f(1130.f, 605.f));
+	box->SetRequisition(sf::Vector2f(1130.f, 625.f));
 
 	sf::Image sfml_logo;
 
@@ -150,9 +150,11 @@ int MainMenu::Run(sf::RenderWindow& App) {
 
 		switch (action) {
 		case 1:
+		case 2:
+		case 3:
 		case 4:
 		case 5: return action;
-		defualt: break;
+		default: break;
 		}
 	}
 

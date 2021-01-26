@@ -6,7 +6,10 @@
 
 //Including each screen of application
 #include "mainmenu.h"
-#include "main.h"
-#include "FinishScreen.h"
+#include "UserSimulation.h"
+#include "NNLearning.h"
+#include "NNSimulation.h"
+#include "CGPLearning.h"
+#include "CGPSimulation.h"
 
 #endif // SCREENS_HPP_INCLUDED

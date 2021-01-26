@@ -45,7 +45,7 @@ struct neuralnetwork : Jedinka {
             outputs[i] = actfOut(outputs[i]);
     }
 
-    int akcija(vector<int> simulatorInputs) override 
+    int akcija(vector<int> simulatorInputs) override
     {
         inputs[0] = simulatorInputs.at(0);
         inputs[1] = simulatorInputs.at(1);
@@ -58,12 +58,10 @@ struct neuralnetwork : Jedinka {
 
         int idx = max_element(outputs.begin(), outputs.end()) - outputs.begin();
         return idx + 1;
-    }
-    void getClass() {
-        cout << "nn" << endl;
+
     }
 };
 
 vector<double> runNN();
-neuralnetwork createNN(const vector<double>& individual);
 
+void simulateNN(sf::RenderWindow& App, const vector<double>& individual);

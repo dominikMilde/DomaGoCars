@@ -8,5 +8,4 @@ struct Jedinka {
     vector<double> inputs;
     vector<double> outputs;
     Jedinka(int n, int m) : inputs(n), outputs(m) {};
-    virtual void getClass() = 0;
 };

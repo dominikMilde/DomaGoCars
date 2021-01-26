@@ -33,7 +33,6 @@ struct CGP : Jedinka {
     // racuna outpute za dani graf na racun danih inputa
     void propagate()
     {
-        cout << "A ovdje?9" << endl;
         vector<double> nodeOutputs = inputs;
         //cout << "input: left and front " << inputs[5] << " " << inputs[1] << endl;
         for (int i = 0; i < c; i++)
@@ -52,7 +51,7 @@ struct CGP : Jedinka {
                 nodeOutputs.push_back(calculateFunction(currNodeOutputs, functionId, nodeInputIds));
             }
         }
-        cout << "A ovdje?10" << endl;
+
         for (int i = 0; i < m; i++)
         {
             int pos = graph.at(graph.size() - m + i);
@@ -63,18 +62,14 @@ struct CGP : Jedinka {
 
     int akcija(vector<int> simulatorInputs) override
     {
-        cout << "A ovdje?7"<< simulatorInputs.at(0) << endl;
         inputs[0] = simulatorInputs.at(0);
-        cout << "A ovdje?7" << endl;
         inputs[1] = simulatorInputs.at(1);
         inputs[2] = simulatorInputs.at(2);
         inputs[3] = simulatorInputs.at(3);
         inputs[4] = simulatorInputs.at(4);
         inputs[5] = simulatorInputs.at(5);
 
-        cout << "A ovdje?7" << endl;
         propagate();
-        cout << "A ovdje?8" << endl;
 
         double speed = outputs.at(0);
         double angle = outputs.at(1);
@@ -91,21 +86,27 @@ struct CGP : Jedinka {
 
         if (action == "0111") {
             return 1;
-        } else if (action == "0100") {
+        }
+        else if (action == "0100") {
             return 2;
-        } else if (action == "0011") {
+        }
+        else if (action == "0011") {
             return 3;
-        } else if (action == "0000") {
+        }
+        else if (action == "0000") {
             return 4;
-        } else if (action == "1101") {
+        }
+        else if (action == "1101") {
             return 5;
-        } else if (action == "1100") {
+        }
+        else if (action == "1100") {
             return 6;
-        } else if (action == "1111") {
+        }
+        else if (action == "1111") {
             return 7;
         }
 
-        return -1;   
+        return -1;
     }
 
     // racuna zadanu operaciju nad danim argumentima
@@ -162,11 +163,8 @@ struct CGP : Jedinka {
         }
         return rez;
     }
-    void getClass() {
-        cout << "cgp" << endl;
-    }
 
 };
 
 vector<int> runCGP();
-CGP createCGP(vector<int>& graph);
+void simulateCGP(sf::RenderWindow& App, vector<int>& graph);

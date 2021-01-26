@@ -42,7 +42,22 @@
     <ClCompile Include="mainmenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FinishScreen.cpp">
+    <ClCompile Include="UserSimulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NNLearning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CGPLearning.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CGPSimulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NNSimulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="storage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,7 +92,19 @@
     <ClInclude Include="mainmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FinishScreen.h">
+    <ClInclude Include="NNSimulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NNLearning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGPSimulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGPLearning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserSimulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
