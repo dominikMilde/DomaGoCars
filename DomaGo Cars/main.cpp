@@ -34,12 +34,39 @@ sf::Image displayedImage;
 sf::CircleShape player(20.0f);
 sf::Texture playerTexture;
 
+sf::CircleShape player2(20.0f);
+sf::Texture playerTexture2;
+
 void init() {
 
 	player.setOrigin(12.0f, 15.0f);
 	player.setScale(1.5, 1.2);
 	playerTexture.loadFromFile("avatar.jpg");
 	player.setTexture(&playerTexture);
+
+	for (int i = 0; i < globalConfig.tracks.size(); i++) {
+		sf::Texture texture;
+		texture.loadFromFile(globalConfig.tracks.at(i));
+		images.push_back(texture.copyToImage());
+	}
+
+	backgroundTexture.loadFromFile(globalConfig.displayedTrack);
+	background.setTexture(&backgroundTexture);
+	displayedImage = backgroundTexture.copyToImage();
+
+}
+
+void initRace() {
+
+	player.setOrigin(12.0f, 15.0f);
+	player.setScale(1.5, 1.2);
+	playerTexture.loadFromFile("avatar.jpg");
+	player.setTexture(&playerTexture);
+
+	player2.setOrigin(12.0f, 15.0f);
+	player2.setScale(1.5, 1.2);
+	playerTexture2.loadFromFile("avatar.jpg");
+	player2.setTexture(&playerTexture2);
 
 	for (int i = 0; i < globalConfig.tracks.size(); i++) {
 		sf::Texture texture;
@@ -169,7 +196,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 		auto color1 = displayedImage.getPixel(x, y);
 
 		if (isUser) {
-			if (color1 == sf::Color::Black) 
+			if (color1 == sf::Color::Black)
 			{
 				return;
 			}
@@ -181,6 +208,61 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 			}
 		}
 	}
+}
+
+void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
+
+	player.setPosition(imageWidth / 2, imageHeight / 1.2 + 45);
+	player.setRotation(0);
+
+	player2.setPosition(imageWidth / 2, imageHeight / 1.2 - 10);
+	player2.setRotation(0);
+
+	sf::Vector2f vector1 = player.getPosition();
+	simulator sim1(vector1.x, vector1.y, displayedImage);
+
+	sf::Vector2f vector2 = player2.getPosition();
+	simulator sim2(vector2.x, vector2.y, displayedImage);
+
+	sim1.setKOEF(1);
+	sim2.setKOEF(1);
+
+	while (window.isOpen())
+	{
+
+		userDriver(sim1);
+		int akcija = run(sim2, jedinka);
+		AIDriver(akcija, sim2);
+
+		sim1.update();
+		sim2.update();
+
+		player.setPosition(sim1.getX(), sim1.getY());
+		player.setRotation(sim1.getAngle() * -1.0);
+
+		player2.setPosition(sim2.getX(), sim2.getY());
+		player2.setRotation(sim2.getAngle() * -1.0);
+
+		if (sim1.getT() % 20 == 0) {
+			window.clear();
+			window.draw(background);
+			window.draw(player);
+			window.draw(player2);
+			window.display();
+		}
+
+		float x = player.getPosition().x;
+		float y = player.getPosition().y;
+
+		auto color1 = displayedImage.getPixel(x, y);
+
+		if (color1 == sf::Color::Black)
+		{
+			return;
+		}
+
+	}
+
 }
 
 void simulate(sf::RenderWindow& App) {

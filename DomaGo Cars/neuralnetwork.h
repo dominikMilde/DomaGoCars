@@ -65,3 +65,4 @@ struct neuralnetwork : Jedinka {
 vector<double> runNN();
 
 void simulateNN(sf::RenderWindow& App, const vector<double>& individual);
+void raceNN(sf::RenderWindow& App, const vector<double>& individual);

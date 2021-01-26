@@ -127,6 +127,20 @@ void simulateNN(sf::RenderWindow& App, const vector<double>& individual) {
     simulate(App, &nn);
 }
 
+void raceNN(sf::RenderWindow& App, const vector<double>& individual) {
+    neuralnetwork nn(neuralNetworkConfig.p, neuralNetworkConfig.q, neuralNetworkConfig.r);
+
+    int k = 0;
+    for (int i = 0; i <= neuralNetworkConfig.p; ++i) for (int j = 0; j < neuralNetworkConfig.q; ++j) {
+        nn.inHid[i][j] = individual[k++];
+    }
+    for (int i = 0; i <= neuralNetworkConfig.q; ++i) for (int j = 0; j < neuralNetworkConfig.r; ++j) {
+        nn.hidOut[i][j] = individual[k++];
+    }
+
+    simulateRace(App, &nn);
+}
+
 vector<double> runNN() {
     cout << "Started neural network learning" << endl
         << "Number of generations: " << neuralNetworkConfig.generations << endl
