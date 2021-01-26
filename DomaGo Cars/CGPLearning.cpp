@@ -48,6 +48,7 @@ int CGPLearning::Run(sf::RenderWindow& App) {
 	l_label->SetText("Learning is a Lifelong Process...");
 	l_box->Pack(l_logo_box, true);
 	l_box->Pack(l_label);
+	l_box->SetSpacing(20.f);
 	l_window->Add(l_box);;
 
 	auto f_window = sfg::Window::Create(sfg::Window::Style::BACKGROUND | sfg::Window::Style::CLOSE);
@@ -85,6 +86,7 @@ int CGPLearning::Run(sf::RenderWindow& App) {
 
 	f_box->Pack(f_logo_box, true);
 	f_box->Pack(f_table);
+	f_box->SetSpacing(50.f);
 	f_window->Add(f_box);;
 
 	desktop.Add(l_window);
