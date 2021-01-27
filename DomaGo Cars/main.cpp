@@ -231,7 +231,8 @@ double evaluate(Jedinka* jedinka)
 
 			auto color1 = image.getPixel(x, y);
 
-			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxEvaDist || sim.getScaledT() > globalConfig.maxEvaTime)
+			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxEvaDist || sim.getScaledT() > globalConfig.maxEvaTime ||
+				(sim.getScaledT() > globalConfig.maxEvaTime / 5 && sim.getAngleDistance() < globalConfig.maxEvaDist / 10))
 			{
 				if (sim.getAngleDistance() > globalConfig.maxEvaDist)
 					cout << "(distance exceeded) ";
