@@ -46,6 +46,8 @@ private:
     float angleDistance;
 
     float getDistanceToBound(Vector2 pos, float angle) const;
+    float getDistanceToBound(Vector2 pos, float angle, bool onTrack) const;
+    Vector2 calculateNewPosition(Vector2 oldPos, float direction, float distance) const;
 
     static float vectorAngle(Vector2 pos, Vector2 center) {
         float x = pos.x - center.x;
@@ -83,7 +85,8 @@ private:
 public:
     simulator(float x1, float y1, const sf::Image& image);
 
-    void update();
+    void update(bool isLearning);
+    void calculateCrashReturn();
 
     float getAngle() const { return angle; }
     float getV() const { return v; }

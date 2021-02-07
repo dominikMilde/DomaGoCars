@@ -31,10 +31,10 @@ sf::Texture backgroundTexture;
 vector<sf::Image> images;
 sf::Image displayedImage;
 
-sf::CircleShape player(20.0f);
+sf::CircleShape player(10.0f);
 sf::Texture playerTexture;
 
-sf::CircleShape player2(20.0f);
+sf::CircleShape player2(10.0f);
 sf::Texture playerTexture2;
 
 void init() {
@@ -138,6 +138,36 @@ void userDriver(simulator& sim) {
 	}
 }
 
+void userDriver2(simulator& sim) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+	{
+		sim.rotateLeft();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+	{
+		sim.rotateRight();
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+	{
+		sim.gas();
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+	{
+		sim.brake();
+	}
+	else
+	{
+		sim.idle();
+	}
+}
+
+void calculateCrashReturn(sf::CircleShape& player, simulator& sim) {
+	sim.calculateCrashReturn();
+
+	player.setPosition(sim.getX(), sim.getY());
+	player.setRotation(sim.getAngle() * -1.0);
+}
+
 void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
@@ -149,8 +179,8 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 	bool isUser = jedinka == nullptr;
 
 	if (isUser)
-		sim.setKOEF(1);
-	else sim.setKOEF(1);
+		sim.setKOEF(0.8);
+	else sim.setKOEF(0.8);
 
 	while (window.isOpen())
 	{
@@ -178,7 +208,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 			AIDriver(akcija, sim);
 		}
 
-		sim.update();
+		sim.update(!isUser);
 
 		player.setPosition(sim.getX(), sim.getY());
 		player.setRotation(sim.getAngle() * -1.0);
@@ -212,6 +242,8 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 
 void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 
+	cout << endl << "===== PUT CAKLINE =====" << endl << "Zubni Karijes vs Desni" << endl << endl;
+
 	player.setPosition(imageWidth / 2, imageHeight / 1.2 + -10);
 	player.setRotation(0);
 
@@ -224,18 +256,17 @@ void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 	sf::Vector2f vector2 = player2.getPosition();
 	simulator sim2(vector2.x, vector2.y, displayedImage);
 
-	sim1.setKOEF(1);
-	sim2.setKOEF(1);
+	sim1.setKOEF(0.8);
+	sim2.setKOEF(0.8);
 
 	while (window.isOpen())
 	{
 
 		userDriver(sim1);
-		int akcija = run(sim2, jedinka);
-		AIDriver(akcija, sim2);
+		userDriver2(sim2);
 
-		sim1.update();
-		sim2.update();
+		sim1.update(false);
+		sim2.update(false);
 
 		player.setPosition(sim1.getX(), sim1.getY());
 		player.setRotation(sim1.getAngle() * -1.0);
@@ -251,18 +282,38 @@ void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 			window.display();
 		}
 
-		float x = player.getPosition().x;
-		float y = player.getPosition().y;
+		float x1 = player.getPosition().x;
+		float y1 = player.getPosition().y;
 
-		auto color1 = displayedImage.getPixel(x, y);
+		float x2 = player2.getPosition().x;
+		float y2 = player2.getPosition().y;
+
+		auto color1 = displayedImage.getPixel(x1, y1);
+		auto color2 = displayedImage.getPixel(x2, y2);
 
 		if (color1 == sf::Color::Black)
 		{
-			return;
+			cout << "Alo zubni karijes, ne zabijaj se :(" << endl;
+			calculateCrashReturn(player, sim1);
 		}
 
-	}
+		if (color2 == sf::Color::Black)
+		{
+			cout << "Alo desni, ne zabijaj se :(" << endl;
+			calculateCrashReturn(player2, sim2);
+		}
 
+		if (sim1.getAngleDistance() > 1080 || sim2.getAngleDistance() > 1080)
+		{
+			if (sim1.getAngleDistance() > sim2.getAngleDistance()) {
+				cout << "Cestitam zubni karijes, pobjedio/la si!" << endl;
+			}
+			else {
+				cout << "Cestitam desni, pobjedio/la si!" << endl;
+			}
+			return;
+		}
+	}
 }
 
 void simulate(sf::RenderWindow& App) {
@@ -298,7 +349,7 @@ double evaluate(Jedinka* jedinka)
 			int akcija = run(sim, jedinka);
 			AIDriver(akcija, sim);
 
-			sim.update();
+			sim.update(true);
 
 			player.setPosition(sim.getX(), sim.getY());
 			player.setRotation(sim.getAngle() * -1.0);
