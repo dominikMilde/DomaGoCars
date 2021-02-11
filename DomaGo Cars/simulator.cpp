@@ -13,14 +13,14 @@ float simulator::getDistanceToBound(Vector2 pos, float angle, bool onTrack) cons
     while (true) {
         int x = round(pos.x + dist * dirX);
         int y = round(pos.y + dist * dirY);
-        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || onTrack ? mat[x / 2][y] : !mat[x / 2][y]) break;
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || onTrack ? mat[x][y] : !mat[x][y]) break;
         dist += globalConfig.blok;
     }
     dist -= globalConfig.blok;
     while (true) {
         int x = round(pos.x + dist * dirX);
         int y = round(pos.y + dist * dirY);
-        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || onTrack ? mat[x / 2][y] : !mat[x / 2][y]) { break; }
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || onTrack ? mat[x][y] : !mat[x][y]) { break; }
         dist += 1;
     }
 
@@ -76,7 +76,7 @@ void simulator::update(bool isLearning) {
     }
     float newAngle = calcAngle(center, oldPos, pos);
     // zanemaruje posebne sluèajeve koje nastaju kada vozilo prolazi preko x ili y osi
-    if (abs(newAngle) > 0.1)
+    if (abs(newAngle) > 1)
         newAngle = 0;
     if (isfinite(newAngle))
         angleDistance += newAngle;

@@ -258,8 +258,8 @@ void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 	sf::Vector2f vector2 = player2.getPosition();
 	simulator sim2(vector2.x, vector2.y, displayedImage);
 
-	sim1.setKOEF(100);
-	sim2.setKOEF(100);
+	sim1.setKOEF(80);
+	sim2.setKOEF(80);
 
 	window.setFramerateLimit(60);
 
