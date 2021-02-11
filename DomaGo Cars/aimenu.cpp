@@ -56,16 +56,16 @@ int AIMenu::Run(sf::RenderWindow& App) {
 	auto btn_NN_s = sfg::Button::Create("Simulate NN");
 
 	btn_NN_l->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(1);
-		});
-	btn_CGP_l->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		setAction(2);
 		});
-	btn_NN_s->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+	btn_CGP_l->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		setAction(3);
 		});
-	btn_CGP_s->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+	btn_NN_s->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		setAction(4);
+		});
+	btn_CGP_s->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+		setAction(5);
 		});
 
 	// To add our widgets to the box we use the Pack() method instead of the
@@ -132,7 +132,6 @@ int AIMenu::Run(sf::RenderWindow& App) {
 		App.display();
 
 		switch (action) {
-		case 1:
 		case 2:
 		case 3:
 		case 4:

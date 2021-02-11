@@ -242,6 +242,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 }
 
 void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
+	bool is_user = jedinka == nullptr;
 
 	cout << endl << "===== PUT CAKLINE =====" << endl << "Zubni Karijes vs Desni" << endl << endl;
 
@@ -281,7 +282,13 @@ void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 		}
 
 		userDriver(sim1);
-		userDriver2(sim2);
+		if (is_user) {
+			userDriver2(sim2);
+		}
+		else {
+			int action = run(sim2, jedinka);
+			AIDriver(action, sim2);
+		}
 
 		sim1.update(false);
 		sim2.update(false);
