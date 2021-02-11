@@ -168,3 +168,4 @@ struct CGP : Jedinka {
 
 vector<int> runCGP();
 void simulateCGP(sf::RenderWindow& App, vector<int>& graph);
+void raceCGP(sf::RenderWindow& App, vector<int>& graph);

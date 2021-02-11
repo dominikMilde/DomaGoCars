@@ -9,7 +9,8 @@
 int UserSimulation::Run(sf::RenderWindow& App) {
 	initConfig();
 	initRace();
-	simulate(App);
+	vector<double> driverNn = readNnDriver();
+	raceNN(App, driverNn);
 
 	return 0;
 }
