@@ -10,17 +10,47 @@
 #include "config.h"
 #include "CGPLearning.h"
 
+class MyTask : public Stoppable
+{
+public:
+	vector<int> run()
+	{
+		startFill();
+
+		for (int gen = 1; gen <= cgpConfig.generations; ++gen) {
+
+			cout << endl << "========================================" << endl << endl;
+			cout << "GEN #" << gen << endl;
+
+			if (stopRequested() == false) {
+				return readCgpDriver();
+			}
+
+			runGeneration();
+			//cout << "Fitness najbolje jedinke: " << bestGraph.fitness << endl;
+
+			/*if (bestGraph.fitness > 10000) {
+				CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
+				cgp.graph = bestGraph.graph;
+				return cgp.graph;
+			}*/
+		}
+
+		return end();
+	}
+};
+
 void CGPLearning::setAction(int action) {
 	this->action = action;
 }
 
-void CGPLearning::learn() {
+/*void CGPLearning::learn() {
 	initConfig();
 	init();
 	vector<int> cgp = runCGP();
 	storeCgpDriver(cgp);
 	this->replace = true;
-}
+}*/
 
 int CGPLearning::Run(sf::RenderWindow& App) {
 	action = 3;
@@ -93,8 +123,24 @@ int CGPLearning::Run(sf::RenderWindow& App) {
 
 	replace = false;
 
-	sf::Thread Thread(&CGPLearning::learn, this);
-	Thread.launch();
+	//sf::Thread Thread(&CGPLearning::learn, this);
+	//Thread.launch();
+
+	initConfig();
+	init();
+	MyTask task;
+	std::thread th([&]()
+		{
+			task.run();
+		});
+	std::this_thread::sleep_for(std::chrono::seconds(10));
+	std::cout << "Asking Task to Stop" << std::endl;
+	// Stop the Task
+	task.stop();
+	//Waiting for thread to join
+	th.join();
+
+	this->replace = true;
 
 	while (App.isOpen()) {
 		sf::Event event;

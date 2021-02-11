@@ -4,9 +4,15 @@
 #include <algorithm>
 #include <time.h>
 #include <math.h>
+#include <thread>
+#include <iostream>
+#include <assert.h>
+#include <chrono>
+#include <future>
 
 #include "CGP.h"
 #include "main.h"
+#include "storage.h"
 
 using namespace std;
 
@@ -157,8 +163,7 @@ void simulateCGP(sf::RenderWindow& App, vector<int>& graph) {
     simulate(App, &cgp);
 }
 
-vector<int> runCGP()
-{
+void startFill() {
     cout << "Started CGP learning" << endl
         << "Number of generations: " << cgpConfig.generations << endl
         << "Population size: " << cgpConfig.populationSize << endl << endl;
@@ -168,23 +173,12 @@ vector<int> runCGP()
 
     fillInitialPopulationCGP();
     cout << "Fitness najbolje jedinke: " << bestGraph.fitness << endl;
+}
 
-    for (int gen = 1; gen <= cgpConfig.generations; ++gen) {
-
-        cout << endl << "========================================" << endl << endl;
-        cout << "GEN #" << gen << endl;
-
-        runGeneration();
-        cout << "Fitness najbolje jedinke: " << bestGraph.fitness << endl;
-
-        if (bestGraph.fitness > 10000) {
-            CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
-            cgp.graph = bestGraph.graph;
-            return cgp.graph;
-        }
-    }
-
+vector<int> end() {
     CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
     cgp.graph = bestGraph.graph;
     return cgp.graph;
 }
+
+
