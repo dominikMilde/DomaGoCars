@@ -24,6 +24,7 @@ int main(int argc, char** argv)
 	Screens.push_back(&nns);
 	CGPSimulation cgps;
 	Screens.push_back(&cgps);
+	PlayMenu playmenu;
 
 	//Main loop
 	while (screen >= 0)

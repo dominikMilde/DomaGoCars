@@ -157,6 +157,12 @@ void simulateCGP(sf::RenderWindow& App, vector<int>& graph) {
     simulate(App, &cgp);
 }
 
+void raceCGP(sf::RenderWindow& App, vector<int>& graph) {
+    CGP cgp(cgpConfig.numInputs, cgpConfig.numOutputs, cgpConfig.numRows, cgpConfig.numCols, cgpConfig.numNodeInputs);
+    cgp.graph = graph;
+    simulateRace(App, &cgp);
+}
+
 vector<int> runCGP()
 {
     cout << "Started CGP learning" << endl

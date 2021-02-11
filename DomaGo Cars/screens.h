@@ -6,6 +6,8 @@
 
 //Including each screen of application
 #include "mainmenu.h"
+#include "playmenu.h"
+#include "aimenu.h"
 #include "UserSimulation.h"
 #include "NNLearning.h"
 #include "NNSimulation.h"

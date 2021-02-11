@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aimenu.cpp" />
     <ClCompile Include="CGP.cpp" />
     <ClCompile Include="CGPLearning.cpp" />
     <ClCompile Include="CGPSimulation.cpp" />
@@ -156,12 +157,17 @@
     <ClCompile Include="neuralnetwork.cpp" />
     <ClCompile Include="NNLearning.cpp" />
     <ClCompile Include="NNSimulation.cpp" />
+    <ClCompile Include="playmenu.cpp" />
     <ClCompile Include="simulator.cpp" />
     <ClCompile Include="start.cpp" />
     <ClCompile Include="storage.cpp" />
+    <ClCompile Include="TwoPlayerSimulation.cpp" />
     <ClCompile Include="UserSimulation.cpp" />
+    <ClCompile Include="UserVsCGPSimulation.cpp" />
+    <ClCompile Include="UserVsNNSimulation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="aimenu.h" />
     <ClInclude Include="CGP.h" />
     <ClInclude Include="CGPLearning.h" />
     <ClInclude Include="CGPSimulation.h" />
@@ -169,6 +175,7 @@
     <ClInclude Include="mainmenu.h" />
     <ClInclude Include="NNLearning.h" />
     <ClInclude Include="NNSimulation.h" />
+    <ClInclude Include="playmenu.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Jedinka.h" />
     <ClInclude Include="main.h" />
@@ -176,7 +183,10 @@
     <ClInclude Include="screens.h" />
     <ClInclude Include="simulator.h" />
     <ClInclude Include="storage.h" />
+    <ClInclude Include="TwoPlayerSimulation.h" />
     <ClInclude Include="UserSimulation.h" />
+    <ClInclude Include="UserVsCGPSimulation.h" />
+    <ClInclude Include="UserVsNNSimulation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
