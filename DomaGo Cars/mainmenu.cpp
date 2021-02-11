@@ -50,14 +50,19 @@ int MainMenu::Run(sf::RenderWindow& App) {
 		logo_box->Add(logo);
 	}
 
-	auto btn_CGP_l = sfg::Button::Create("Start CGP Learning");
+	/*auto btn_CGP_l = sfg::Button::Create("Start CGP Learning");
 	auto btn_CGP_s = sfg::Button::Create("Simulate CGP");
 	auto btn_start = sfg::Button::Create("START");
 	auto btn_settings = sfg::Button::Create("SETTINGS");
 	auto btn_NN_l = sfg::Button::Create("Start NN Learning");
-	auto btn_NN_s = sfg::Button::Create("Simulate NN");
+	auto btn_NN_s = sfg::Button::Create("Simulate NN");*/
 
-	btn_start->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+	auto btn_ai_learning = sfg::Button::Create("AI LEARNING");
+	auto btn_play = sfg::Button::Create("PLAY");
+	auto btn_settings = sfg::Button::Create("SETTINGS");
+
+
+	/*btn_start->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		setAction(1);
 		});
 	btn_NN_l->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
@@ -71,7 +76,13 @@ int MainMenu::Run(sf::RenderWindow& App) {
 		});
 	btn_CGP_s->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		setAction(5);
-		});
+		});*/
+	btn_ai_learning->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+		setAction(1);
+	});
+	btn_play->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+		setAction(2);
+	});
 	btn_settings->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		ShellExecute(
 			NULL,
@@ -101,12 +112,17 @@ int MainMenu::Run(sf::RenderWindow& App) {
 	// packing options and the second the vertical packing options.
 	//
 	// The last option is the padding you want to apply to the cell.
-	table->Attach(btn_CGP_l, sf::Rect<sf::Uint32>(0, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	/*table->Attach(btn_CGP_l, sf::Rect<sf::Uint32>(0, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
 	table->Attach(btn_CGP_s, sf::Rect<sf::Uint32>(0, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
 	table->Attach(btn_start, sf::Rect<sf::Uint32>(1, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
 	table->Attach(btn_settings, sf::Rect<sf::Uint32>(1, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
 	table->Attach(btn_NN_l, sf::Rect<sf::Uint32>(2, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_NN_s, sf::Rect<sf::Uint32>(2, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_NN_s, sf::Rect<sf::Uint32>(2, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));*/
+
+	table->Attach(btn_ai_learning, sf::Rect<sf::Uint32>(0, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_play, sf::Rect<sf::Uint32>(1, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_settings, sf::Rect<sf::Uint32>(2, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+
 	table->SetRowSpacings(5.f);
 	table->SetColumnSpacings(5.f);
 
@@ -150,10 +166,10 @@ int MainMenu::Run(sf::RenderWindow& App) {
 
 		switch (action) {
 		case 1:
-		case 2:
-		case 3:
+		case 2: return action;
+		/*case 3:
 		case 4:
-		case 5: return action;
+		case 5: return action;*/
 		default: break;
 		}
 	}
