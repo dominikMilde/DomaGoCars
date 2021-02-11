@@ -9,7 +9,7 @@
 int UserVsCGPSimulation::Run(sf::RenderWindow& App) {
 	initConfig();
 	initRace();
-	vector<double> driverCgp = readCgpDriver();
+	vector<int> driverCgp = readCgpDriver();
 	raceCGP(App, driverCgp);
 
 	return 0;

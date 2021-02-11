@@ -13,5 +13,8 @@
 #include "NNSimulation.h"
 #include "CGPLearning.h"
 #include "CGPSimulation.h"
+#include "TwoPlayersSimulation.h"
+#include "UserVsCGPSimulation.h"
+#include "UserVsNNSimulation.h"
 
 #endif // SCREENS_HPP_INCLUDED

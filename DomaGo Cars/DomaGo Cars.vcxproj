@@ -161,7 +161,7 @@
     <ClCompile Include="simulator.cpp" />
     <ClCompile Include="start.cpp" />
     <ClCompile Include="storage.cpp" />
-    <ClCompile Include="TwoPlayerSimulation.cpp" />
+    <ClCompile Include="TwoPlayersSimulation.cpp" />
     <ClCompile Include="UserSimulation.cpp" />
     <ClCompile Include="UserVsCGPSimulation.cpp" />
     <ClCompile Include="UserVsNNSimulation.cpp" />
@@ -183,7 +183,7 @@
     <ClInclude Include="screens.h" />
     <ClInclude Include="simulator.h" />
     <ClInclude Include="storage.h" />
-    <ClInclude Include="TwoPlayerSimulation.h" />
+    <ClInclude Include="TwoPlayersSimulation.h" />
     <ClInclude Include="UserSimulation.h" />
     <ClInclude Include="UserVsCGPSimulation.h" />
     <ClInclude Include="UserVsNNSimulation.h" />
