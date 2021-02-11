@@ -1,5 +1,4 @@
 #include <iostream>
-#include <time.h>
 #include <vector>
 #include <SFML/Graphics.hpp>
 
@@ -179,8 +178,10 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 	bool isUser = jedinka == nullptr;
 
 	if (isUser)
-		sim.setKOEF(0.8);
-	else sim.setKOEF(0.8);
+		sim.setKOEF(100);
+	else sim.setKOEF(100);
+
+	window.setFramerateLimit(60);
 
 	while (window.isOpen())
 	{
@@ -213,7 +214,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 		player.setPosition(sim.getX(), sim.getY());
 		player.setRotation(sim.getAngle() * -1.0);
 
-		if (sim.getT() % 20 == 0) {
+		if (sim.getT() % 20 == 0 || true) {
 			window.clear();
 			window.draw(background);
 			window.draw(player);
@@ -256,11 +257,28 @@ void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 	sf::Vector2f vector2 = player2.getPosition();
 	simulator sim2(vector2.x, vector2.y, displayedImage);
 
-	sim1.setKOEF(0.8);
-	sim2.setKOEF(0.8);
+	sim1.setKOEF(100);
+	sim2.setKOEF(100);
+
+	window.setFramerateLimit(60);
 
 	while (window.isOpen())
 	{
+		sf::Event evnt;
+		while (window.pollEvent(evnt))
+		{
+			switch (evnt.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::Resized:
+				std::cout << "New window width: " << evnt.size.width << " New window height: " << evnt.size.height << std::endl;
+				break;
+			case sf::Event::TextEntered:
+				break;
+			}
+		}
 
 		userDriver(sim1);
 		userDriver2(sim2);
@@ -274,7 +292,7 @@ void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 		player2.setPosition(sim2.getX(), sim2.getY());
 		player2.setRotation(sim2.getAngle() * -1.0);
 
-		if (sim1.getT() % 20 == 0) {
+		if (sim1.getT() % 20 == 0 || true) {
 			window.clear();
 			window.draw(background);
 			window.draw(player);
@@ -342,7 +360,7 @@ double evaluate(Jedinka* jedinka)
 
 		sf::Vector2f vector = player.getPosition();
 		simulator sim(vector.x, vector.y, image);
-		sim.setKOEF(30);
+		sim.setKOEF(100);
 
 		while (true)
 		{
