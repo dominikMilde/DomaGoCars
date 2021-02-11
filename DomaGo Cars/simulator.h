@@ -24,7 +24,7 @@ const Vector2 center = Vector2(WIDTH / 2.0f, HEIGHT / 2.0f);
 
 class simulator {
 private:
-    bool mat[WIDTH2][HEIGHT];
+    bool mat[WIDTH][HEIGHT];
 
     // KOEF - koeficijent za ubrzanje ili usporenje simulacije
     float KOEF;
