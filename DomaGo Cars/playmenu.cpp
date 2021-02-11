@@ -49,17 +49,21 @@ int PlayMenu::Run(sf::RenderWindow& App) {
 
 	auto btn_2p = sfg::Button::Create("2 PLAYERS");
 	auto btn_1p = sfg::Button::Create("1 PLAYER");
-	auto btn_ai = sfg::Button::Create("vs AI");
+	auto btn_nn = sfg::Button::Create("vs NN");
+	auto btn_cgp = sfg::Button::Create("vs CGP");
 
 	btn_2p->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(1);
+		setAction(8);
 		});
 	btn_1p->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(2);
+		setAction(1);
 		});
-	btn_ai->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(3);
+	btn_nn->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+		setAction(10);
 		});
+	btn_cgp->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+		setAction(9);
+	});
 
 	// To add our widgets to the box we use the Pack() method instead of the
 	// Add() method. This makes sure the widgets are added and layed out
@@ -80,8 +84,9 @@ int PlayMenu::Run(sf::RenderWindow& App) {
 	//
 	// The last option is the padding you want to apply to the cell.
 	table->Attach(btn_2p, sf::Rect<sf::Uint32>(0, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_1p, sf::Rect<sf::Uint32>(0, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_ai, sf::Rect<sf::Uint32>(1, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_1p, sf::Rect<sf::Uint32>(1, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_nn, sf::Rect<sf::Uint32>(2, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_cgp, sf::Rect<sf::Uint32>(3, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
 	table->SetRowSpacings(5.f);
 	table->SetColumnSpacings(5.f);
 
@@ -125,10 +130,9 @@ int PlayMenu::Run(sf::RenderWindow& App) {
 
 		switch (action) {
 		case 1:
-		case 2:
-		case 3:
-		case 4:
-		case 5: return action;
+		case 8:
+		case 9:
+		case 10: return action;
 		default: break;
 		}
 	}

@@ -78,10 +78,10 @@ int MainMenu::Run(sf::RenderWindow& App) {
 		setAction(5);
 		});*/
 	btn_ai_learning->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(1);
+		setAction(7);
 	});
 	btn_play->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
-		setAction(2);
+		setAction(6);
 	});
 	btn_settings->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		ShellExecute(
@@ -165,11 +165,8 @@ int MainMenu::Run(sf::RenderWindow& App) {
 		App.display();
 
 		switch (action) {
-		case 1:
-		case 2: return action;
-		/*case 3:
-		case 4:
-		case 5: return action;*/
+		case 6:
+		case 7: return action;
 		default: break;
 		}
 	}

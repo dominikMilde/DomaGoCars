@@ -25,6 +25,15 @@ int main(int argc, char** argv)
 	CGPSimulation cgps;
 	Screens.push_back(&cgps);
 	PlayMenu playmenu;
+	Screens.push_back(&playmenu);
+	AIMenu aimenu;
+	Screens.push_back(&aimenu);
+	TwoPlayersSimulation two_player_simulation;
+	Screens.push_back(&two_player_simulation);
+	UserVsCGPSimulation us_cgp;
+	Screens.push_back(&us_cgp);
+	UserVsNNSimulation us_nn;
+	Screens.push_back(&us_nn);
 
 	//Main loop
 	while (screen >= 0)
