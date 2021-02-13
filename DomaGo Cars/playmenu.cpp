@@ -10,7 +10,7 @@ void PlayMenu::setAction(int action) {
 }
 
 int PlayMenu::Run(sf::RenderWindow& App) {
-	action = 0;
+	action = 6;
 
 	// We have to do this because we don't use SFML to draw.
 	App.resetGLStates();
@@ -47,11 +47,15 @@ int PlayMenu::Run(sf::RenderWindow& App) {
 		logo_box->Add(logo);
 	}
 
+	auto btn_back = sfg::Button::Create("BACK");
 	auto btn_2p = sfg::Button::Create("2 PLAYERS");
 	auto btn_1p = sfg::Button::Create("1 PLAYER");
 	auto btn_nn = sfg::Button::Create("vs NN");
 	auto btn_cgp = sfg::Button::Create("vs CGP");
 
+	btn_back->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+		setAction(0);
+		});
 	btn_2p->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		setAction(8);
 		});
@@ -83,10 +87,11 @@ int PlayMenu::Run(sf::RenderWindow& App) {
 	// packing options and the second the vertical packing options.
 	//
 	// The last option is the padding you want to apply to the cell.
-	table->Attach(btn_2p, sf::Rect<sf::Uint32>(0, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_1p, sf::Rect<sf::Uint32>(0, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_nn, sf::Rect<sf::Uint32>(2, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_cgp, sf::Rect<sf::Uint32>(2, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_back, sf::Rect<sf::Uint32>(0, 0, 1, 2), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_2p, sf::Rect<sf::Uint32>(1, 1, 3, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_1p, sf::Rect<sf::Uint32>(1, 0, 3, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_nn, sf::Rect<sf::Uint32>(4, 0, 3, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_cgp, sf::Rect<sf::Uint32>(4, 1, 3, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
 	table->SetRowSpacings(5.f);
 	table->SetColumnSpacings(5.f);
 
@@ -129,6 +134,7 @@ int PlayMenu::Run(sf::RenderWindow& App) {
 		App.display();
 
 		switch (action) {
+		case 0:
 		case 1:
 		case 8:
 		case 9:

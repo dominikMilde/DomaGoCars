@@ -2,6 +2,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
+#include "main.h"
 #include "simulator.h"
 #include "neuralnetwork.h"
 #include "CGP.h"
@@ -169,13 +170,19 @@ void calculateCrashReturn(sf::CircleShape& player, simulator& sim) {
 
 void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 
+	bool isUser = jedinka == nullptr;
+	if (isUser) {
+		cout << "===== SINGLE PLAYER =====" << endl << endl;
+		cout << "\"Your greatest opponent is yourself.\"" << endl;
+		cout << "Try to finish " << globalConfig.numOfLaps << (globalConfig.numOfLaps > 1 ? " laps" : " lap") << " without crashing!" << endl;
+		cout << "Press ESC to exit" << endl << endl;
+	}
+	
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
 	player.setRotation(0);
 
 	sf::Vector2f vector = player.getPosition();
 	simulator sim(vector.x, vector.y, displayedImage);
-
-	bool isUser = jedinka == nullptr;
 
 	if (isUser)
 		sim.setKOEF(100);
@@ -198,6 +205,10 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 				break;
 			case sf::Event::TextEntered:
 				break;
+			case sf::Event::KeyPressed: {
+				if (evnt.key.code == sf::Keyboard::Escape)
+					return;
+			}
 			}
 		}
 
@@ -227,8 +238,15 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 		auto color1 = displayedImage.getPixel(x, y);
 
 		if (isUser) {
-			if (color1 == sf::Color::Black)
+			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.numOfLaps * 360)
 			{
+				if (sim.getAngleDistance() > globalConfig.numOfLaps * 360) {
+					cout << "FINISHED!" << endl;
+					int time = (int)(sim.getT() * 1.7);
+					cout << "Your time : " << time / 100 << ":" << time % 100 << endl;
+				}
+				else
+					cout << "Better luck next time!" << endl << endl;
 				return;
 			}
 		}
@@ -241,10 +259,13 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 	}
 }
 
-void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
+void simulateRace(sf::RenderWindow & window, Jedinka * jedinka) {
 	bool is_user = jedinka == nullptr;
 
-	cout << endl << "===== PUT CAKLINE =====" << endl << "Zubni Karijes vs Desni" << endl << endl;
+	cout << "===== TWO PLAYERS =====" << endl << endl;
+	cout << "Ferrari vs Mustang" << endl;
+	cout << "Try to finish " << globalConfig.numOfLaps << (globalConfig.numOfLaps > 1 ? " laps" : " lap") << " faster than your opponent!" << endl;
+	cout << "Press ESC to exit" << endl << endl;
 
 	player.setPosition(imageWidth / 2, imageHeight / 1.2 + -10);
 	player.setRotation(0);
@@ -278,6 +299,7 @@ void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 				break;
 			case sf::Event::TextEntered:
 				break;
+			case sf::Event::KeyPressed: if (evnt.key.code == sf::Keyboard::Escape) return;
 			}
 		}
 
@@ -318,23 +340,23 @@ void simulateRace(sf::RenderWindow& window, Jedinka* jedinka) {
 
 		if (color1 == sf::Color::Black)
 		{
-			cout << "Alo zubni karijes, ne zabijaj se :(" << endl;
+			cout << "Watch out for those fences, Ferrari!" << endl;
 			calculateCrashReturn(player, sim1);
 		}
 
 		if (color2 == sf::Color::Black)
 		{
-			cout << "Alo desni, ne zabijaj se :(" << endl;
+			cout << "Get back on track, Mustang!" << endl;
 			calculateCrashReturn(player2, sim2);
 		}
 
-		if (sim1.getAngleDistance() > 1080 || sim2.getAngleDistance() > 1080)
+		if (sim1.getAngleDistance() > globalConfig.numOfLaps * 360 || sim2.getAngleDistance() > globalConfig.numOfLaps * 360)
 		{
 			if (sim1.getAngleDistance() > sim2.getAngleDistance()) {
-				cout << "Cestitam zubni karijes, pobjedio/la si!" << endl;
+				cout << endl << "WINNER: FERRARI" << endl << endl << endl;
 			}
 			else {
-				cout << "Cestitam desni, pobjedio/la si!" << endl;
+				cout << endl << "WINNER: MUSTANG" << endl << endl << endl;
 			}
 			return;
 		}

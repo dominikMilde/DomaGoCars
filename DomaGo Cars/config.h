@@ -7,6 +7,7 @@ struct DgcConfig {
 	
 	//main
 	double fitnessKoef;
+	int numOfLaps;
 	int maxSimTime;
 	int maxSimDist;
 	int maxEvaTime;

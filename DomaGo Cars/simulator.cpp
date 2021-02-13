@@ -76,7 +76,7 @@ void simulator::update(bool isLearning) {
     }
     float newAngle = calcAngle(center, oldPos, pos);
     // zanemaruje posebne sluèajeve koje nastaju kada vozilo prolazi preko x ili y osi
-    if (abs(newAngle) > 1)
+    if (abs(newAngle) > 10)
         newAngle = 0;
     if (isfinite(newAngle))
         angleDistance += newAngle;

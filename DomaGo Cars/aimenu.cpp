@@ -13,7 +13,7 @@ void AIMenu::setAction(int action) {
 }
 
 int AIMenu::Run(sf::RenderWindow& App) {
-	action = 0;
+	action = 7;
 	
 	// We have to do this because we don't use SFML to draw.
 	App.resetGLStates();
@@ -50,11 +50,15 @@ int AIMenu::Run(sf::RenderWindow& App) {
 		logo_box->Add(logo);
 	}
 
+	auto btn_back = sfg::Button::Create("BACK");
 	auto btn_CGP_l = sfg::Button::Create("Start CGP Learning");
 	auto btn_CGP_s = sfg::Button::Create("Simulate CGP");
 	auto btn_NN_l = sfg::Button::Create("Start NN Learning");
 	auto btn_NN_s = sfg::Button::Create("Simulate NN");
 
+	btn_back->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
+		setAction(0);
+		});
 	btn_NN_l->GetSignal(sfg::Widget::OnLeftClick).Connect([this]() {
 		setAction(2);
 		});
@@ -86,10 +90,11 @@ int AIMenu::Run(sf::RenderWindow& App) {
 	// packing options and the second the vertical packing options.
 	//
 	// The last option is the padding you want to apply to the cell.
-	table->Attach(btn_CGP_l, sf::Rect<sf::Uint32>(0, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_CGP_s, sf::Rect<sf::Uint32>(0, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_NN_l, sf::Rect<sf::Uint32>(2, 0, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
-	table->Attach(btn_NN_s, sf::Rect<sf::Uint32>(2, 1, 1, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_back, sf::Rect<sf::Uint32>(0, 0, 1, 2), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_CGP_l, sf::Rect<sf::Uint32>(1, 0, 3, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_CGP_s, sf::Rect<sf::Uint32>(1, 1, 3, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_NN_l, sf::Rect<sf::Uint32>(4, 0, 3, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
+	table->Attach(btn_NN_s, sf::Rect<sf::Uint32>(4, 1, 3, 1), sfg::Table::FILL | sfg::Table::EXPAND, sfg::Table::FILL, sf::Vector2f(10.f, 50.f));
 	table->SetRowSpacings(5.f);
 	table->SetColumnSpacings(5.f);
 
@@ -132,6 +137,7 @@ int AIMenu::Run(sf::RenderWindow& App) {
 		App.display();
 
 		switch (action) {
+		case 0:
 		case 2:
 		case 3:
 		case 4:

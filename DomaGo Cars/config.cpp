@@ -21,6 +21,7 @@ void initConfig() {
 	dgcConfig.lookupValue("akcija", globalConfig.akcija);
 
 	mainSetting.lookupValue("fitnessKoef", globalConfig.fitnessKoef);
+	mainSetting.lookupValue("numOfLaps", globalConfig.numOfLaps);
 	mainSetting.lookupValue("maxSimTime", globalConfig.maxSimTime);
 	mainSetting.lookupValue("maxSimDist", globalConfig.maxSimDist);
 	mainSetting.lookupValue("maxEvaTime", globalConfig.maxEvaTime);
