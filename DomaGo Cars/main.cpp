@@ -177,6 +177,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 		cout << "Try to finish " << globalConfig.numOfLaps << (globalConfig.numOfLaps > 1 ? " laps" : " lap") << " without crashing!" << endl;
 		cout << "Press ESC to exit" << endl << endl;
 	}
+	bool wait = false;
 	
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
 	player.setRotation(0);
@@ -185,7 +186,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 	simulator sim(vector.x, vector.y, displayedImage);
 
 	if (isUser)
-		sim.setKOEF(100);
+		sim.setKOEF(80);
 	else sim.setKOEF(100);
 
 	window.setFramerateLimit(60);
@@ -193,7 +194,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 	while (window.isOpen())
 	{
 		sf::Event evnt;
-		while (window.pollEvent(evnt))
+		while (window.pollEvent(evnt) || wait)
 		{
 			switch (evnt.type)
 			{
@@ -206,8 +207,8 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 			case sf::Event::TextEntered:
 				break;
 			case sf::Event::KeyPressed: {
-				if (evnt.key.code == sf::Keyboard::Escape)
-					return;
+				if (evnt.key.code == sf::Keyboard::Escape) return;
+				if (wait && evnt.key.code == sf::Keyboard::Enter) return simulate(window, jedinka);
 			}
 			}
 		}
@@ -235,23 +236,26 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 		float x = player.getPosition().x;
 		float y = player.getPosition().y;
 
-		auto color1 = displayedImage.getPixel(x, y);
+		auto color = displayedImage.getPixel(x, y);
 
 		if (isUser) {
-			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.numOfLaps * 360)
+			if (color == sf::Color::Black || sim.getAngleDistance() > globalConfig.numOfLaps * 360)
 			{
 				if (sim.getAngleDistance() > globalConfig.numOfLaps * 360) {
 					cout << "FINISHED!" << endl;
 					int time = (int)(sim.getT() * 1.7);
-					cout << "Your time : " << time / 100 << ":" << time % 100 << endl;
+					cout << "Your time : " << time / 100 << ":" << time % 100 << endl << endl;
 				}
 				else
 					cout << "Better luck next time!" << endl << endl;
-				return;
+
+				wait = true;
+				cout << "Press ENTER to restart" << endl;
+				cout << "Press ESC to exit" << endl <<endl << endl;
 			}
 		}
 		else if (!isUser) {
-			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxSimDist || sim.getScaledT() > globalConfig.maxSimTime)
+			if (color == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxSimDist || sim.getScaledT() > globalConfig.maxSimTime)
 			{
 				return;
 			}
@@ -261,6 +265,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 
 void simulateRace(sf::RenderWindow & window, Jedinka * jedinka) {
 	bool is_user = jedinka == nullptr;
+	bool wait = false;
 
 	cout << "===== TWO PLAYERS =====" << endl << endl;
 	cout << "Ferrari vs Mustang" << endl;
@@ -287,7 +292,7 @@ void simulateRace(sf::RenderWindow & window, Jedinka * jedinka) {
 	while (window.isOpen())
 	{
 		sf::Event evnt;
-		while (window.pollEvent(evnt))
+		while (window.pollEvent(evnt) || wait)
 		{
 			switch (evnt.type)
 			{
@@ -299,7 +304,10 @@ void simulateRace(sf::RenderWindow & window, Jedinka * jedinka) {
 				break;
 			case sf::Event::TextEntered:
 				break;
-			case sf::Event::KeyPressed: if (evnt.key.code == sf::Keyboard::Escape) return;
+			case sf::Event::KeyPressed: {
+				if (evnt.key.code == sf::Keyboard::Escape) return;
+				if (wait && evnt.key.code == sf::Keyboard::Enter) return simulateRace(window, jedinka);
+			}
 			}
 		}
 
@@ -353,12 +361,14 @@ void simulateRace(sf::RenderWindow & window, Jedinka * jedinka) {
 		if (sim1.getAngleDistance() > globalConfig.numOfLaps * 360 || sim2.getAngleDistance() > globalConfig.numOfLaps * 360)
 		{
 			if (sim1.getAngleDistance() > sim2.getAngleDistance()) {
-				cout << endl << "WINNER: FERRARI" << endl << endl << endl;
+				cout << endl << "WINNER: FERRARI" << endl << endl;
 			}
 			else {
-				cout << endl << "WINNER: MUSTANG" << endl << endl << endl;
+				cout << endl << "WINNER: MUSTANG" << endl << endl;
 			}
-			return;
+			wait = true;
+			cout << "Press ENTER to restart" << endl;
+			cout << "Press ESC to exit" << endl << endl << endl;
 		}
 	}
 }
@@ -389,7 +399,7 @@ double evaluate(Jedinka* jedinka)
 
 		sf::Vector2f vector = player.getPosition();
 		simulator sim(vector.x, vector.y, image);
-		sim.setKOEF(100);
+		sim.setKOEF(20);
 
 		while (true)
 		{
@@ -398,20 +408,20 @@ double evaluate(Jedinka* jedinka)
 
 			sim.update(true);
 
-			player.setPosition(sim.getX(), sim.getY());
-			player.setRotation(sim.getAngle() * -1.0);
-
-			float x = player.getPosition().x;
-			float y = player.getPosition().y;
+			float x = sim.getX();
+			float y = sim.getY();
 
 			if (x < 0 || x > imageWidth || y < 0 || y > imageHeight) {
 				fitness += fitnessMeanFunc(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT());
 				break;
 			}
 
-			auto color1 = image.getPixel(x, y);
+			player.setPosition(sim.getX(), sim.getY());
+			player.setRotation(sim.getAngle() * -1.0);
 
-			if (color1 == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxEvaDist || sim.getScaledT() > globalConfig.maxEvaTime)
+			auto color = image.getPixel(x, y);
+
+			if (color == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxEvaDist || sim.getScaledT() > globalConfig.maxEvaTime)
 			{
 				if (sim.getAngleDistance() > globalConfig.maxEvaDist)
 					cout << "(distance exceeded) ";
