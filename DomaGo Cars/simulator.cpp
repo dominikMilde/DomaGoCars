@@ -13,14 +13,16 @@ float simulator::getDistanceToBound(Vector2 pos, float angle, bool onTrack) cons
     while (true) {
         int x = round(pos.x + dist * dirX);
         int y = round(pos.y + dist * dirY);
-        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || onTrack ? mat[x][y] : !mat[x][y]) break;
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) break;
+        if (onTrack ? mat[x][y] : !mat[x][y]) break;
         dist += globalConfig.blok;
     }
     dist -= globalConfig.blok;
     while (true) {
         int x = round(pos.x + dist * dirX);
         int y = round(pos.y + dist * dirY);
-        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || onTrack ? mat[x][y] : !mat[x][y]) break;
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) break;
+        if (onTrack ? mat[x][y] : !mat[x][y]) break;
         dist += 1;
     }
 
