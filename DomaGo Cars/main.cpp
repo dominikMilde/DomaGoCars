@@ -178,6 +178,7 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 		cout << "Press ESC to exit" << endl << endl;
 	}
 	bool wait = false;
+	bool started = false;
 	
 	player.setPosition(imageWidth / 2, imageHeight / 1.2);
 	player.setRotation(0);
@@ -209,6 +210,10 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 			case sf::Event::KeyPressed: {
 				if (evnt.key.code == sf::Keyboard::Escape) return;
 				if (wait && evnt.key.code == sf::Keyboard::Enter) return simulate(window, jedinka);
+				if (isUser && !started && evnt.key.code == sf::Keyboard::Key::W) {
+					sim.setT(0);
+					started = true;
+				}
 			}
 			}
 		}
