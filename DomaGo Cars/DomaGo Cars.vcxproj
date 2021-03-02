@@ -18,6 +18,50 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\aimenu.h" />
+    <ClInclude Include="include\CGP.h" />
+    <ClInclude Include="include\CGPLearning.h" />
+    <ClInclude Include="include\CGPSimulation.h" />
+    <ClInclude Include="include\config.h" />
+    <ClInclude Include="include\Jedinka.h" />
+    <ClInclude Include="include\main.h" />
+    <ClInclude Include="include\mainmenu.h" />
+    <ClInclude Include="include\neuralnetwork.h" />
+    <ClInclude Include="include\NNLearning.h" />
+    <ClInclude Include="include\NNSimulation.h" />
+    <ClInclude Include="include\playmenu.h" />
+    <ClInclude Include="include\raceSimulator.h" />
+    <ClInclude Include="include\Screen.h" />
+    <ClInclude Include="include\screens.h" />
+    <ClInclude Include="include\simulator.h" />
+    <ClInclude Include="include\storage.h" />
+    <ClInclude Include="include\TwoPlayersSimulation.h" />
+    <ClInclude Include="include\UserSimulation.h" />
+    <ClInclude Include="include\UserVsCGPSimulation.h" />
+    <ClInclude Include="include\UserVsNNSimulation.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\aimenu.cpp" />
+    <ClCompile Include="src\CGP.cpp" />
+    <ClCompile Include="src\CGPLearning.cpp" />
+    <ClCompile Include="src\CGPSimulation.cpp" />
+    <ClCompile Include="src\config.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mainmenu.cpp" />
+    <ClCompile Include="src\neuralnetwork.cpp" />
+    <ClCompile Include="src\NNLearning.cpp" />
+    <ClCompile Include="src\NNSimulation.cpp" />
+    <ClCompile Include="src\playmenu.cpp" />
+    <ClCompile Include="src\raceSimulator.cpp" />
+    <ClCompile Include="src\simulator.cpp" />
+    <ClCompile Include="src\start.cpp" />
+    <ClCompile Include="src\storage.cpp" />
+    <ClCompile Include="src\TwoPlayersSimulation.cpp" />
+    <ClCompile Include="src\UserSimulation.cpp" />
+    <ClCompile Include="src\UserVsCGPSimulation.cpp" />
+    <ClCompile Include="src\UserVsNNSimulation.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -105,7 +149,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\sfgui\include;$(SolutionDir)\libconfig\include;$(SolutionDir)\sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(SolutionDir)\sfgui\include;$(SolutionDir)\libconfig\include;$(SolutionDir)\sfml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,48 +190,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="aimenu.cpp" />
-    <ClCompile Include="CGP.cpp" />
-    <ClCompile Include="CGPLearning.cpp" />
-    <ClCompile Include="CGPSimulation.cpp" />
-    <ClCompile Include="config.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="mainmenu.cpp" />
-    <ClCompile Include="neuralnetwork.cpp" />
-    <ClCompile Include="NNLearning.cpp" />
-    <ClCompile Include="NNSimulation.cpp" />
-    <ClCompile Include="playmenu.cpp" />
-    <ClCompile Include="simulator.cpp" />
-    <ClCompile Include="start.cpp" />
-    <ClCompile Include="storage.cpp" />
-    <ClCompile Include="TwoPlayersSimulation.cpp" />
-    <ClCompile Include="UserSimulation.cpp" />
-    <ClCompile Include="UserVsCGPSimulation.cpp" />
-    <ClCompile Include="UserVsNNSimulation.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="aimenu.h" />
-    <ClInclude Include="CGP.h" />
-    <ClInclude Include="CGPLearning.h" />
-    <ClInclude Include="CGPSimulation.h" />
-    <ClInclude Include="config.h" />
-    <ClInclude Include="mainmenu.h" />
-    <ClInclude Include="NNLearning.h" />
-    <ClInclude Include="NNSimulation.h" />
-    <ClInclude Include="playmenu.h" />
-    <ClInclude Include="Screen.h" />
-    <ClInclude Include="Jedinka.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="neuralnetwork.h" />
-    <ClInclude Include="screens.h" />
-    <ClInclude Include="simulator.h" />
-    <ClInclude Include="storage.h" />
-    <ClInclude Include="TwoPlayersSimulation.h" />
-    <ClInclude Include="UserSimulation.h" />
-    <ClInclude Include="UserVsCGPSimulation.h" />
-    <ClInclude Include="UserVsNNSimulation.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
