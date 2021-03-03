@@ -392,6 +392,7 @@ double fitnessMeanFuncInv(double x) {
 
 double evaluate(Jedinka* jedinka)
 {
+	bool checked = false;
 	double fitness = 0;
 
 	for (int i = 0; i < globalConfig.tracks.size(); i++) {
@@ -425,6 +426,19 @@ double evaluate(Jedinka* jedinka)
 			player.setRotation(sim.getAngle() * -1.0);
 
 			auto color = image.getPixel(x, y);
+
+			if (!checked && sim.getScaledT() > globalConfig.maxEvaTime / 10.) {
+				if (sim.getAngleDistance() < globalConfig.maxEvaDist / 30.) {
+					cout << "(control time expired) ";
+					if (sim.getAngleDistance() < 0) {
+						fitness += 0;
+						break;
+					}
+					fitness += fitnessMeanFunc(pow(sim.getAngleDistance(), globalConfig.fitnessKoef) / sim.getScaledT());
+					break;
+				}
+				checked = true;
+			}
 
 			if (color == sf::Color::Black || sim.getAngleDistance() > globalConfig.maxEvaDist || sim.getScaledT() > globalConfig.maxEvaTime)
 			{

@@ -77,6 +77,21 @@ void print(const vector<double>& individual) {
     cout<<endl;*/
 }
 
+int findBest() {
+    double best = evaluate(population[0]);
+    int bestIdx = 0;
+
+    for (int i = 1; i < neuralNetworkConfig.populationSize; ++i) {
+        double tmp = evaluate(population[i]);
+        if (tmp > best) {
+            best = tmp;
+            bestIdx = i;
+        }
+    }
+
+    return bestIdx;
+}
+
 void calculateFitness() {
     fitness.clear();
     fitness.reserve(neuralNetworkConfig.tournamentSize);
@@ -173,6 +188,6 @@ vector<double> runNN() {
 
     cout << endl << endl;
 
-    int best = max_element(fitness.begin(), fitness.end()) - fitness.begin();
+    int best = findBest();
     return population[best];
 }
