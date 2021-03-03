@@ -177,6 +177,11 @@ void simulate(sf::RenderWindow& window, Jedinka* jedinka) {
 		cout << "Try to finish " << globalConfig.numOfLaps << (globalConfig.numOfLaps > 1 ? " laps" : " lap") << " without crashing!" << endl;
 		cout << "Press ESC to exit" << endl << endl;
 	}
+	else {
+		cout << "===== AI SIMULATION =====" << endl << endl;
+		cout << "Hopefully AI player will finish " << globalConfig.maxSimDist / 360 << (globalConfig.maxSimDist / 360 > 1 ? " laps" : " lap") << " without crashing!" << endl;
+		cout << "Press ESC to exit" << endl << endl;
+	}
 	bool wait = false;
 	bool started = false;
 	
