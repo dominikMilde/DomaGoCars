@@ -12,7 +12,7 @@ This game was developed under the supervision of Domagoj Jakobovic, Ph. D. C. S.
 
 ## Download
 
-Download zip from [here](https://drive.google.com/uc?export=download&id=1zqcV9aFXs_xuKWFn0E0Ch0I9MhT7p53E) 
+Download zip from [here](https://drive.google.com/uc?export=download&id=17wnsCQyNJLtotBUwFF4cRcfDfWHC91c7) 
 
 ## Project team
 
